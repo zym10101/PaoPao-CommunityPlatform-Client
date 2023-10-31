@@ -11,5 +11,11 @@
     <string name="menu_topic">话题</string>
     <string name="menu_home">主页</string>
     <string name="menu_setting">设置</string>
+    
+    <string name="Password">密码</string>
+    <string name="Username">用户名</string>
+    <string name="Login">登录</string>
+    <string name="recommend">还没有账号？点我</string>
+    <string name="register">注册</string>
 
 </resources>

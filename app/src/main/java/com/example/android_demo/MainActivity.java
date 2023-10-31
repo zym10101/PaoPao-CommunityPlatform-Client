@@ -1,12 +1,21 @@
 package com.example.android_demo;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.android_demo.user.RegisterActivity;
+import com.example.android_demo.user.UserUtils;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -24,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!isUserLoggedIn()) {
+            showLoginDialog();
+        }
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -62,4 +75,73 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+    // 在主界面或者基类中添加判断用户登录状态的方法
+    public boolean isUserLoggedIn() {
+        // 判断用户是否已登录，这里可以根据具体的登录逻辑进行判断
+        return UserUtils.isLoggedIn();
+    }
+
+    // 弹出登录对话框的方法
+    private void showLoginDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("登录");
+
+        // 设置对话框的布局
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_login, null);
+        builder.setView(view);
+
+        // 创建并显示对话框
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // 获取输入框和登录按钮
+        EditText usernameEditText = view.findViewById(R.id.et_username);
+        EditText passwordEditText = view.findViewById(R.id.et_password);
+        Button loginButton = view.findViewById(R.id.btn_login);
+
+
+        // 阻止用户进行其他操作
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+
+        TextView tvRegister = dialog.findViewById(R.id.tv_register);
+        assert tvRegister != null;
+        tvRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 启动RegisterActivity
+                Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // 设置登录按钮的点击事件
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = usernameEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+
+                // 进行登录验证，这里可以根据具体的登录逻辑进行处理
+                if (login(username, password)) {
+                    // 登录成功，关闭对话框
+                    dialog.dismiss();
+                } else {
+                    // 登录失败，提示用户登录失败
+                    Toast.makeText(MainActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+    // 登录验证的方法
+    private boolean login(String username, String password) {
+        // 进行登录验证，这里可以根据具体的登录逻辑进行处理
+        return UserUtils.login(username, password);
+    }
+
+
 }
