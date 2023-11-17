@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_square" />
 
     <fragment
-        android:id="@+id/nav_topic"
-        android:name="com.example.android_demo.ui.topic.TopicFragment"
-        android:label="@string/menu_topic"
-        tools:layout="@layout/fragment_topic" />
+        android:id="@+id/nav_community"
+        android:name="com.example.android_demo.ui.community.CommunityFragment"
+        android:label="@string/menu_community"
+        tools:layout="@layout/fragment_community" />
 
     <fragment
         android:id="@+id/nav_home"

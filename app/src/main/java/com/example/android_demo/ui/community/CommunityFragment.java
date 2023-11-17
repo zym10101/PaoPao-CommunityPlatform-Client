@@ -1,4 +1,4 @@
-package com.example.android_demo.ui.topic;
+package com.example.android_demo.ui.community;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.android_demo.databinding.FragmentTopicBinding;
+import com.example.android_demo.databinding.FragmentCommunityBinding;
 
-public class TopicFragment extends Fragment {
+public class CommunityFragment extends Fragment {
 
-    private FragmentTopicBinding binding;
+    private FragmentCommunityBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        TopicViewModel topicViewModel =
-                new ViewModelProvider(this).get(TopicViewModel.class);
+        CommunityViewModel communityViewModel =
+                new ViewModelProvider(this).get(CommunityViewModel.class);
 
-        binding = FragmentTopicBinding.inflate(inflater, container, false);
+        binding = FragmentCommunityBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textTopic;
-        topicViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textCommunity;
+        communityViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

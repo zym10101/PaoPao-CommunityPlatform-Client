@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="10dp">
+<!--头像-->
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:foreground="@drawable/circle"
+        android:src="@drawable/avatar0" />
+<!--用户名-->
+    <TextView
+        android:id="@+id/username1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/avatar"
+        android:layout_marginStart="10dp"
+        android:text="frechen026"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintTop_toTopOf="@id/avatar" />
+
+<!--发布时间-->
+    <TextView
+        android:id="@+id/postTime1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/username1"
+        app:layout_constraintTop_toBottomOf="@id/username1"
+        android:layout_marginTop="2dp"
+        android:text="2023.11.17"
+        android:textSize="12sp"/>
+<!--内容-->
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/avatar"
+        app:layout_constraintStart_toStartOf="@id/username1"
+        android:text="到底什么是区块链？我一直不太明白，都说是是用于解决交易的信任和安全问题。怎么实现，我觉得任重道远。"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="20dp"/>
+
+    <ImageView
+        android:id="@+id/iv_up"
+        app:layout_constraintTop_toBottomOf="@id/tv_content"
+        app:layout_constraintStart_toStartOf="@id/tv_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="15dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/select_love" />
+
+    <TextView
+        android:id="@+id/tv_number_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/iv_up"
+        app:layout_constraintStart_toEndOf="@id/iv_up"
+        app:layout_constraintBottom_toBottomOf="@id/iv_up"
+        android:textSize="18sp"
+        android:layout_marginStart="10dp"
+        android:text="0" />
+
+    <ImageView
+        android:id="@+id/iv_down"
+        app:layout_constraintTop_toBottomOf="@id/tv_content"
+        app:layout_constraintStart_toStartOf="@id/tv_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="15dp"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="120dp"
+        android:src="@drawable/select_down" />
+
+    <TextView
+        android:id="@+id/tv_number_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/iv_down"
+        app:layout_constraintStart_toEndOf="@id/iv_down"
+        app:layout_constraintBottom_toBottomOf="@id/iv_down"
+        android:textSize="18sp"
+        android:layout_marginStart="10dp"
+        android:text="0" />
+
+    <ImageView
+        android:id="@+id/iv_review"
+        app:layout_constraintTop_toBottomOf="@id/tv_content"
+        app:layout_constraintStart_toStartOf="@id/tv_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="15dp"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="240dp"
+        android:src="@drawable/ic_review" />
+
+    <TextView
+        android:id="@+id/tv_number_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/iv_review"
+        app:layout_constraintStart_toEndOf="@id/iv_review"
+        app:layout_constraintBottom_toBottomOf="@id/iv_review"
+        android:textSize="18sp"
+        android:layout_marginStart="10dp"
+        android:text="0" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

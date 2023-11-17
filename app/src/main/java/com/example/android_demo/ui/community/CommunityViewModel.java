@@ -1,14 +1,14 @@
-package com.example.android_demo.ui.topic;
+package com.example.android_demo.ui.community;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class TopicViewModel extends ViewModel {
+public class CommunityViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public TopicViewModel() {
+    public CommunityViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is gallery fragment");
     }
