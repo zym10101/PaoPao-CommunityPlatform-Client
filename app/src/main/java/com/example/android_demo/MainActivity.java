@@ -39,13 +39,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
-//        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
@@ -58,13 +51,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -105,30 +91,24 @@ public class MainActivity extends AppCompatActivity {
         // 设置注册文本的跳转事件
         TextView tvRegister = dialog.findViewById(R.id.tv_register);
         assert tvRegister != null;
-        tvRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 启动RegisterActivity，进行跳转
-                Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
+        tvRegister.setOnClickListener(v -> {
+            // 启动RegisterActivity，进行跳转
+            Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
 
         // 设置登录按钮的点击事件
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = usernameEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
+        loginButton.setOnClickListener(v -> {
+            String username = usernameEditText.getText().toString();
+            String password = passwordEditText.getText().toString();
 
-                // 进行登录验证，这里可以根据具体的登录逻辑进行处理
-                if (login(username, password)) {
-                    // 登录成功，关闭对话框
-                    dialog.dismiss();
-                } else {
-                    // 登录失败，提示用户登录失败
-                    Toast.makeText(MainActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
-                }
+            // 进行登录验证，这里可以根据具体的登录逻辑进行处理
+            if (login(username, password)) {
+                // 登录成功，关闭对话框
+                dialog.dismiss();
+            } else {
+                // 登录失败，提示用户登录失败
+                Toast.makeText(MainActivity.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
             }
         });
 
