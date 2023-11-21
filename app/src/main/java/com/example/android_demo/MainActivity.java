@@ -9,23 +9,33 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android_demo.user.RegisterActivity;
+import com.example.android_demo.utils.UserUtils;
+import com.google.android.material.navigation.NavigationView;
+
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.android_demo.databinding.ActivityMainBinding;
-import com.example.android_demo.user.RegisterActivity;
-import com.example.android_demo.user.UserUtils;
-import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+
+    private MainViewModel mainViewModel;
+
+    FragmentManager fragmentManager;
+    FragmentTransaction transaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +49,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
+
+
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_square, R.id.nav_community, R.id.nav_home, R.id.nav_setting)
+                R.id.nav_square, R.id.nav_topic, R.id.nav_home, R.id.nav_setting)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        //获取共享的vm
+        mainViewModel=new ViewModelProvider(this).get(MainViewModel.class);
     }
 
     @Override
@@ -88,27 +102,35 @@ public class MainActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
 
-        // 设置注册文本的跳转事件
+
         TextView tvRegister = dialog.findViewById(R.id.tv_register);
         assert tvRegister != null;
-        tvRegister.setOnClickListener(v -> {
-            // 启动RegisterActivity，进行跳转
-            Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-            startActivity(intent);
+        tvRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 启动RegisterActivity
+
+               Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
         });
 
         // 设置登录按钮的点击事件
-        loginButton.setOnClickListener(v -> {
-            String username = usernameEditText.getText().toString();
-            String password = passwordEditText.getText().toString();
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = usernameEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
 
-            // 进行登录验证，这里可以根据具体的登录逻辑进行处理
-            if (login(username, password)) {
-                // 登录成功，关闭对话框
-                dialog.dismiss();
-            } else {
-                // 登录失败，提示用户登录失败
-                Toast.makeText(MainActivity.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+                // 进行登录验证，这里可以根据具体的登录逻辑进行处理
+                if (login(username, password)) {
+                    mainViewModel.getUsername().setValue(username);
+                    // 登录成功，关闭对话框
+                    dialog.dismiss();
+                } else {
+                    // 登录失败，提示用户登录失败
+                    Toast.makeText(MainActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -118,6 +140,14 @@ public class MainActivity extends AppCompatActivity {
     private boolean login(String username, String password) {
         // 进行登录验证，这里可以根据具体的登录逻辑进行处理
         return UserUtils.login(username, password);
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        fragmentManager =getSupportFragmentManager();
+        transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.drawer_layout, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
 
