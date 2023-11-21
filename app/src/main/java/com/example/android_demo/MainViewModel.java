@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel;
 
 public class MainViewModel extends ViewModel {
     private static MutableLiveData<String> username;
-    private static MutableLiveData<String> age;
+    private static MutableLiveData<String> password;
+    private static MutableLiveData<String> phone;
+
 
     public MainViewModel(){
     }
@@ -16,11 +18,19 @@ public class MainViewModel extends ViewModel {
         }
         return username;
     }
-    public MutableLiveData<String> getAge() {
-        if (age == null) {
-            age = new MutableLiveData<String>();
+    public MutableLiveData<String> getPassword() {
+        if (password == null) {
+            password = new MutableLiveData<String>();
         }
-        return age;
+        return password;
     }
+
+    public MutableLiveData<String> getPhone() {
+        if (phone == null) {
+            phone = new MutableLiveData<String>();
+        }
+        return phone;
+    }
+
 
 }

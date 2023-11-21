@@ -53,7 +53,6 @@ public class RegisterActivity extends AppCompatActivity {
         sendCaptcha = findViewById(R.id.send_captcha);
         sendCaptcha.setOnClickListener(v -> {
             phoneNumber=et_phone.getText().toString().trim();
-
             //TODO 手机号验证
             sendCaptcha(phoneNumber);
             if(senCaptchaFlag==1){

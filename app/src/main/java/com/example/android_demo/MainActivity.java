@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
         EditText passwordEditText = view.findViewById(R.id.et_password);
         Button loginButton = view.findViewById(R.id.btn_login);
 
-
         // 阻止用户进行其他操作
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
@@ -105,32 +104,26 @@ public class MainActivity extends AppCompatActivity {
 
         TextView tvRegister = dialog.findViewById(R.id.tv_register);
         assert tvRegister != null;
-        tvRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 启动RegisterActivity
-
-               Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
+        tvRegister.setOnClickListener(v -> {
+            // 启动RegisterActivity
+           Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
 
         // 设置登录按钮的点击事件
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = usernameEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
+        loginButton.setOnClickListener(v -> {
+            String username = usernameEditText.getText().toString();
+            String password = passwordEditText.getText().toString();
 
-                // 进行登录验证，这里可以根据具体的登录逻辑进行处理
-                if (login(username, password)) {
-                    mainViewModel.getUsername().setValue(username);
-                    // 登录成功，关闭对话框
-                    dialog.dismiss();
-                } else {
-                    // 登录失败，提示用户登录失败
-                    Toast.makeText(MainActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
-                }
+            // 进行登录验证，这里可以根据具体的登录逻辑进行处理
+            if (login(username, password)) {
+                mainViewModel.getUsername().setValue(username);
+                mainViewModel.getPassword().setValue(password);
+                // 登录成功，关闭对话框
+                dialog.dismiss();
+            } else {
+                // 登录失败，提示用户登录失败
+                Toast.makeText(MainActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
             }
         });
 

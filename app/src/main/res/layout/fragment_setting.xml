@@ -21,7 +21,6 @@
         app:riv_corner_radius_top_left="10dp"
         app:riv_corner_radius_top_right="10dp" />
 
-
     <TextView
         android:id="@+id/text_setting"
         android:layout_width="150dp"
@@ -196,11 +195,11 @@
         app:layout_constraintTop_toBottomOf="@id/caogao" />
 
     <TextView
-        android:id="@+id/kefu"
+        android:id="@+id/xiugaimima"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:text="联系客服                                  >"
+        android:text="修改密码                                  >"
         android:textSize="22dp"
         app:layout_constraintLeft_toRightOf="@+id/img_caogao"
         app:layout_constraintTop_toTopOf="@+id/img_kefu"
