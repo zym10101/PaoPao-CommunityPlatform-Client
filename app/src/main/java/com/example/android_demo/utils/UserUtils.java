@@ -50,30 +50,28 @@ public class UserUtils {
     }
 
     public static void logout() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // 创建HTTP客户端
-                    OkHttpClient client = new OkHttpClient()
-                            .newBuilder()
-                            .connectTimeout(60000, TimeUnit.MILLISECONDS)
-                            .readTimeout(60000, TimeUnit.MILLISECONDS)
-                            .build();
-                    // 创建HTTP请求
+        new Thread(() -> {
+            try {
+                // 创建HTTP客户端
+                OkHttpClient client = new OkHttpClient()
+                        .newBuilder()
+                        .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                        .readTimeout(60000, TimeUnit.MILLISECONDS)
+                        .build();
+                // 创建HTTP请求
 
-                    Request request = new Request.Builder()
-                            .url("http://" + constant.IP_ADDRESS + "/user/logout")
-                            .build();
-                    // 执行发送的指令，获得返回结果
-                    Response response = client.newCall(request).execute();
-                    isLoggedIn = response.code() == 200;
-                } catch (Exception e) {
-                    Log.e(TAG, Log.getStackTraceString(e));
+                Request request = new Request.Builder()
+                        .url("http://" + constant.IP_ADDRESS + "/user/logout")
+                        .build();
+                // 执行发送的指令，获得返回结果
+                Response response = client.newCall(request).execute();
+                if(response.code()==200){
+                    isLoggedIn=false;
                 }
+            } catch (Exception e) {
+                Log.e(TAG, Log.getStackTraceString(e));
             }
         }).start();
-        isLoggedIn = false;
     }
 }
 

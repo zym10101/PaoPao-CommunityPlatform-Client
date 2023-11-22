@@ -148,12 +148,12 @@
         app:layout_constraintTop_toBottomOf="@id/jinbi" />
 
     <TextView
-        android:id="@+id/zhuti"
+        android:id="@+id/touxiang"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="18dp"
 
-        android:text="主题                                          >"
+        android:text="上传头像                                   >"
         android:textSize="22dp"
         app:layout_constraintLeft_toRightOf="@id/img_zhuti"
         android:layout_marginTop="-5dp"
@@ -169,18 +169,18 @@
         android:layout_marginTop="36dp"
         android:background="@drawable/caogao"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/zhuti" />
+        app:layout_constraintTop_toBottomOf="@id/touxiang" />
 
     <TextView
-        android:id="@+id/caogao"
+        android:id="@+id/xiugai"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:text="草稿箱                                      >"
+        android:text="修改密码                                   >"
         android:textSize="22dp"
         android:layout_marginTop="30dp"
         app:layout_constraintLeft_toRightOf="@+id/img_caogao"
-        app:layout_constraintTop_toBottomOf="@+id/zhuti"
+        app:layout_constraintTop_toBottomOf="@+id/touxiang"
         app:layout_goneMarginLeft="20dp"
  />
 
@@ -192,14 +192,14 @@
         android:layout_marginTop="40dp"
         android:background="@drawable/kefu"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/caogao" />
+        app:layout_constraintTop_toBottomOf="@id/xiugai" />
 
     <TextView
-        android:id="@+id/xiugaimima"
+        android:id="@+id/logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:text="修改密码                                  >"
+        android:text="退出登录                                   >"
         android:textSize="22dp"
         app:layout_constraintLeft_toRightOf="@+id/img_caogao"
         app:layout_constraintTop_toTopOf="@+id/img_kefu"

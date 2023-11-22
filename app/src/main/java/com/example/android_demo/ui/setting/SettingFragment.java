@@ -2,6 +2,7 @@ package com.example.android_demo.ui.setting;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
@@ -29,6 +30,7 @@ import com.example.android_demo.bean.RegisterRequest;
 import com.example.android_demo.databinding.FragmentSettingBinding;
 import com.example.android_demo.user.RegisterActivity;
 import com.example.android_demo.utils.ConvertType;
+import com.example.android_demo.utils.UserUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,8 +43,8 @@ import okhttp3.Response;
 public class SettingFragment extends Fragment {
     private FragmentSettingBinding binding;
     private MainViewModel mainViewModel;
-     TextView textView,xiugai;
-    private String userName, password, checkPassword, phoneNumber, verify;
+     TextView textView,xiugai,logout,postAva;
+    private String userName, password,phoneNumber, verify;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,8 +53,9 @@ public class SettingFragment extends Fragment {
 
         //获取textView的时候也通过binding获取
         textView = binding.textSetting;
-        xiugai = binding.xiugaimima;
-
+        xiugai = binding.xiugai;
+        logout=binding.logout;
+        postAva=binding.touxiang;
 
         //获取viewModel,用来存储数据
         SettingViewModel settingViewModel = new ViewModelProvider(this).get(SettingViewModel.class);
@@ -66,7 +69,17 @@ public class SettingFragment extends Fragment {
         //给username加上观察器，当username值发生改变的时候，调用观察函数
         mainViewModel.getUsername().observe(getActivity(), nameObserver);
 
-        //修改密码
+        //TODO 上传头像功能
+        postAva.setOnClickListener(view -> {
+
+        });
+
+        //退出登录
+        logout.setOnClickListener(view -> {
+            showLogoutDialog();
+        });
+
+        //修改密码功能
         xiugai.setOnClickListener(view -> {
             showResetDialog();
         });
@@ -81,6 +94,7 @@ public class SettingFragment extends Fragment {
         binding = null;
     }
 
+    //展示修改密码对话框
     private void showResetDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("修改密码");
@@ -101,6 +115,7 @@ public class SettingFragment extends Fragment {
 
         Button sendButton = view.findViewById(R.id.btn_send);
         Button resetButton = view.findViewById(R.id.btn_reset);
+        Button quitButton = view.findViewById(R.id.btn_quit);
 
 
         // 阻止用户进行其他操作
@@ -174,8 +189,8 @@ public class SettingFragment extends Fragment {
                     if(response.code()==200){
                         Looper.prepare();
                         Toast.makeText(getActivity(), "修改成功", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
                         dialog.dismiss();
+                        Looper.loop();
                     }else{
                         Looper.prepare();
                         Toast.makeText(getActivity(), "修改失败", Toast.LENGTH_SHORT).show();
@@ -190,5 +205,26 @@ public class SettingFragment extends Fragment {
             }).start();
         });
 
+        quitButton.setOnClickListener(view1 -> {
+            dialog.dismiss();
+        });
+    }
+
+    //展示退出登录对话框
+    private void showLogoutDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("提示");
+        builder.setMessage("是否确认退出登录？");
+
+        builder.setPositiveButton("确认退出", (dialogInterface, i) -> {
+            UserUtils.logout();
+            dialogInterface.dismiss();
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
+
+        });
+        builder.setNegativeButton("取消", (dialogInterface, i) -> dialogInterface.dismiss());
+
+        builder.show();
     }
 }
