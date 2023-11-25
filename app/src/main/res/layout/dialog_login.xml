@@ -20,6 +20,13 @@
         android:textSize="20sp"
         android:hint="@string/Password" />
 
+    <CheckBox
+        android:id="@+id/cb_remember"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/remember_password"
+        android:textColor="@color/black"/>
+
     <Button
         android:id="@+id/btn_login"
         android:layout_width="match_parent"

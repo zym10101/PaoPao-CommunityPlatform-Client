@@ -5,15 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android_demo.user.RegisterActivity;
-import com.example.android_demo.utils.UserUtils;
-import com.google.android.material.navigation.NavigationView;
-
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -22,12 +21,15 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.android_demo.database.DBHelper;
 import com.example.android_demo.databinding.ActivityMainBinding;
+import com.example.android_demo.entity.LoginInfo;
+import com.example.android_demo.user.RegisterActivity;
+import com.example.android_demo.utils.UserUtils;
+import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -36,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
     FragmentManager fragmentManager;
     FragmentTransaction transaction;
+    private DBHelper mHelper;
+    private EditText usernameEditText;
+    private EditText passwordEditText;
+    private CheckBox cb_remember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,13 +99,16 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
 
         // 获取输入框和登录按钮
-        EditText usernameEditText = view.findViewById(R.id.et_username);
-        EditText passwordEditText = view.findViewById(R.id.et_password);
+        usernameEditText = view.findViewById(R.id.et_username);
+        passwordEditText = view.findViewById(R.id.et_password);
         Button loginButton = view.findViewById(R.id.btn_login);
+        cb_remember = view.findViewById(R.id.cb_remember);
 
         // 阻止用户进行其他操作
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
+
+        passwordEditText.setOnFocusChangeListener(this);
 
 
         TextView tvRegister = dialog.findViewById(R.id.tv_register);
@@ -119,6 +128,9 @@ public class MainActivity extends AppCompatActivity {
             if (login(username, password)) {
                 mainViewModel.getUsername().setValue(username);
                 mainViewModel.getPassword().setValue(password);
+//                记住密码
+                LoginInfo loginInfo = new LoginInfo(username, password, cb_remember.isChecked());
+                mHelper.saveLoginInfo(loginInfo);
                 // 登录成功，关闭对话框
                 dialog.dismiss();
             } else {
@@ -143,5 +155,44 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // 打开数据库读写连接
+        mHelper = DBHelper.getInstance(this);
+        mHelper.openReadLink();
+        mHelper.openWriteLink();
+        reload();
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // 关闭数据库连接
+        mHelper.closeLink();
+    }
+
+    // 进入页面时加载数据库中存储的用户名和密码
+    private void reload(){
+        LoginInfo info = mHelper.queryTop();
+        if(info != null && info.remember){
+            usernameEditText.setText(info.username);
+            passwordEditText.setText(info.password);
+            cb_remember.setChecked(true);
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        if(view.getId() == R.id.et_password && hasFocus){
+            LoginInfo info = mHelper.queryByUsername(usernameEditText.getText().toString());
+            if(info != null){
+                passwordEditText.setText(info.password);
+                cb_remember.setChecked(info.remember);
+            }else {
+                passwordEditText.setText("");
+                cb_remember.setChecked(false);
+            }
+        }
+    }
 }

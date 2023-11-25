@@ -18,15 +18,14 @@ public class SquareFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        SquareViewModel squareViewModel =
-                new ViewModelProvider(this).get(SquareViewModel.class);
+//        SquareViewModel squareViewModel =
+//                new ViewModelProvider(this).get(SquareViewModel.class);
 
         binding = FragmentSquareBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
-        final TextView textView = binding.textSquare;
-        squareViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+//        final TextView textView = binding.textSquare;
+//        squareViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        return binding.getRoot();
     }
 
     @Override
