@@ -23,9 +23,6 @@ public class TopicFragment extends Fragment {
 
         binding = FragmentTopicBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        final TextView textView = binding.textTopic;
-        topicViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

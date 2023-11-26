@@ -2,6 +2,8 @@ package com.example.android_demo.user;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,7 +30,7 @@ import okhttp3.Response;
 
 public class RegisterActivity extends AppCompatActivity {
     int senCaptchaFlag = 0;
-    int flag=0;
+    int flag = 0;
     private TextView toLogin;
     private Button register, sendCaptcha;
     private EditText et_username, et_password, et_check, et_phone, et_captcha;
@@ -93,6 +95,12 @@ public class RegisterActivity extends AppCompatActivity {
             if (flag ==200) {
                 runOnUiThread(() -> {
                     Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("username", userName);
+                    bundle.putString("password", password);
+                    intent.putExtras(bundle);
+                    setResult(Activity.RESULT_OK, intent);
                     //跳转到登录界面中
                     toLoginActivity();
                     RegisterActivity.this.finish();

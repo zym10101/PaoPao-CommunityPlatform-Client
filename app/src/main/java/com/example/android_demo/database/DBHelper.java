@@ -120,6 +120,7 @@ public class DBHelper extends SQLiteOpenHelper {
             info.password = cursor.getString(2);
             info.remember = cursor.getInt(3) != 0;
         }
+        cursor.close();
         return info;
     }
 
@@ -133,6 +134,7 @@ public class DBHelper extends SQLiteOpenHelper {
             info.password = cursor.getString(2);
             info.remember = cursor.getInt(3) != 0;
         }
+        cursor.close();
         return info;
     }
 
