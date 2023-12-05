@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +44,9 @@ import okhttp3.Response;
 public class SettingFragment extends Fragment {
     private FragmentSettingBinding binding;
     private MainViewModel mainViewModel;
-     TextView textView,xiugai,logout,postAva;
+     TextView textView;
+    ImageView postAva;
+    Button xiugai,logout;
     private String userName, password,phoneNumber, verify;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -55,7 +58,7 @@ public class SettingFragment extends Fragment {
         textView = binding.textSetting;
         xiugai = binding.xiugai;
         logout=binding.logout;
-        postAva=binding.touxiang;
+        postAva=binding.ivAvatar;
 
         //获取viewModel,用来存储数据
         SettingViewModel settingViewModel = new ViewModelProvider(this).get(SettingViewModel.class);
