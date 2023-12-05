@@ -22,7 +22,7 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/xuenai"
         app:riv_corner_radius_bottom_left="60dp"
         app:riv_corner_radius_bottom_right="60dp"
@@ -31,13 +31,13 @@
 
     <TextView
         android:id="@+id/textSetting"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
+        android:layout_width="150dp"
+        android:layout_height="35dp"
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
         android:layout_gravity="center_horizontal"
-        android:textSize="30sp"
-        android:layout_marginBottom="20dp"
+        android:textSize="24sp"
+        android:layout_marginBottom="10dp"
         android:textColor="@color/white" />
 
     <LinearLayout
@@ -45,34 +45,34 @@
         android:layout_height="wrap_content"
         >
         <LinearLayout
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:layout_width="0dp"
             android:layout_weight="1">
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="20dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="40dp"
                 android:src="@drawable/zuji"/>
             <TextView
                 android:id="@+id/zuji"
                 android:text="我的足迹"
                 android:layout_marginStart="10dp"
                 android:gravity="center_horizontal"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 android:textColor="#228B22"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"/>
+                android:layout_height="30dp"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:layout_marginBottom="10dp">
             <ImageView
                 android:layout_marginTop="5dp"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_marginStart="20dp"
                 android:src="@drawable/shoucang1"/>
             <TextView
@@ -80,10 +80,10 @@
                 android:text="我的收藏"
                 android:textColor="#228B22"
                 android:gravity="center_horizontal"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 android:layout_marginStart="10dp"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"/>
+                android:layout_height="30dp"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
@@ -103,7 +103,7 @@
         android:layout_weight="1"
         android:layout_height="60dp"
         android:text="修改密码"
-        android:backgroundTint="#77F890"
+        android:backgroundTint="#ADFF2F"
         android:shadowColor="#CAFF70"
         android:textSize="20sp">
     </Button>
@@ -116,7 +116,7 @@
         android:layout_weight="1"
         android:layout_height="60dp"
         android:text="退出登录"
-        android:backgroundTint="#77F890"
+        android:backgroundTint="#ADFF2F"
         android:shadowColor="#CAFF70"
         android:textSize="20sp">
     </Button>
