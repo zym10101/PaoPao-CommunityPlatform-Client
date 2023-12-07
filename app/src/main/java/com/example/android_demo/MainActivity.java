@@ -66,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (!isUserLoggedIn()) {
+        /*if (!isUserLoggedIn()) {
             Intent intent = new Intent(this, LoginActivity.class);
             register.launch(intent);
-        }
+        }*/
 
     }
 
