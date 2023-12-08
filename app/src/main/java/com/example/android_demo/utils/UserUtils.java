@@ -2,16 +2,10 @@ package com.example.android_demo.utils;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
-import android.util.JsonReader;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.android_demo.Constants.constant;
-import com.example.android_demo.user.LoginActivity;
 import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.concurrent.TimeUnit;
 
@@ -50,7 +44,7 @@ public class UserUtils {
                 String reData=response.body().string();
                 System.out.println("redata"+reData);
                 Gson gson = new Gson();
-                responseData  rdata= gson.fromJson(reData,responseData.class);
+                ResponseData rdata= gson.fromJson(reData, ResponseData.class);
                 System.out.println(rdata.getData());
                 if(Integer.parseInt(rdata.getCode())==999){
                     isLoggedIn=false;

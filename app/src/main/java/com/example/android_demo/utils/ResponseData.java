@@ -1,8 +1,6 @@
 package com.example.android_demo.utils;
 
-import org.json.JSONObject;
-
-public class responseData {
+public class ResponseData {
     private String  code;
     private String message;
     private Object data;
