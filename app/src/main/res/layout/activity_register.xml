@@ -108,6 +108,7 @@
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
+
                 <TextView
                     android:id="@+id/to_login"
                     android:layout_width="wrap_content"
@@ -120,7 +121,6 @@
                     android:textSize="14sp" />
 
             </RelativeLayout>
-
 
         </LinearLayout>
 
