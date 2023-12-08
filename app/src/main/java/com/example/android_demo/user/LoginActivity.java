@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                 bundle1.putString("password", password);
                 intent1.putExtras(bundle1);
                 setResult(Activity.RESULT_OK, intent1);
-
+                Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
                 // 登录失败，提示用户登录失败

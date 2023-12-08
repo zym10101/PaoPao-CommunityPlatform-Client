@@ -8,6 +8,10 @@ import android.widget.Toast;
 
 import com.example.android_demo.Constants.constant;
 import com.example.android_demo.user.LoginActivity;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.concurrent.TimeUnit;
 
@@ -23,39 +27,43 @@ public class UserUtils {
     }
 
     public static boolean login(String username, String password) {
-        if((username.equals("frechen026") && password.equals("123456")) || (username.equals("admin") && password.equals("admin"))){
+        if(username.equals("admin") && password.equals("admin")){
             isLoggedIn = true;
             return true;
         }
         // 进行登录验证的逻辑，例如与服务器通信验证用户名和密码
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // 创建HTTP客户端
-                    OkHttpClient client = new OkHttpClient()
-                            .newBuilder()
-                            .connectTimeout(60000, TimeUnit.MILLISECONDS)
-                            .readTimeout(60000, TimeUnit.MILLISECONDS)
-                            .build();
-                    // 创建HTTP请求
+        new Thread(() -> {
+            try {
+                // 创建HTTP客户端
+                OkHttpClient client = new OkHttpClient()
+                        .newBuilder()
+                        .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                        .readTimeout(60000, TimeUnit.MILLISECONDS)
+                        .build();
+                // 创建HTTP请求
 
-                    Request request = new Request.Builder()
-                            .url("http://" + constant.IP_ADDRESS + "/user/login?userName=" + username + "&password=" + password)
-                            .build();
-                    // 执行发送的指令，获得返回结果
-                    Response response = client.newCall(request).execute();
-                    isLoggedIn = response.code() == 200;
-                    String responseData =response.body().string();
-                    int index=responseData.indexOf("data");
-                    token=responseData.substring(index+6,responseData.length()-1);
-                } catch (Exception e) {
-                    Log.e(TAG, Log.getStackTraceString(e));
+                Request request = new Request.Builder()
+                        .url("http://" + constant.IP_ADDRESS + "/user/login?userName=" + username + "&password=" + password)
+                        .build();
+                // 执行发送的指令，获得返回结果
+                Response response = client.newCall(request).execute();
+                String reData=response.body().string();
+                System.out.println("redata"+reData);
+                Gson gson = new Gson();
+                responseData  rdata= gson.fromJson(reData,responseData.class);
+                System.out.println(rdata.getData());
+                if(Integer.parseInt(rdata.getCode())==999){
+                    isLoggedIn=false;
+                    System.out.println("登陆失败");
+                }else{
+                    System.out.println("登陆成功");
+                    isLoggedIn=true;
                 }
+
+            } catch (Exception e) {
+                Log.e(TAG, Log.getStackTraceString(e));
             }
         }).start();
-        //获取共享的vm
-
         //初始化数据
         return isLoggedIn;
     }
