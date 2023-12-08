@@ -1,5 +1,6 @@
 package com.example.android_demo.user;
 
+import static android.app.PendingIntent.getActivity;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.app.Activity;
@@ -7,17 +8,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 
 import com.example.android_demo.Constants.constant;
 import com.example.android_demo.R;
 import com.example.android_demo.bean.RegisterRequest;
+import com.example.android_demo.ui.chat.ChatFragment;
 import com.example.android_demo.utils.ConvertType;
 
 import java.util.concurrent.TimeUnit;
@@ -92,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
             RegisterRequest registerRequest = new RegisterRequest(userName, password, phoneNumber, captcha);
             registerToBackend(registerRequest);
 
-            if (flag ==200) {
+            if (flag == 200) {
                 runOnUiThread(() -> {
                     Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();

@@ -27,4 +27,9 @@
         android:name="com.example.android_demo.ui.setting.SettingFragment"
         android:label="@string/menu_setting"
         tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/nav_about"
+        android:name="com.example.android_demo.ui.chat.ChatFragment"
+        android:label="写文章"
+        tools:layout="@layout/fragment_chat" />
 </navigation>
