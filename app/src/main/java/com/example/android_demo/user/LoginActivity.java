@@ -25,7 +25,7 @@ import com.example.android_demo.utils.UserUtils;
  * @author SummCoder
  * @date 2023/11/26 22:15
  */
-public class LoginActivity  extends AppCompatActivity  implements View.OnFocusChangeListener{
+public class LoginActivity extends AppCompatActivity implements View.OnFocusChangeListener{
     private DBHelper mHelper;
     private EditText usernameEditText;
     private EditText passwordEditText;

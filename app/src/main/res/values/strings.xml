@@ -19,5 +19,10 @@
     <string name="register">注册</string>
     <string name="phone">电话</string>
     <string name="remember_password">记住密码</string>
+    <string name="community_hot">热门</string>
+    <string name="community_recommend">推荐</string>
+    <string name="community_in">关注</string>
+    <string name="TextView">TextView</string>
+    <string name="follow">关注</string>
 
 </resources>

@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (!isUserLoggedIn()) {
+        if (!UserUtils.isLoggedIn()) {
             Intent intent = new Intent(this, LoginActivity.class);
             register.launch(intent);
         }
@@ -78,12 +78,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
-
-
-    public boolean isUserLoggedIn() {
-        // 判断用户是否已登录
-        return UserUtils.isLoggedIn();
     }
 
 }
