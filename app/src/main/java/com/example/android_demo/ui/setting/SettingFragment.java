@@ -142,6 +142,7 @@ public class SettingFragment extends Fragment {
 
                         Request request = new Request.Builder()
                                 .url("http://" + constant.IP_ADDRESS + "/sms/send?phone=" + phoneNumber)
+                                .addHeader("token",UserUtils.token)
                                 .build();
                         // 执行发送的指令，获得返回结果
                         Response response = client.newCall(request).execute();

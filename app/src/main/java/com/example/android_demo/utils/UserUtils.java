@@ -2,9 +2,12 @@ package com.example.android_demo.utils;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.util.JsonReader;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.android_demo.Constants.constant;
+import com.example.android_demo.user.LoginActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,6 +17,7 @@ import okhttp3.Response;
 
 public class UserUtils {
     private static boolean isLoggedIn = false;
+     public static String token;
     public static boolean isLoggedIn() {
         return isLoggedIn;
     }
@@ -42,6 +46,9 @@ public class UserUtils {
                     // 执行发送的指令，获得返回结果
                     Response response = client.newCall(request).execute();
                     isLoggedIn = response.code() == 200;
+                    String responseData =response.body().string();
+                    int index=responseData.indexOf("data");
+                    token=responseData.substring(index+6,responseData.length()-1);
                 } catch (Exception e) {
                     Log.e(TAG, Log.getStackTraceString(e));
                 }
@@ -66,6 +73,7 @@ public class UserUtils {
 
                 Request request = new Request.Builder()
                         .url("http://" + constant.IP_ADDRESS + "/user/logout")
+                        .addHeader("token",token)
                         .build();
                 // 执行发送的指令，获得返回结果
                 Response response = client.newCall(request).execute();
