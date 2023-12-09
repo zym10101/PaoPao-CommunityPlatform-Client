@@ -25,6 +25,8 @@ import com.example.android_demo.R;
 import com.example.android_demo.bean.RegisterRequest;
 import com.example.android_demo.ui.chat.ChatFragment;
 import com.example.android_demo.utils.ConvertType;
+import com.example.android_demo.utils.ResponseData;
+import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
 
@@ -120,7 +122,7 @@ public class RegisterActivity extends AppCompatActivity {
     //注册结果标志位
 
     public void registerToBackend(RegisterRequest registerRequest) {
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
                 String json = ConvertType.beanToJson(registerRequest);
                 // 创建HTTP客户端
@@ -136,16 +138,25 @@ public class RegisterActivity extends AppCompatActivity {
                         .build();
                 // 执行发送的指令
                 Response response = client.newCall(request).execute();
-                flag=response.code();
+                String reData=response.body().string();
+                Gson gson = new Gson();
+                ResponseData rdata= gson.fromJson(reData, ResponseData.class);
+                flag = Integer.parseInt(rdata.getCode());
             } catch (Exception e) {
                 e.printStackTrace();
                 runOnUiThread(() -> Toast.makeText(RegisterActivity.this, "网络问题，注册失败", Toast.LENGTH_SHORT).show());
             }
-        }).start();
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendCaptcha(String phoneNum) {
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
                 // 创建HTTP客户端
                 OkHttpClient client = new OkHttpClient()
@@ -160,18 +171,26 @@ public class RegisterActivity extends AppCompatActivity {
                         .build();
                 // 执行发送的指令，获得返回结果
                 Response response = client.newCall(request).execute();
-
-                if (response.code() == 200) {
-                    senCaptchaFlag=1;
+                String reData=response.body().string();
+                Gson gson = new Gson();
+                ResponseData rdata= gson.fromJson(reData, ResponseData.class);
+                if (rdata.getCode().equals("200")) {
+                    senCaptchaFlag = 1;
                } else {
-                    senCaptchaFlag=0;
+                    senCaptchaFlag = 0;
                 }
 
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
                 runOnUiThread(() -> Toast.makeText(RegisterActivity.this, "网络或进程问题", Toast.LENGTH_SHORT).show());
             }
-        }).start();
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void getEditString() {

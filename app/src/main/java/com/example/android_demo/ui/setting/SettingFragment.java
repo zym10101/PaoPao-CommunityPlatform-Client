@@ -31,7 +31,9 @@ import com.example.android_demo.bean.RegisterRequest;
 import com.example.android_demo.databinding.FragmentSettingBinding;
 import com.example.android_demo.user.RegisterActivity;
 import com.example.android_demo.utils.ConvertType;
+import com.example.android_demo.utils.ResponseData;
 import com.example.android_demo.utils.UserUtils;
+import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
 
@@ -128,43 +130,48 @@ public class SettingFragment extends Fragment {
         // 设置发送验证码按钮的点击事件
         sendButton.setOnClickListener(v -> {
 
-            phoneNumber=phoneEditText.getText().toString().trim();
+            phoneNumber = phoneEditText.getText().toString().trim();
+            Thread thread = new Thread(() -> {
+                try {
+                    // 创建HTTP客户端
+                    OkHttpClient client = new OkHttpClient()
+                            .newBuilder()
+                            .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                            .readTimeout(60000, TimeUnit.MILLISECONDS)
+                            .build();
+                    // 创建HTTP请求
 
-                new Thread(() -> {
-                    try {
-                        // 创建HTTP客户端
-                        OkHttpClient client = new OkHttpClient()
-                                .newBuilder()
-                                .connectTimeout(60000, TimeUnit.MILLISECONDS)
-                                .readTimeout(60000, TimeUnit.MILLISECONDS)
-                                .build();
-                        // 创建HTTP请求
-
-                        Request request = new Request.Builder()
-                                .url("http://" + constant.IP_ADDRESS + "/sms/send?phone=" + phoneNumber)
-                                .addHeader("token",UserUtils.token)
-                                .build();
-                        // 执行发送的指令，获得返回结果
-                        Response response = client.newCall(request).execute();
-
-                        if (response.code() == 200) {
-                            Looper.prepare();
-                            Toast.makeText(getActivity(), "验证码发送成功", Toast.LENGTH_SHORT).show();
-                            Looper.loop();
-                        } else {
-                            Looper.prepare();
-                            Toast.makeText(getActivity(), "验证码发送失败", Toast.LENGTH_SHORT).show();
-                            Looper.loop();
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, Log.getStackTraceString(e));
+                    Request request = new Request.Builder()
+                            .url("http://" + constant.IP_ADDRESS + "/sms/send?phone=" + phoneNumber)
+                            .build();
+                    // 执行发送的指令，获得返回结果
+                    Response response = client.newCall(request).execute();
+                    String reData=response.body().string();
+                    Gson gson = new Gson();
+                    ResponseData rdata= gson.fromJson(reData, ResponseData.class);
+                    if (rdata.getCode().equals("200")) {
                         Looper.prepare();
-                        Toast.makeText(getActivity(), "网络或进程问题", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "验证码发送成功", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    } else {
+                        Looper.prepare();
+                        Toast.makeText(getActivity(), "验证码发送失败", Toast.LENGTH_SHORT).show();
                         Looper.loop();
                     }
-                }).start();
+                } catch (Exception e) {
+                    Log.e(TAG, Log.getStackTraceString(e));
+                    Looper.prepare();
+                    Toast.makeText(getActivity(), "网络或进程问题", Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                }
+            });
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         });
-
         // 设置reset按钮的点击事件
         resetButton.setOnClickListener(v -> {
             userName = usernameEditText.getText().toString().trim();
@@ -174,7 +181,7 @@ public class SettingFragment extends Fragment {
 
             RegisterRequest registerRequest = new RegisterRequest(userName, password, phoneNumber, verify);
 
-            new Thread(() -> {
+            Thread thread = new Thread(() -> {
                 try {
                     String json = ConvertType.beanToJson(registerRequest);
                     // 创建HTTP客户端
@@ -206,7 +213,13 @@ public class SettingFragment extends Fragment {
                     Toast.makeText(getActivity(), "网络或进程问题", Toast.LENGTH_SHORT).show();
                     Looper.loop();
                 }
-            }).start();
+            });
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         });
 
         quitButton.setOnClickListener(view1 -> {

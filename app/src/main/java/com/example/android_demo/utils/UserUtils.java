@@ -26,7 +26,7 @@ public class UserUtils {
             return true;
         }
         // 进行登录验证的逻辑，例如与服务器通信验证用户名和密码
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
                 // 创建HTTP客户端
                 OkHttpClient client = new OkHttpClient()
@@ -46,24 +46,31 @@ public class UserUtils {
                 Gson gson = new Gson();
                 ResponseData rdata= gson.fromJson(reData, ResponseData.class);
                 System.out.println(rdata.getData());
-                if(Integer.parseInt(rdata.getCode())==999){
+                if(rdata.getCode().equals("999")){
                     isLoggedIn=false;
                     System.out.println("登陆失败");
                 }else{
                     System.out.println("登陆成功");
+                    token = rdata.getData().get("tokenValue");
                     isLoggedIn=true;
                 }
 
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
             }
-        }).start();
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         //初始化数据
         return isLoggedIn;
     }
 
     public static void logout() {
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
                 // 创建HTTP客户端
                 OkHttpClient client = new OkHttpClient()
@@ -72,20 +79,28 @@ public class UserUtils {
                         .readTimeout(60000, TimeUnit.MILLISECONDS)
                         .build();
                 // 创建HTTP请求
-
                 Request request = new Request.Builder()
                         .url("http://" + constant.IP_ADDRESS + "/user/logout")
-                        .addHeader("token",token)
+                        .addHeader("satoken",token)
                         .build();
                 // 执行发送的指令，获得返回结果
                 Response response = client.newCall(request).execute();
-                if(response.code()==200){
-                    isLoggedIn=false;
+                String reData=response.body().string();
+                Gson gson = new Gson();
+                ResponseData rdata= gson.fromJson(reData, ResponseData.class);
+                if (rdata.getCode().equals("200")) {
+                    isLoggedIn = false;
                 }
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
             }
-        }).start();
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
 
