@@ -7,120 +7,119 @@
     tools:context=".ui.setting.SettingFragment">
 
 
-<LinearLayout
-    android:id="@+id/chip1"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    android:orientation="vertical"
-    android:background="@drawable/gradient"
-    >
+    <LinearLayout
+        android:id="@+id/chip1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        android:background="@drawable/gradient">
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/iv_avatar"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/xuenai"
-        app:riv_corner_radius_bottom_left="60dp"
-        app:riv_corner_radius_bottom_right="60dp"
-        app:riv_corner_radius_top_left="60dp"
-        app:riv_corner_radius_top_right="60dp" />
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/xuenai"
+            app:riv_corner_radius_bottom_left="60dp"
+            app:riv_corner_radius_bottom_right="60dp"
+            app:riv_corner_radius_top_left="60dp"
+            app:riv_corner_radius_top_right="60dp" />
 
-    <TextView
-        android:id="@+id/textSetting"
-        android:layout_width="150dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center_horizontal"
-        android:layout_gravity="center_horizontal"
-        android:textSize="24sp"
-        android:layout_marginBottom="10dp"
-        android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/textSetting"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:textSize="24sp"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/white" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <LinearLayout
+                    android:layout_height="30dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="40dp"
+                        android:src="@drawable/zuji"/>
+                    <TextView
+                        android:id="@+id/zuji"
+                        android:text="我的足迹"
+                        android:layout_marginStart="10dp"
+                        android:gravity="center_horizontal"
+                        android:textSize="22sp"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="10dp">
+                    <ImageView
+                        android:layout_marginTop="5dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginStart="20dp"
+                        android:src="@drawable/shoucang1"/>
+                    <TextView
+                        android:id="@+id/shoucang"
+                        android:text="我的收藏"
+                        android:gravity="center_horizontal"
+                        android:textSize="22sp"
+                        android:layout_marginStart="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"/>
+                </LinearLayout>
+            </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
-        <LinearLayout
-            android:layout_height="30dp"
-            android:layout_width="0dp"
-            android:layout_weight="1">
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="40dp"
-                android:src="@drawable/zuji"/>
-            <TextView
-                android:id="@+id/zuji"
-                android:text="我的足迹"
-                android:layout_marginStart="10dp"
-                android:gravity="center_horizontal"
-                android:textSize="22sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"/>
-        </LinearLayout>
-
-        <LinearLayout
+        <Button
+            android:id="@+id/xiugai"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="30dp"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="30dp"
-            android:layout_marginBottom="10dp">
-            <ImageView
-                android:layout_marginTop="5dp"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginStart="20dp"
-                android:src="@drawable/shoucang1"/>
-            <TextView
-                android:id="@+id/shoucang"
-                android:text="我的收藏"
-                android:gravity="center_horizontal"
-                android:textSize="22sp"
-                android:layout_marginStart="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"/>
-        </LinearLayout>
+            android:layout_height="60dp"
+            android:text="修改密码"
+            android:backgroundTint="#90EE90"
+            android:shadowColor="#CAFF70"
+            android:textSize="20sp">
+        </Button>
+
+        <Button
+            android:id="@+id/logout"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="40dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="60dp"
+            android:text="退出登录"
+            android:backgroundTint="#90EE90"
+            android:shadowColor="#CAFF70"
+            android:textSize="20sp">
+        </Button>
+
     </LinearLayout>
-</LinearLayout>
-
-<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="40dp"
-        app:layout_constraintTop_toBottomOf="@+id/chip1">
-
-    <Button
-        android:id="@+id/xiugai"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="30dp"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="60dp"
-        android:text="修改密码"
-        android:backgroundTint="#90EE90"
-        android:shadowColor="#CAFF70"
-        android:textSize="20sp">
-    </Button>
-
-    <Button
-        android:id="@+id/logout"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="40dp"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="60dp"
-        android:text="退出登录"
-        android:backgroundTint="#90EE90"
-        android:shadowColor="#CAFF70"
-        android:textSize="20sp">
-    </Button>
-
-</LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -59,7 +59,7 @@ public class RecommendFragment extends Fragment {
         View root = binding.getRoot();
         recyclerview_recommend = root.findViewById(R.id.recyclerview_recommend);
         for(int i = 0; i < 12; i++){
-            CommunityBean communityBean = new CommunityBean(coverArray[i%3], nameArray[i%6], followArray[i%6]);
+            CommunityBean communityBean = new CommunityBean(i, coverArray[i%3], nameArray[i%6], followArray[i%6]);
             communityBeanList.add(communityBean);
         }
         myAdapter = new MyAdapter();

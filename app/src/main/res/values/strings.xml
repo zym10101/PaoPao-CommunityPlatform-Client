@@ -24,5 +24,9 @@
     <string name="community_in">关注</string>
     <string name="TextView">TextView</string>
     <string name="follow">关注</string>
+    <string name="message">消息</string>
+    <string name="community">社区</string>
+    <string name="paopap">泡泡</string>
+    <string name="like">喜欢</string>
 
 </resources>

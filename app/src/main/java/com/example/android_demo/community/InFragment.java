@@ -23,9 +23,7 @@ import com.example.android_demo.bean.CommunityBean;
 import com.example.android_demo.databinding.FragmentInBinding;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -73,7 +71,7 @@ public class InFragment extends Fragment {
     }
 
     public void load() {
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
                 OkHttpClient client = new OkHttpClient()
                         .newBuilder()
@@ -97,7 +95,8 @@ public class InFragment extends Fragment {
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
             }
-        }).start();
+        });
+        thread.start();
     }
 
 

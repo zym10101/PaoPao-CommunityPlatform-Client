@@ -14,11 +14,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class UserUtils {
-    private static boolean isLoggedIn = false;
-     public static String token;
+    public static boolean isLoggedIn = false;
+    public static String token;
     public static boolean isLoggedIn() {
         return isLoggedIn;
     }
+
+
 
     public static boolean login(String username, String password) {
         if(username.equals("admin") && password.equals("admin")){
@@ -26,7 +28,7 @@ public class UserUtils {
             return true;
         }
         // 进行登录验证的逻辑，例如与服务器通信验证用户名和密码
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
                 // 创建HTTP客户端
                 OkHttpClient client = new OkHttpClient()
@@ -57,13 +59,21 @@ public class UserUtils {
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
             }
-        }).start();
+        });
+
+        thread.start();
+
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         //初始化数据
         return isLoggedIn;
     }
 
     public static void logout() {
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
                 // 创建HTTP客户端
                 OkHttpClient client = new OkHttpClient()
@@ -85,7 +95,15 @@ public class UserUtils {
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
             }
-        }).start();
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // 修改登录状态
+        isLoggedIn = false;
     }
 }
 

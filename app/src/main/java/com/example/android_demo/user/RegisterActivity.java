@@ -1,6 +1,5 @@
 package com.example.android_demo.user;
 
-import static android.app.PendingIntent.getActivity;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.app.Activity;
@@ -8,23 +7,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 
 import com.example.android_demo.Constants.constant;
 import com.example.android_demo.R;
 import com.example.android_demo.bean.RegisterRequest;
-import com.example.android_demo.ui.chat.ChatFragment;
 import com.example.android_demo.utils.ConvertType;
+import com.example.android_demo.utils.UserUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -100,6 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (flag == 200) {
                 runOnUiThread(() -> {
+                    UserUtils.isLoggedIn = true;
                     Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
@@ -120,7 +115,7 @@ public class RegisterActivity extends AppCompatActivity {
     //注册结果标志位
 
     public void registerToBackend(RegisterRequest registerRequest) {
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
                 String json = ConvertType.beanToJson(registerRequest);
                 // 创建HTTP客户端
@@ -141,11 +136,17 @@ public class RegisterActivity extends AppCompatActivity {
                 e.printStackTrace();
                 runOnUiThread(() -> Toast.makeText(RegisterActivity.this, "网络问题，注册失败", Toast.LENGTH_SHORT).show());
             }
-        }).start();
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendCaptcha(String phoneNum) {
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
                 // 创建HTTP客户端
                 OkHttpClient client = new OkHttpClient()
@@ -171,7 +172,13 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.e(TAG, Log.getStackTraceString(e));
                 runOnUiThread(() -> Toast.makeText(RegisterActivity.this, "网络或进程问题", Toast.LENGTH_SHORT).show());
             }
-        }).start();
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void getEditString() {
