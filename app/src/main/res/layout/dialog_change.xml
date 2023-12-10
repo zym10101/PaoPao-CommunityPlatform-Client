@@ -5,13 +5,6 @@
     android:padding="16dp">
 
     <EditText
-        android:id="@+id/et_username"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:hint="@string/Username" />
-
-    <EditText
         android:id="@+id/et_password"
         android:paddingTop="20dp"
         android:layout_width="match_parent"
@@ -45,16 +38,24 @@
         android:text="发送验证码" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
     <Button
         android:id="@+id/btn_quit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="20dp"
         android:text="取消" />
     <Button
         android:id="@+id/btn_reset"
         android:layout_width="match_parent"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:text="重置" />
-
+    </LinearLayout>
 
 </LinearLayout>

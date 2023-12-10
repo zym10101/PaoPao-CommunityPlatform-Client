@@ -1,8 +1,12 @@
 package com.example.android_demo.user;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,11 +20,25 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.android_demo.Constants.constant;
 import com.example.android_demo.R;
 import com.example.android_demo.bean.Message;
+import com.example.android_demo.bean.RegisterRequest;
 import com.example.android_demo.database.DBHelper;
 import com.example.android_demo.entity.LoginInfo;
+import com.example.android_demo.utils.ConvertType;
+import com.example.android_demo.utils.ResponseData;
 import com.example.android_demo.utils.UserUtils;
+import com.google.gson.Gson;
+
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * @author SummCoder
@@ -32,6 +50,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
     private EditText passwordEditText;
     private CheckBox cb_remember;
 
+    private String phoneNumber, verify;
     private String username;
     private String password;
 
@@ -96,6 +115,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
             register.launch(intent);
         });
 
+        //忘记密码
+        TextView tvForget = dialog.findViewById(R.id.tv_forget);
+        assert tvForget != null;
+
+        tvForget.setOnClickListener(v -> {
+             showResetDialog();
+        });
+
         // 设置登录按钮的点击事件
         loginButton.setOnClickListener(v -> {
             username = usernameEditText.getText().toString();
@@ -122,7 +149,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                 Toast.makeText(LoginActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     // 登录验证的方法
@@ -170,6 +196,130 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                 cb_remember.setChecked(false);
             }
         }
+    }
+
+    private void showResetDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("修改密码");
+
+        // 设置对话框的布局
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_change, null);
+        builder.setView(view);
+
+        // 创建并显示对话框
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // 获取输入框和登录按钮
+        EditText passwordEditText = view.findViewById(R.id.et_password);
+        EditText phoneEditText = view.findViewById(R.id.et_phone);
+        EditText verifyEditText = view.findViewById(R.id.et_verify);
+
+        Button sendButton = view.findViewById(R.id.btn_send);
+        Button resetButton = view.findViewById(R.id.btn_reset);
+        Button quitButton = view.findViewById(R.id.btn_quit);
+
+        // 设置发送验证码按钮的点击事件
+        sendButton.setOnClickListener(v -> {
+
+            phoneNumber = phoneEditText.getText().toString().trim();
+            Thread thread = new Thread(() -> {
+                try {
+                    // 创建HTTP客户端
+                    OkHttpClient client = new OkHttpClient()
+                            .newBuilder()
+                            .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                            .readTimeout(60000, TimeUnit.MILLISECONDS)
+                            .build();
+                    // 创建HTTP请求
+
+                    Request request = new Request.Builder()
+                            .url("http://" + constant.IP_ADDRESS + "/sms/send?phone=" + phoneNumber)
+                            .build();
+                    // 执行发送的指令，获得返回结果
+                    Response response = client.newCall(request).execute();
+                    String reData=response.body().string();
+                    Gson gson = new Gson();
+                    ResponseData rdata= gson.fromJson(reData, ResponseData.class);
+                    if (rdata.getCode().equals("200")) {
+                        Looper.prepare();
+                        Toast.makeText(this, "验证码发送成功", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    } else {
+                        Looper.prepare();
+                        Toast.makeText(this, "验证码发送失败", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, Log.getStackTraceString(e));
+                    Looper.prepare();
+                    Toast.makeText(this, "网络或进程问题", Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                }
+            });
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        // 设置reset按钮的点击事件
+        resetButton.setOnClickListener(v -> {
+            password = passwordEditText.getText().toString().trim();
+            phoneNumber = phoneEditText.getText().toString().trim();
+            verify = verifyEditText.getText().toString().trim();
+
+            RegisterRequest registerRequest = new RegisterRequest(username,password, phoneNumber, verify);
+
+            Thread thread = new Thread(() -> {
+                try {
+                    String json = ConvertType.beanToJson(registerRequest);
+                    // 创建HTTP客户端
+                    OkHttpClient client = new OkHttpClient()
+                            .newBuilder()
+                            .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                            .readTimeout(60000, TimeUnit.MILLISECONDS)
+                            .build();
+                    // 创建HTTP请求
+                    Request request = new Request.Builder()
+                            .url("http://" + constant.IP_ADDRESS + "/user/update")
+                            .post(RequestBody.create(MediaType.parse("application/json"), json))
+                            .build();
+                    // 执行发送的指令
+                    Response response = client.newCall(request).execute();
+
+                    if (response.code() == 200) {
+                        String reData = response.body().string();
+                        System.out.println("redata" + reData);
+                        Gson gson = new Gson();
+                        ResponseData rdata = gson.fromJson(reData, ResponseData.class);
+                        System.out.println(rdata.getData());
+                        if (rdata.getCode().equals("200")) {
+                            Looper.prepare();
+                            Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        } else {
+                            Looper.prepare();
+                            Toast.makeText(this, "修改失败", Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, Log.getStackTraceString(e));
+                }
+            });
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        quitButton.setOnClickListener(view1 -> {
+            dialog.dismiss();
+        });
     }
 
 }
