@@ -18,16 +18,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android_demo.Constants.constant;
+import com.example.android_demo.MyApplication;
 import com.example.android_demo.R;
 import com.example.android_demo.bean.CommunityBean;
 import com.example.android_demo.databinding.FragmentInBinding;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -78,20 +85,31 @@ public class InFragment extends Fragment {
                         .connectTimeout(60000, TimeUnit.MILLISECONDS)
                         .readTimeout(60000, TimeUnit.MILLISECONDS)
                         .build();
-                ;
                 String url = "http://" + constant.IP_ADDRESS + "/uc/getCommunityIdList";
+                MyApplication application = MyApplication.getInstance();
                 Request request = new Request.Builder()
                         .url(url)
+                        .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
                         .build();
-                Response response = client.newCall(request).execute();
-                if (response.isSuccessful()) {
-                    String responseData = response.body().string();
-                    JSONArray jsonArray = new JSONArray(responseData);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        // 获取社区id？
-                        long communityId = jsonArray.getLong(i);
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
                     }
-                }
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        // success
+                        final String responseData = response.body().string();
+                        Log.i("InFragment", responseData);
+                        try {
+                            JSONObject json = new JSONObject(responseData);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
             }

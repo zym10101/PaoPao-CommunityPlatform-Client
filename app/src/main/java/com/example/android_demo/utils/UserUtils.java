@@ -5,9 +5,12 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import android.util.Log;
 
 import com.example.android_demo.Constants.constant;
+import com.example.android_demo.MyApplication;
 import com.example.android_demo.bean.Message;
+import com.example.android_demo.MyApplication;
 import com.google.gson.Gson;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -20,6 +23,7 @@ public class UserUtils {
     private static String message;
 
     public static String token;
+    private static MyApplication application;
 
     public static boolean isLoggedIn() {
         return isLoggedIn;
@@ -57,6 +61,9 @@ public class UserUtils {
                         message = rdata.getMessage();
                     } else {
                         token = rdata.getData().get("tokenValue");
+                        application = MyApplication.getInstance();
+                        application.infoMap.put("satoken", token);
+                        application.infoMap.put("loginId", rdata.getData().get("loginId"));
                         message = rdata.getMessage();
                         isLoggedIn = true;
                     }
@@ -92,7 +99,7 @@ public class UserUtils {
                 // 创建HTTP请求
                 Request request = new Request.Builder()
                         .url("http://" + constant.IP_ADDRESS + "/user/logout")
-                        .addHeader("satoken",token)
+                        .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
                         .build();
                 // 执行发送的指令，获得返回结果
                 Response response = client.newCall(request).execute();

@@ -5,28 +5,39 @@
     android:layout_height="match_parent"
     tools:context=".ui.community.CommunityFragment"
     android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout_community"
+            android:layout_width="260dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout_community"
-        android:layout_width="260dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="5dp">
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/community_hot" />
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/community_hot" />
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/community_recommend" />
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/community_recommend" />
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/community_in" />
+        </com.google.android.material.tabs.TabLayout>
+        <Button
+            android:id="@+id/bt_createCommunity"
+            android:layout_marginTop="13dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="45dp"
+            android:background="@drawable/extra"/>
+    </LinearLayout>
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/community_in" />
-    </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp2_community"

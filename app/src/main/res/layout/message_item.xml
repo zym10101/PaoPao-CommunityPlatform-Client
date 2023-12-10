@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/iv_avatar_message"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/xuenai"
+        app:riv_corner_radius_bottom_left="60dp"
+        app:riv_corner_radius_bottom_right="60dp"
+        app:riv_corner_radius_top_left="60dp"
+        app:riv_corner_radius_top_right="60dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_name_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户id: "
+            android:textSize="20sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="申请加入社区"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="8dp">
+        <Button
+            android:id="@+id/bt_agree"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="同意"/>
+        <Button
+            android:id="@+id/bt_disagree"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:textColor="@color/red"
+            android:text="拒绝"/>
+    </LinearLayout>
+
+</LinearLayout>
