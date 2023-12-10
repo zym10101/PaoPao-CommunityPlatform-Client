@@ -15,8 +15,9 @@
     <string name="Password">密码</string>
     <string name="Username">用户名</string>
     <string name="Login">登录</string>
-    <string name="recommend">还没有账号？点我</string>
-    <string name="register">注册</string>
+    <string name="recommend">还没有账号？</string>
+    <string name="register">点我注册</string>
+    <string name="editPassword">忘记密码</string>
     <string name="phone">电话</string>
     <string name="remember_password">记住密码</string>
     <string name="community_hot">热门</string>

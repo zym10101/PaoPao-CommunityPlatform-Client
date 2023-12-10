@@ -1,6 +1,5 @@
 package com.example.android_demo.user;
 
-import static android.app.PendingIntent.getActivity;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.app.Activity;
@@ -8,22 +7,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 
 import com.example.android_demo.Constants.constant;
 import com.example.android_demo.R;
+import com.example.android_demo.bean.Message;
 import com.example.android_demo.bean.RegisterRequest;
-import com.example.android_demo.ui.chat.ChatFragment;
 import com.example.android_demo.utils.ConvertType;
 import com.example.android_demo.utils.ResponseData;
 import com.google.gson.Gson;
@@ -38,7 +33,9 @@ import okhttp3.Response;
 
 public class RegisterActivity extends AppCompatActivity {
     int senCaptchaFlag = 0;
-    int flag = 0;
+
+    private static Message message;
+
     private TextView toLogin;
     private Button register, sendCaptcha;
     private EditText et_username, et_password, et_check, et_phone, et_captcha;
@@ -65,7 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
             phoneNumber=et_phone.getText().toString().trim();
             //TODO 手机号验证
             sendCaptcha(phoneNumber);
-            if(senCaptchaFlag==1){
+            if(senCaptchaFlag == 1){
                 Toast.makeText(RegisterActivity.this, "验证码已发送，请注意查收", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(RegisterActivity.this, "验证码发送失败", Toast.LENGTH_SHORT).show();
@@ -100,9 +97,9 @@ public class RegisterActivity extends AppCompatActivity {
             RegisterRequest registerRequest = new RegisterRequest(userName, password, phoneNumber, captcha);
             registerToBackend(registerRequest);
 
-            if (flag == 200) {
+            if (message.isFlag()) {
                 runOnUiThread(() -> {
-                    Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
                     bundle.putString("username", userName);
@@ -114,7 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
                     RegisterActivity.this.finish();
                 });
             } else {
-                runOnUiThread(() -> Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(RegisterActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show());
             }
         });
     }
@@ -138,13 +135,21 @@ public class RegisterActivity extends AppCompatActivity {
                         .build();
                 // 执行发送的指令
                 Response response = client.newCall(request).execute();
-                String reData=response.body().string();
-                Gson gson = new Gson();
-                ResponseData rdata= gson.fromJson(reData, ResponseData.class);
-                flag = Integer.parseInt(rdata.getCode());
+                if (response.code() == 200) {
+                    String reData=response.body().string();
+                    Gson gson = new Gson();
+                    ResponseData rdata= gson.fromJson(reData, ResponseData.class);
+                    if (rdata.getCode().equals("200")) {
+                        message = new Message(true, rdata.getMessage());
+                    } else {
+                        message = new Message(false, rdata.getMessage());
+                    }
+                } else {
+                    message = new Message(false, "注册失败！请检查网络状况");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(RegisterActivity.this, "网络问题，注册失败", Toast.LENGTH_SHORT).show());
+                message = new Message(false, "注册失败！请检查网络状况");
             }
         });
         thread.start();

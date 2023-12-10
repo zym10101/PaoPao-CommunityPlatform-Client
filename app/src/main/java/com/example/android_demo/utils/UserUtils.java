@@ -5,6 +5,7 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import android.util.Log;
 
 import com.example.android_demo.Constants.constant;
+import com.example.android_demo.bean.Message;
 import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
@@ -15,15 +16,19 @@ import okhttp3.Response;
 
 public class UserUtils {
     private static boolean isLoggedIn = false;
-     public static String token;
+
+    private static String message;
+
+    public static String token;
+
     public static boolean isLoggedIn() {
         return isLoggedIn;
     }
 
-    public static boolean login(String username, String password) {
+    public static Message login(String username, String password) {
         if(username.equals("admin") && password.equals("admin")){
             isLoggedIn = true;
-            return true;
+            return new Message(true, "登录成功");
         }
         // 进行登录验证的逻辑，例如与服务器通信验证用户名和密码
         Thread thread = new Thread(() -> {
@@ -41,22 +46,28 @@ public class UserUtils {
                         .build();
                 // 执行发送的指令，获得返回结果
                 Response response = client.newCall(request).execute();
-                String reData=response.body().string();
-                System.out.println("redata"+reData);
-                Gson gson = new Gson();
-                ResponseData rdata= gson.fromJson(reData, ResponseData.class);
-                System.out.println(rdata.getData());
-                if(rdata.getCode().equals("999")){
-                    isLoggedIn=false;
-                    System.out.println("登陆失败");
-                }else{
-                    System.out.println("登陆成功");
-                    token = rdata.getData().get("tokenValue");
-                    isLoggedIn=true;
+                if (response.code() == 200) {
+                    String reData=response.body().string();
+                    System.out.println("redata"+reData);
+                    Gson gson = new Gson();
+                    ResponseData rdata= gson.fromJson(reData, ResponseData.class);
+                    System.out.println(rdata.getData());
+                    if(rdata.getCode().equals("999")){
+                        isLoggedIn = false;
+                        message = rdata.getMessage();
+                    } else {
+                        token = rdata.getData().get("tokenValue");
+                        message = rdata.getMessage();
+                        isLoggedIn = true;
+                    }
+                } else {
+                    isLoggedIn = false;
+                    message = "登录失败！请检查网络状况";
                 }
-
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
+                isLoggedIn = false;
+                message = "登录失败！请检查网络状况";
             }
         });
         thread.start();
@@ -66,7 +77,7 @@ public class UserUtils {
             e.printStackTrace();
         }
         //初始化数据
-        return isLoggedIn;
+        return new Message(isLoggedIn, message);
     }
 
     public static void logout() {
