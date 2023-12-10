@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.android_demo.R;
+import com.example.android_demo.bean.Message;
 import com.example.android_demo.database.DBHelper;
 import com.example.android_demo.entity.LoginInfo;
 import com.example.android_demo.utils.UserUtils;
@@ -100,7 +101,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
             username = usernameEditText.getText().toString();
             password = passwordEditText.getText().toString();
             // 进行登录验证，这里可以根据具体的登录逻辑进行处理
-            if (login(username, password)) {
+            Message message = login(username, password);
+            if (message.isFlag()) {
 //                记住密码
                 LoginInfo loginInfo = new LoginInfo(username, password, cb_remember.isChecked());
                 mHelper.saveLoginInfo(loginInfo);
@@ -113,18 +115,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                 bundle1.putString("password", password);
                 intent1.putExtras(bundle1);
                 setResult(Activity.RESULT_OK, intent1);
-                Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
                 finish();
             } else {
                 // 登录失败，提示用户登录失败
-                Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
     // 登录验证的方法
-    private boolean login(String username, String password) {
+    private Message login(String username, String password) {
         // 进行登录验证，这里可以根据具体的登录逻辑进行处理
         return UserUtils.login(username, password);
     }
