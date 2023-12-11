@@ -47,7 +47,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/register"
+            android:layout_marginEnd="100dp"
             android:textColor="@color/theme"/>
+
+        <TextView
+            android:id="@+id/tv_forget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="忘记密码"
+            android:textColor="@color/theme" />
     </LinearLayout>
 
 </LinearLayout>

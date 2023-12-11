@@ -126,7 +126,6 @@ public class SettingFragment extends Fragment {
         dialog.show();
 
         // 获取输入框和登录按钮
-        EditText usernameEditText = view.findViewById(R.id.et_username);
         EditText passwordEditText = view.findViewById(R.id.et_password);
         EditText phoneEditText = view.findViewById(R.id.et_phone);
         EditText verifyEditText = view.findViewById(R.id.et_verify);
@@ -134,11 +133,6 @@ public class SettingFragment extends Fragment {
         Button sendButton = view.findViewById(R.id.btn_send);
         Button resetButton = view.findViewById(R.id.btn_reset);
         Button quitButton = view.findViewById(R.id.btn_quit);
-
-
-        // 阻止用户进行其他操作
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
 
         // 设置发送验证码按钮的点击事件
         sendButton.setOnClickListener(v -> {
@@ -163,19 +157,13 @@ public class SettingFragment extends Fragment {
                     Gson gson = new Gson();
                     ResponseData rdata= gson.fromJson(reData, ResponseData.class);
                     if (rdata.getCode().equals("200")) {
-                        Looper.prepare();
                         Toast.makeText(getActivity(), "验证码发送成功", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
                     } else {
-                        Looper.prepare();
                         Toast.makeText(getActivity(), "验证码发送失败", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
                     }
                 } catch (Exception e) {
                     Log.e(TAG, Log.getStackTraceString(e));
-                    Looper.prepare();
                     Toast.makeText(getActivity(), "网络或进程问题", Toast.LENGTH_SHORT).show();
-                    Looper.loop();
                 }
             });
             thread.start();
@@ -187,12 +175,11 @@ public class SettingFragment extends Fragment {
         });
         // 设置reset按钮的点击事件
         resetButton.setOnClickListener(v -> {
-            userName = usernameEditText.getText().toString().trim();
             password = passwordEditText.getText().toString().trim();
             phoneNumber = phoneEditText.getText().toString().trim();
             verify = verifyEditText.getText().toString().trim();
 
-            RegisterRequest registerRequest = new RegisterRequest(userName, password, phoneNumber, verify);
+            RegisterRequest registerRequest = new RegisterRequest(userName,password, phoneNumber, verify);
 
             Thread thread = new Thread(() -> {
                 try {
