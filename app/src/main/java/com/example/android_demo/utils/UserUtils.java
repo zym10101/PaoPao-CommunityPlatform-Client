@@ -23,7 +23,7 @@ public class UserUtils {
     private static String message;
 
     public static String token;
-    private static MyApplication application;
+    public static MyApplication application;
 
     public static boolean isLoggedIn() {
         return isLoggedIn;

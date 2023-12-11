@@ -1,5 +1,7 @@
 package com.example.android_demo.utils;
 
+import android.net.Uri;
+
 import java.util.List;
 
 public class PostData {
