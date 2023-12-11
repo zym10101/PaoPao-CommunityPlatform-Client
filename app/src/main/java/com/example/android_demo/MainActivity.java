@@ -2,7 +2,10 @@ package com.example.android_demo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -37,6 +40,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                startActivity(intent);
+            }
+        }
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -63,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
                     username = bundle.getString("username");
                     password = bundle.getString("password");
                     avatar = bundle.getString("avatar");
+                    System.out.println("avatar: " + avatar);
                     mainViewModel.getUsername().setValue(username);
                     mainViewModel.getPassword().setValue(password);
                     mainViewModel.getAvatar().setValue(avatar);

@@ -2,11 +2,10 @@ package com.example.android_demo.ui.setting;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -31,15 +32,19 @@ import com.example.android_demo.MainViewModel;
 import com.example.android_demo.R;
 import com.example.android_demo.bean.RegisterRequest;
 import com.example.android_demo.databinding.FragmentSettingBinding;
-import com.example.android_demo.user.RegisterActivity;
 import com.example.android_demo.utils.ConvertType;
+import com.example.android_demo.utils.FileUtils;
 import com.example.android_demo.utils.ResponseData;
 import com.example.android_demo.utils.UserUtils;
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -52,6 +57,74 @@ public class SettingFragment extends Fragment {
     ImageView postAva;
     Button xiugai,logout;
     private String userName, password,phoneNumber, verify;
+
+    private ActivityResultLauncher<Intent> launcher;
+
+    // 用于获取子线程返回的url
+    private String url;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result ->{
+            if (result != null) {
+                if (result.getData() != null) {
+                    // 向服务端传送图片
+                    String uri = FileUtils.getRealPathFromUri(getActivity(), result.getData().getData());
+                    File file = new File(uri);
+                    Thread thread = new Thread(() -> {
+                        // 创建HTTP客户端
+                        OkHttpClient client = new OkHttpClient()
+                                .newBuilder()
+                                .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                                .readTimeout(60000, TimeUnit.MILLISECONDS)
+                                .build();
+                        MediaType mediaType = MediaType.parse("application/octet-stream");//设置类型，类型为八位字节流
+                        RequestBody requestBody = RequestBody.create(mediaType, file);//把文件与类型放入请求体
+
+                        MultipartBody multipartBody = new MultipartBody.Builder()
+                                .setType(MultipartBody.FORM)
+                                .addFormDataPart("userName", Objects.requireNonNull(mainViewModel.getUsername().getValue()))
+                                .addFormDataPart("newPhoto", file.getName(), requestBody)//文件名
+                                .build();
+                        // 创建HTTP请求
+                        Request request = new Request.Builder()
+                                .url("http://" + constant.IP_ADDRESS + "/user/edit")
+                                .post(multipartBody)
+                                .build();
+                        try {
+                            Response response = client.newCall(request).execute();
+                            if (response.code() == 200) {
+                                String reData=response.body().string();
+                                Gson gson = new Gson();
+                                ResponseData<String> rdata= gson.fromJson(reData, ResponseData.class);
+                                if (rdata.getCode().equals("200")) {
+                                    Looper.prepare();
+                                    Toast.makeText(getActivity(), "头像上传成功", Toast.LENGTH_SHORT).show();
+                                    url = rdata.getData();
+                                } else {
+                                    Looper.prepare();
+                                    Toast.makeText(getActivity(), "头像上传失败", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Looper.prepare();
+                                Toast.makeText(getActivity(), "头像上传失败！请检查网络状况", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                    thread.start();
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    mainViewModel.getAvatar().setValue(url);
+                }
+            }
+        });
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -89,7 +162,20 @@ public class SettingFragment extends Fragment {
 
         //TODO 上传头像功能
         postAva.setOnClickListener(view -> {
-
+            // 弹出一个对话框，选择拍照或者从相册选择
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("修改头像");
+            builder.setPositiveButton("从相册选择", (dialogInterface, i) -> {
+                // 调用相册选择照片
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                launcher.launch(intent);
+            });
+            builder.setNeutralButton("拍照", (dialogInterface, i) -> {
+                // 调用相机拍照
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, 1);
+            });
+            builder.show();
         });
 
         //退出登录

@@ -10,6 +10,7 @@ import com.example.android_demo.bean.Message;
 import com.example.android_demo.MyApplication;
 import com.google.gson.Gson;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -54,7 +55,7 @@ public class UserUtils {
                     String reData=response.body().string();
                     System.out.println("redata"+reData);
                     Gson gson = new Gson();
-                    ResponseData rdata= gson.fromJson(reData, ResponseData.class);
+                    ResponseData<Map<String, String>> rdata= gson.fromJson(reData, ResponseData.class);
                     System.out.println(rdata.getData());
                     if(rdata.getCode().equals("999")){
                         isLoggedIn = false;

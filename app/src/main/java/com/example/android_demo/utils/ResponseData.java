@@ -2,10 +2,10 @@ package com.example.android_demo.utils;
 
 import java.util.Map;
 
-public class ResponseData {
+public class ResponseData<T> {
     private String code;
     private String message;
-    private Map<String, String> data;
+    private T data;
 
     public String getCode() {
         return code;
@@ -15,7 +15,7 @@ public class ResponseData {
         return message;
     }
 
-    public Map<String, String> getData() {
+    public T getData() {
         return data;
     }
 }

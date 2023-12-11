@@ -22,6 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.android_demo.Constants.constant;
+import com.example.android_demo.MyApplication;
 import com.example.android_demo.R;
 import com.example.android_demo.bean.Message;
 import com.example.android_demo.bean.RegisterRequest;
@@ -29,25 +30,18 @@ import com.example.android_demo.database.DBHelper;
 import com.example.android_demo.entity.LoginInfo;
 import com.example.android_demo.utils.ResponseData;
 import com.example.android_demo.utils.ConvertType;
-import com.example.android_demo.utils.ResponseData;
 import com.example.android_demo.utils.UserUtils;
 import com.google.gson.Gson;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import com.google.gson.Gson;
-
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 
 /**
  * @author SummCoder
@@ -186,10 +180,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
 
                 Request request = new Request.Builder()
                         .url("http://" + constant.IP_ADDRESS + "/user/getAvatar")
+                        .addHeader("satoken", Objects.requireNonNull(MyApplication.getInstance().infoMap.get("satoken")))
                         .build();
                 // 执行发送的指令，获得返回结果
                 Response response = client.newCall(request).execute();
                 String reData=response.body().string();
+                System.out.println(reData);
                 Gson gson = new Gson();
                 ResponseData rdata= gson.fromJson(reData, ResponseData.class);
                 if (rdata.getCode().equals("200")) avatar = rdata.getData().toString();
