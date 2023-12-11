@@ -5,8 +5,12 @@ import androidx.lifecycle.ViewModel;
 
 public class MainViewModel extends ViewModel {
     private static MutableLiveData<String> username;
+
     private static MutableLiveData<String> password;
+
     private static MutableLiveData<String> phone;
+
+    private static MutableLiveData<String> avatar;
 
 
     public MainViewModel(){
@@ -30,6 +34,13 @@ public class MainViewModel extends ViewModel {
             phone = new MutableLiveData<String>();
         }
         return phone;
+    }
+
+    public MutableLiveData<String> getAvatar() {
+        if (avatar == null) {
+            avatar = new MutableLiveData<String>();
+        }
+        return avatar;
     }
 
 

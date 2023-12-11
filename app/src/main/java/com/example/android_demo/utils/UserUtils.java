@@ -108,6 +108,8 @@ public class UserUtils {
                 ResponseData rdata= gson.fromJson(reData, ResponseData.class);
                 if (rdata.getCode().equals("200")) {
                     isLoggedIn = false;
+                    application.infoMap.remove("satoken");
+                    application.infoMap.remove("loginId");
                 }
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));

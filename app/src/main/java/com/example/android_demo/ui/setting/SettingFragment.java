@@ -4,6 +4,7 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -23,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.android_demo.Constants.constant;
 import com.example.android_demo.MainActivity;
 import com.example.android_demo.MainViewModel;
@@ -73,6 +75,17 @@ public class SettingFragment extends Fragment {
 
         //给username加上观察器，当username值发生改变的时候，调用观察函数
         mainViewModel.getUsername().observe(getActivity(), nameObserver);
+
+        // 获取头像
+        final Observer<String> avatarObserver = newAvatar -> {
+            // 使用 Glide 加载图像并设置给 postAva
+            Glide.with(this)
+                    .load(newAvatar)
+                    .into(postAva);
+        };
+
+        //给avatar加上观察器，当avatar值发生改变的时候，调用观察函数
+        mainViewModel.getAvatar().observe(getActivity(), avatarObserver);
 
         //TODO 上传头像功能
         postAva.setOnClickListener(view -> {

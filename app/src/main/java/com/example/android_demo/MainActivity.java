@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
     private String password;
 
+    private String avatar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +62,10 @@ public class MainActivity extends AppCompatActivity {
                     Bundle bundle = intent.getExtras();
                     username = bundle.getString("username");
                     password = bundle.getString("password");
+                    avatar = bundle.getString("avatar");
                     mainViewModel.getUsername().setValue(username);
                     mainViewModel.getPassword().setValue(password);
+                    mainViewModel.getAvatar().setValue(avatar);
                 }
             }
         });

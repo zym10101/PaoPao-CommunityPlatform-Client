@@ -1,8 +1,11 @@
 package com.example.android_demo.user;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,11 +19,20 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.android_demo.Constants.constant;
 import com.example.android_demo.R;
 import com.example.android_demo.bean.Message;
 import com.example.android_demo.database.DBHelper;
 import com.example.android_demo.entity.LoginInfo;
+import com.example.android_demo.utils.ResponseData;
 import com.example.android_demo.utils.UserUtils;
+import com.google.gson.Gson;
+
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * @author SummCoder
@@ -34,6 +46,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
 
     private String username;
     private String password;
+
+    private String avatar = "https://kiyotakawang.oss-cn-hangzhou.aliyuncs.com/%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +117,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
             // 进行登录验证，这里可以根据具体的登录逻辑进行处理
             Message message = login(username, password);
             if (message.isFlag()) {
-//                记住密码
+                // 记住密码
                 LoginInfo loginInfo = new LoginInfo(username, password, cb_remember.isChecked());
                 mHelper.saveLoginInfo(loginInfo);
                 // 登录成功，关闭对话框
@@ -113,6 +127,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                 Bundle bundle1 = new Bundle();
                 bundle1.putString("username", username);
                 bundle1.putString("password", password);
+
+                getAvatar();
+                bundle1.putString("avatar", avatar);
                 intent1.putExtras(bundle1);
                 setResult(Activity.RESULT_OK, intent1);
                 Toast.makeText(LoginActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
@@ -129,6 +146,40 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
     private Message login(String username, String password) {
         // 进行登录验证，这里可以根据具体的登录逻辑进行处理
         return UserUtils.login(username, password);
+    }
+
+    private void getAvatar() {
+        Thread thread = new Thread(() -> {
+            // 获取头像
+            try {
+                // 创建HTTP客户端
+                OkHttpClient client = new OkHttpClient()
+                        .newBuilder()
+                        .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                        .readTimeout(60000, TimeUnit.MILLISECONDS)
+                        .build();
+                // 创建HTTP请求
+
+                Request request = new Request.Builder()
+                        .url("http://" + constant.IP_ADDRESS + "/user/getAvatar")
+                        .build();
+                // 执行发送的指令，获得返回结果
+                Response response = client.newCall(request).execute();
+                String reData=response.body().string();
+                Gson gson = new Gson();
+                ResponseData rdata= gson.fromJson(reData, ResponseData.class);
+                if (rdata.getCode().equals("200")) avatar = rdata.getData().toString();
+                Log.i(TAG, "getAvatar: " + avatar);
+            } catch (Exception e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
