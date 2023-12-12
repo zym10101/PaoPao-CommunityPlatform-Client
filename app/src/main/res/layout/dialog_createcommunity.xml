@@ -10,12 +10,14 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
         android:hint="社区名" />
 
     <CheckBox
         android:id="@+id/cb_public"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:text="是否公开"/>
 
     <LinearLayout
@@ -26,6 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_marginBottom="20dp"
             android:text="创建"/>
     </LinearLayout>
 

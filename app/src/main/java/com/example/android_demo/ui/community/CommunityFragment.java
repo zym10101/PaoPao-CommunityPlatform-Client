@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -57,6 +58,7 @@ public class CommunityFragment extends Fragment {
     private EditText et_community_name;
     private Button bt_create_community;
     private CheckBox cb_public;
+    private ResponseData rdata;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -93,7 +95,6 @@ public class CommunityFragment extends Fragment {
                         CommunityVO communityVO = new CommunityVO();
 
                         communityVO.name = et_community_name.getText().toString();
-                        // TODO：似乎并未生效，传到后端解析出来永远都是false
                         if(cb_public.isChecked()){
                             communityVO.isPublic = true;
                         }else {
@@ -101,8 +102,6 @@ public class CommunityFragment extends Fragment {
                         }
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
                         communityVO.createTime = dateFormat.format(new Date());
-
-                        System.out.println(communityVO.name);
 
                         String json = gson.toJson(communityVO);
                         RequestBody requestBody = RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
@@ -115,14 +114,8 @@ public class CommunityFragment extends Fragment {
                         Response response = client.newCall(request).execute();
                         String reData=response.body().string();
                         System.out.println("redata"+reData);
-                        ResponseData rdata= gson.fromJson(reData, ResponseData.class);
+                        rdata = gson.fromJson(reData, ResponseData.class);
                         System.out.println(rdata.getData());
-                        if(rdata.getCode().equals("999")){
-
-                        }else{
-                            dialog.dismiss();
-                        }
-
                     } catch (Exception e) {
                         Log.e(TAG, Log.getStackTraceString(e));
                     }
@@ -130,6 +123,12 @@ public class CommunityFragment extends Fragment {
                 thread.start();
                 try {
                     thread.join();
+                    if(rdata.getCode().equals("200")){
+                        Toast.makeText(getActivity(), "社区创建成功", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }else{
+                        Toast.makeText(getActivity(), "社区创建失败", Toast.LENGTH_SHORT).show();
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
