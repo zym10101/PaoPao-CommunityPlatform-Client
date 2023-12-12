@@ -289,17 +289,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                     if (rdata.getCode().equals("200")) {
                         Looper.prepare();
                         Toast.makeText(this, "验证码发送成功", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
                     } else {
                         Looper.prepare();
                         Toast.makeText(this, "验证码发送失败", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
                     }
                 } catch (Exception e) {
                     Log.e(TAG, Log.getStackTraceString(e));
                     Looper.prepare();
                     Toast.makeText(this, "网络或进程问题", Toast.LENGTH_SHORT).show();
-                    Looper.loop();
                 }
             });
             thread.start();
@@ -343,11 +340,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                         if (rdata.getCode().equals("200")) {
                             Looper.prepare();
                             Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
-                            Looper.loop();
+                            // 关闭对话框
+                            dialog.dismiss();
                         } else {
                             Looper.prepare();
                             Toast.makeText(this, "修改失败", Toast.LENGTH_SHORT).show();
-                            Looper.loop();
                         }
                     }
                 } catch (Exception e) {

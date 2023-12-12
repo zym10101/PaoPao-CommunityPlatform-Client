@@ -3,7 +3,9 @@ package com.example.android_demo.ui.setting;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -21,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -40,6 +43,9 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -53,7 +59,7 @@ import okhttp3.Response;
 public class SettingFragment extends Fragment {
     private FragmentSettingBinding binding;
     private MainViewModel mainViewModel;
-     TextView textView;
+    TextView textView;
     ImageView postAva;
     Button xiugai,logout;
     private String userName, password,phoneNumber, verify;
@@ -68,59 +74,15 @@ public class SettingFragment extends Fragment {
         super.onCreate(savedInstanceState);
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result ->{
             if (result != null) {
-                if (result.getData() != null) {
-                    // 向服务端传送图片
+                // 从相机获取图片处理
+                if (result.getData() == null || result.getData().getData() == null) {
+                    // 相机拍照的结果，直接上传
+                    uploadPhoto(currentPhotoPath);
+                } else {
+                    // 相册选择的结果，直接上传
                     String uri = FileUtils.getRealPathFromUri(getActivity(), result.getData().getData());
-                    File file = new File(uri);
-                    Thread thread = new Thread(() -> {
-                        // 创建HTTP客户端
-                        OkHttpClient client = new OkHttpClient()
-                                .newBuilder()
-                                .connectTimeout(60000, TimeUnit.MILLISECONDS)
-                                .readTimeout(60000, TimeUnit.MILLISECONDS)
-                                .build();
-                        MediaType mediaType = MediaType.parse("application/octet-stream");//设置类型，类型为八位字节流
-                        RequestBody requestBody = RequestBody.create(mediaType, file);//把文件与类型放入请求体
-
-                        MultipartBody multipartBody = new MultipartBody.Builder()
-                                .setType(MultipartBody.FORM)
-                                .addFormDataPart("userName", Objects.requireNonNull(mainViewModel.getUsername().getValue()))
-                                .addFormDataPart("newPhoto", file.getName(), requestBody)//文件名
-                                .build();
-                        // 创建HTTP请求
-                        Request request = new Request.Builder()
-                                .url("http://" + constant.IP_ADDRESS + "/user/edit")
-                                .post(multipartBody)
-                                .build();
-                        try {
-                            Response response = client.newCall(request).execute();
-                            if (response.code() == 200) {
-                                String reData=response.body().string();
-                                Gson gson = new Gson();
-                                ResponseData<String> rdata= gson.fromJson(reData, ResponseData.class);
-                                if (rdata.getCode().equals("200")) {
-                                    Looper.prepare();
-                                    Toast.makeText(getActivity(), "头像上传成功", Toast.LENGTH_SHORT).show();
-                                    url = rdata.getData();
-                                } else {
-                                    Looper.prepare();
-                                    Toast.makeText(getActivity(), "头像上传失败", Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Looper.prepare();
-                                Toast.makeText(getActivity(), "头像上传失败！请检查网络状况", Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-                    thread.start();
-                    try {
-                        thread.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    mainViewModel.getAvatar().setValue(url);
+                    System.out.println(uri);
+                    uploadPhoto(uri);
                 }
             }
         });
@@ -173,7 +135,21 @@ public class SettingFragment extends Fragment {
             builder.setNeutralButton("拍照", (dialogInterface, i) -> {
                 // 调用相机拍照
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, 1);
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        // Error occurred while creating the File
+                        Log.e(TAG, "Error occurred while creating the File", ex);
+                    }
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        Uri uri = FileProvider.getUriForFile(getActivity().getApplicationContext(), getActivity().getPackageName() + ".fileProvider", photoFile);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                        launcher.launch(intent);
+                    }
+                }
             });
             builder.show();
         });
@@ -287,17 +263,14 @@ public class SettingFragment extends Fragment {
                         Looper.prepare();
                         Toast.makeText(getActivity(), "修改成功", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
-                        Looper.loop();
                     }else{
                         Looper.prepare();
                         Toast.makeText(getActivity(), "修改失败", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     Looper.prepare();
                     Toast.makeText(getActivity(), "网络或进程问题", Toast.LENGTH_SHORT).show();
-                    Looper.loop();
                 }
             });
             thread.start();
@@ -329,5 +302,77 @@ public class SettingFragment extends Fragment {
         builder.setNegativeButton("取消", (dialogInterface, i) -> dialogInterface.dismiss());
 
         builder.show();
+    }
+
+    // 创建一个用于存储拍摄的照片的文件
+    private String currentPhotoPath;
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    // 将照片文件上传
+    private void uploadPhoto(String uri) {
+        File file = new File(uri);
+        Thread thread = new Thread(() -> {
+            // 创建HTTP客户端
+            OkHttpClient client = new OkHttpClient()
+                    .newBuilder()
+                    .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                    .readTimeout(60000, TimeUnit.MILLISECONDS)
+                    .build();
+            MediaType mediaType = MediaType.parse("application/octet-stream");//设置类型，类型为八位字节流
+            RequestBody requestBody = RequestBody.create(mediaType, file);//把文件与类型放入请求体
+
+            MultipartBody multipartBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("userName", Objects.requireNonNull(mainViewModel.getUsername().getValue()))
+                    .addFormDataPart("newPhoto", file.getName(), requestBody)//文件名
+                    .build();
+            // 创建HTTP请求
+            Request request = new Request.Builder()
+                    .url("http://" + constant.IP_ADDRESS + "/user/edit")
+                    .post(multipartBody)
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+                if (response.code() == 200) {
+                    String reData=response.body().string();
+                    Gson gson = new Gson();
+                    ResponseData<String> rdata= gson.fromJson(reData, ResponseData.class);
+                    if (rdata.getCode().equals("200")) {
+                        Looper.prepare();
+                        Toast.makeText(getActivity(), "头像上传成功", Toast.LENGTH_SHORT).show();
+                        url = rdata.getData();
+                    } else {
+                        Looper.prepare();
+                        Toast.makeText(getActivity(), "头像上传失败", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Looper.prepare();
+                    Toast.makeText(getActivity(), "头像上传失败！请检查网络状况", Toast.LENGTH_SHORT).show();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        mainViewModel.getAvatar().setValue(url);
     }
 }
