@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -39,7 +40,7 @@ public class ChatFragment extends Fragment {
 
     private FragmentChatBinding binding;
 
-    private static final String ADDR = "0.0.0.0";
+    private static final String ADDR = "10.0.2.2:5000";
 
     public static ChatFragment newInstance() {
         return new ChatFragment();
@@ -72,7 +73,11 @@ public class ChatFragment extends Fragment {
     private void getArticle(String json) {
         // okHttp
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS) // 设置连接超时时间
+                .writeTimeout(10, TimeUnit.SECONDS) // 设置写入超时时间
+                .readTimeout(30, TimeUnit.SECONDS) // 设置读取超时时间
+                .build();
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("keywords", json);
