@@ -32,7 +32,7 @@
         android:layout_width="150dp"
         android:layout_height="35dp"
         android:layout_marginTop="40dp"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="30dp"
         android:gravity="center_horizontal"
         android:textSize="24sp"
         android:textColor="@color/white" />
@@ -43,10 +43,23 @@
         android:layout_width="150dp"
         android:layout_height="35dp"
         android:layout_marginTop="10dp"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="30dp"
         android:gravity="center_horizontal"
         android:textSize="16sp"
         android:textColor="@color/white" />
+    <CheckBox
+        android:id="@+id/cb_community_follow"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/select_follow"
+        android:button="@null"
+        android:gravity="center"
+        android:text="@string/follow"
+        android:textColor="@color/white"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toEndOf="@id/tv_community_name"
+        app:layout_constraintTop_toTopOf="@+id/tv_community_name" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_in_community"

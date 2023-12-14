@@ -2,6 +2,8 @@ package com.example.android_demo.community;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +26,7 @@ public class CommunityInnerActivity extends AppCompatActivity {
     ImageView iv_cover;
     private RecyclerView recyclerview;
     HotFragment.MyAdapter myAdapter;
+    CheckBox cb_community_follow;
 
     public void onCreate(Bundle savedInstanceState) {
 
@@ -47,6 +50,21 @@ public class CommunityInnerActivity extends AppCompatActivity {
 
         iv_cover=findViewById(R.id.tv_community_image);
         iv_cover.setImageResource(cover);
+
+        cb_community_follow=findViewById(R.id.cb_community_follow);
+        cb_community_follow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // 在这里定义选中状态改变时的操作
+                String desc = String.format("%s", isChecked ? "已关注" : "关注");
+
+                if(isChecked){
+                    cb_community_follow.setText(desc);
+                }else {
+                    cb_community_follow.setText(desc);
+                }
+            }
+        });
 
 
         recyclerview =findViewById(R.id.recyclerview_in_community);

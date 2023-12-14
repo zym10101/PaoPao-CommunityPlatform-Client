@@ -94,12 +94,14 @@ public class HotFragment extends Fragment {
             holder.iv_cover.setImageResource(communityBean.cover);
             holder.tv_community_name.setText(communityBean.name);
             holder.tv_community_follow.setText(communityBean.follow);
+
             // 为每个cb_community_follow添加OnCheckedChangeListener
             holder.cb_community_follow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     // 在这里定义选中状态改变时的操作
                     String desc = String.format("%s", isChecked ? "已关注" : "关注");
+
                     if(isChecked){
                         holder.cb_community_follow.setText(desc);
                     }else {
@@ -107,31 +109,28 @@ public class HotFragment extends Fragment {
                     }
                 }
             });
-
-            //点击社区头像跳转到社区内部界面
-            holder.iv_cover.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //进入社区内部
-                    Intent intent=new Intent(getActivity(), CommunityInnerActivity.class);
-                    Bundle bundle = new Bundle();
-
-                    //把数据保存到Bundle里
-                    bundle.putString("id",String.valueOf(communityBean.id));
-                    bundle.putString("cover",String.valueOf(communityBean.cover));
-                    bundle.putString("name",String.valueOf(communityBean.name));
-                    bundle.putString("follow",String.valueOf(communityBean.follow));
-                    //把bundle放入intent里
-                    intent.putExtra("Message",bundle);
-                    startActivity(intent);
-                }
-            });
-
+            //点击跳转到社区内部界面
+            holder.iv_cover.setOnClickListener(view -> getInCommunity(communityBean));
+            holder.tv_community_name.setOnClickListener(view -> getInCommunity(communityBean));
+            holder.tv_community_follow.setOnClickListener(view -> getInCommunity(communityBean));
         }
 
         @Override
         public int getItemCount() {
             return communityBeanList.size();
+        }
+
+        public void getInCommunity(CommunityBean communityBean){
+            Intent intent=new Intent(getActivity(), CommunityInnerActivity.class);
+            Bundle bundle = new Bundle();
+            //把数据保存到Bundle里
+            bundle.putString("id",String.valueOf(communityBean.id));
+            bundle.putString("cover",String.valueOf(communityBean.cover));
+            bundle.putString("name",String.valueOf(communityBean.name));
+            bundle.putString("follow",String.valueOf(communityBean.follow));
+            //把bundle放入intent里
+            intent.putExtra("Message",bundle);
+            startActivity(intent);
         }
     }
 
