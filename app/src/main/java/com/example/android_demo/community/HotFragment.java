@@ -1,6 +1,8 @@
 package com.example.android_demo.community;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,6 +107,26 @@ public class HotFragment extends Fragment {
                     }
                 }
             });
+
+            //点击社区头像跳转到社区内部界面
+            holder.iv_cover.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //进入社区内部
+                    Intent intent=new Intent(getActivity(), CommunityInnerActivity.class);
+                    Bundle bundle = new Bundle();
+
+                    //把数据保存到Bundle里
+                    bundle.putString("id",String.valueOf(communityBean.id));
+                    bundle.putString("cover",String.valueOf(communityBean.cover));
+                    bundle.putString("name",String.valueOf(communityBean.name));
+                    bundle.putString("follow",String.valueOf(communityBean.follow));
+                    //把bundle放入intent里
+                    intent.putExtra("Message",bundle);
+                    startActivity(intent);
+                }
+            });
+
         }
 
         @Override
@@ -117,9 +139,7 @@ public class HotFragment extends Fragment {
     static class MyViewHolder extends RecyclerView.ViewHolder{
         ImageView iv_cover;
         TextView tv_community_name;
-
         TextView tv_community_follow;
-
         CheckBox cb_community_follow;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);

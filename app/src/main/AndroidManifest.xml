@@ -46,6 +46,7 @@
         </activity>
         <activity android:name=".user.RegisterActivity"/>
         <activity android:name=".user.LoginActivity"/>
+        <activity android:name=".community.CommunityInnerActivity"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

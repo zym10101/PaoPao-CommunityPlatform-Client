@@ -8,6 +8,7 @@ public class CommunityBean {
     // 记录每一个社区的id
     public long id;
     public int cover;
+
     public String name;
     public String follow;
 
