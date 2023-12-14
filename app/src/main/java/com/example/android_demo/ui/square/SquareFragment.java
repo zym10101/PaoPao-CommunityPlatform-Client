@@ -2,6 +2,7 @@ package com.example.android_demo.ui.square;
 
 import static com.example.android_demo.utils.UserUtils.application;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +21,11 @@ import com.bumptech.glide.Glide;
 import com.example.android_demo.Constants.constant;
 import com.example.android_demo.R;
 import com.example.android_demo.databinding.FragmentSquareBinding;
+import com.example.android_demo.ui.square.post.PostDetailActivity;
 import com.example.android_demo.utils.PostData;
 import com.example.android_demo.utils.TimeUtils;
-import com.google.gson.Gson;
 
-import java.util.ArrayList;
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -143,8 +144,21 @@ public class SquareFragment extends Fragment {
                 saveData(post, ivDown.isChecked() ? DISLIKE_URL : DISLIKE_BACK_URL);
             });
 
+            // 为 post_item 添加点击事件
+            view1.setOnClickListener(v -> {
+                // 在这里处理点击事件，例如导航到帖子详情页
+                navigateToPostDetail(post);
+            });
+
             gl_posts.addView(view1);
         }
+    }
+
+    private void navigateToPostDetail(PostData.Post post) {
+        // 创建一个Intent或使用其他导航方法，将post传递给新的活动或片段
+        Intent intent = new Intent(getActivity(), PostDetailActivity.class);
+        intent.putExtra("post", post);
+        startActivity(intent);
     }
 
     private void saveData(PostData.Post post, String url) {

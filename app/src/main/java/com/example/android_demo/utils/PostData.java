@@ -1,7 +1,12 @@
 package com.example.android_demo.utils;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
+import java.io.Serializable;
 import java.util.List;
 
 public class PostData {
@@ -21,7 +26,7 @@ public class PostData {
         return data;
     }
 
-    public static class Post {
+    public static class Post implements Serializable {
         private String postId;
         private String communityId;
         private boolean isPublic;
@@ -86,6 +91,58 @@ public class PostData {
 
         public String getLastUpdateTime() {
             return lastUpdateTime;
+        }
+
+        public void setPostId(String postId) {
+            this.postId = postId;
+        }
+
+        public void setCommunityId(String communityId) {
+            this.communityId = communityId;
+        }
+
+        public void setPublic(boolean aPublic) {
+            isPublic = aPublic;
+        }
+
+        public void setTagList(List<String> tagList) {
+            this.tagList = tagList;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public void setPhoto(String photo) {
+            this.photo = photo;
+        }
+
+        public void setCommentNum(String commentNum) {
+            this.commentNum = commentNum;
+        }
+
+        public void setLikeNum(String likeNum) {
+            this.likeNum = likeNum;
+        }
+
+        public void setDislikeNum(String dislikeNum) {
+            this.dislikeNum = dislikeNum;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
+
+        public void setCreateTime(String createTime) {
+            this.createTime = createTime;
+        }
+
+        public void setLastUpdateTime(String lastUpdateTime) {
+            this.lastUpdateTime = lastUpdateTime;
         }
     }
 }
