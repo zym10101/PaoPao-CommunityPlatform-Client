@@ -3,13 +3,18 @@ package com.example.android_demo.ui.square.post;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.android_demo.R;
+import com.example.android_demo.adapter.CommentAdapter;
+import com.example.android_demo.utils.CommentData;
 import com.example.android_demo.utils.PostData;
 import com.example.android_demo.utils.TimeUtils;
+
+import java.util.ArrayList;
 
 public class PostDetailActivity extends AppCompatActivity {
 
@@ -26,6 +31,22 @@ public class PostDetailActivity extends AppCompatActivity {
             assert post != null;
             showPostDetails(post);
         }
+
+        // 创建一些示例评论数据
+        ArrayList<CommentData.Comment> comments = new ArrayList<>();
+        CommentData.Comment comment = new CommentData.Comment();
+        comment.setContent("test");
+        comments.add(comment);
+
+        CommentData.Comment comment2 = new CommentData.Comment();
+        comment2.setContent("test2");
+        comments.add(comment2);
+        // ... 添加更多评论
+
+        // 创建适配器并设置给 ListView
+        CommentAdapter commentAdapter = new CommentAdapter(this, comments);
+        ListView commentListView = findViewById(R.id.commentListView);
+        commentListView.setAdapter(commentAdapter);
     }
 
 
