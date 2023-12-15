@@ -85,7 +85,6 @@ public class SquareFragment extends Fragment {
             Glide.with(this)
                     .load(post.getPhoto())
                     .into(avatorImageView);
-            System.out.println(post.getPhoto());
 
             TextView contentTextView = view1.findViewById(R.id.tv_content);
             contentTextView.setText(post.getTitle());

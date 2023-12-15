@@ -24,10 +24,10 @@ public class CommentData {
     public static class Comment implements Serializable {
         private String commentId;
         private String userName;
+        private String photo;
         private String postId;
         private String content;
         private String createTime;
-        private String lastUpdateTime;
 
         public String getCommentId() {
             return commentId;
@@ -43,6 +43,14 @@ public class CommentData {
 
         public void setUserName(String userName) {
             this.userName = userName;
+        }
+
+        public String getPhoto() {
+            return photo;
+        }
+
+        public void setPhoto(String photo) {
+            this.photo = photo;
         }
 
         public String getPostId() {
@@ -67,14 +75,6 @@ public class CommentData {
 
         public void setCreateTime(String createTime) {
             this.createTime = createTime;
-        }
-
-        public String getLastUpdateTime() {
-            return lastUpdateTime;
-        }
-
-        public void setLastUpdateTime(String lastUpdateTime) {
-            this.lastUpdateTime = lastUpdateTime;
         }
     }
 }

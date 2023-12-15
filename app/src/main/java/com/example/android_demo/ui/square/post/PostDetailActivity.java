@@ -1,5 +1,7 @@
 package com.example.android_demo.ui.square.post;
 
+import static com.example.android_demo.utils.UserUtils.application;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,16 +12,30 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
+import com.example.android_demo.Constants.constant;
 import com.example.android_demo.R;
 import com.example.android_demo.adapter.CommentAdapter;
 import com.example.android_demo.utils.CommentData;
 import com.example.android_demo.utils.PostData;
 import com.example.android_demo.utils.TimeUtils;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class PostDetailActivity extends AppCompatActivity {
+    private List<CommentData.Comment> commentList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,22 +49,56 @@ public class PostDetailActivity extends AppCompatActivity {
             // 在这里加载和显示帖子详细信息
             assert post != null;
             showPostDetails(post);
+            getComments(post);
+
+            CommentAdapter commentAdapter = new CommentAdapter(this, commentList);
+            ListView commentListView = findViewById(R.id.commentListView);
+            commentListView.setAdapter(commentAdapter);
+            setListViewHeightBasedOnChildren(commentListView);
         }
-
-        // 创建一些示例评论数据
-        ArrayList<CommentData.Comment> comments = new ArrayList<>();
-        CommentData.Comment comment = new CommentData.Comment();
-        comment.setContent("test");
-        comments.add(comment);
-
-        // ... 添加更多评论
-
-        // 创建适配器并设置给 ListView
-        CommentAdapter commentAdapter = new CommentAdapter(this, comments);
-        ListView commentListView = findViewById(R.id.commentListView);
-        commentListView.setAdapter(commentAdapter);
-        setListViewHeightBasedOnChildren(commentListView);
     }
+
+    private void getComments(PostData.Post post) {
+        Thread thread = new Thread(() -> {
+            try {
+                OkHttpClient client = new OkHttpClient()
+                        .newBuilder()
+                        .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                        .readTimeout(60000, TimeUnit.MILLISECONDS)
+                        .build();
+
+                RequestBody requestBody = new FormBody.Builder()
+                        .add("postId", String.valueOf(post.getPostId()))
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url("http://" + constant.IP_ADDRESS + "/user/getComments")
+                        .post(requestBody)
+                        .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
+                        .build();
+
+                Response response = client.newCall(request).execute();
+
+                // 读取响应体的内容并保存到变量中
+                String responseData = response.body().string();
+
+                // 在这里进行两次调用之间的处理，比如将字符串转换为对象
+                Gson gson = new Gson();
+                CommentData rdata = gson.fromJson(responseData, CommentData.class);
+                commentList = rdata.getData();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
