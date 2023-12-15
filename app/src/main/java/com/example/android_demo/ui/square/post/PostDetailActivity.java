@@ -3,6 +3,9 @@ package com.example.android_demo.ui.square.post;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,15 +41,37 @@ public class PostDetailActivity extends AppCompatActivity {
         comment.setContent("test");
         comments.add(comment);
 
-        CommentData.Comment comment2 = new CommentData.Comment();
-        comment2.setContent("test2");
-        comments.add(comment2);
         // ... 添加更多评论
 
         // 创建适配器并设置给 ListView
         CommentAdapter commentAdapter = new CommentAdapter(this, comments);
         ListView commentListView = findViewById(R.id.commentListView);
         commentListView.setAdapter(commentAdapter);
+        setListViewHeightBasedOnChildren(commentListView);
+    }
+
+    private void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        totalHeight += (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
 
