@@ -5,11 +5,15 @@ import static com.example.android_demo.utils.UserUtils.application;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
@@ -29,6 +33,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -36,6 +41,8 @@ import okhttp3.Response;
 
 public class PostDetailActivity extends AppCompatActivity {
     private List<CommentData.Comment> commentList = new ArrayList<>();
+
+    private CommentAdapter commentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +58,7 @@ public class PostDetailActivity extends AppCompatActivity {
             showPostDetails(post);
             getComments(post);
 
-            CommentAdapter commentAdapter = new CommentAdapter(this, commentList);
+            commentAdapter = new CommentAdapter(this, commentList);
             ListView commentListView = findViewById(R.id.commentListView);
             commentListView.setAdapter(commentAdapter);
             setListViewHeightBasedOnChildren(commentListView);
@@ -86,6 +93,43 @@ public class PostDetailActivity extends AppCompatActivity {
                 Gson gson = new Gson();
                 CommentData rdata = gson.fromJson(responseData, CommentData.class);
                 commentList = rdata.getData();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addComments(String comment, PostData.Post post) {
+        Thread thread = new Thread(() -> {
+            try {
+                OkHttpClient client = new OkHttpClient()
+                        .newBuilder()
+                        .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                        .readTimeout(60000, TimeUnit.MILLISECONDS)
+                        .build();
+
+                // 设置请求体为 JSON
+                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                // 构建 JSON 数据
+                String json = new Gson().toJson(new CommentData.CommentVO("", post.getPostId(), comment));
+
+                RequestBody requestBody = RequestBody.create(JSON, json);
+
+                Request request = new Request.Builder()
+                        .url("http://" + constant.IP_ADDRESS + "/user/comment")
+                        .post(requestBody)
+                        .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
+                        .build();
+
+                Response response = client.newCall(request).execute();
+                String responseData = response.body().string();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -142,5 +186,42 @@ public class PostDetailActivity extends AppCompatActivity {
         postDetailTagListTextView.setText("标签：" + post.getTagList());
         postDetailContentTextView.setText(post.getContent());
     }
+
+    public void submitComment(View view) {
+        // 获取评论框的文本
+        EditText commentEditText = findViewById(R.id.commentEditText);
+        String commentText = commentEditText.getText().toString().trim();
+
+        // 检查评论是否为空
+        if (!commentText.isEmpty()) {
+            // 执行提交评论的逻辑，可以发送评论到服务器
+            // 这里只是一个示例，你需要根据你的应用程序逻辑进行实际的实现
+
+            // 在这里调用你的方法发送评论到服务器，例如：
+            // sendCommentToServer(commentText);
+            System.out.println(commentText);
+            addComments(commentText, (PostData.Post) getIntent().getSerializableExtra("post"));
+            // 清空评论框
+            commentEditText.setText("");
+
+            // 刷新评论列表，你可以重新调用获取评论的方法或者更新 commentList
+            // 重新设置适配器，例如：
+            runOnUiThread(() -> {
+                commentAdapter.notifyDataSetChanged();
+                restartActivity();
+            });
+
+        } else {
+            // 提示用户评论不能为空
+            Toast.makeText(this, "评论不能为空", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void restartActivity() {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
+
 
 }
