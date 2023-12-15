@@ -29,5 +29,10 @@
     <string name="community">社区</string>
     <string name="paopap">泡泡</string>
     <string name="like">喜欢</string>
+    <string name="redbook">小红书风格</string>
+    <string name="tieba">贴吧风格</string>
+    <string name="poem">poem</string>
+    <string name="let_s_cook_words">Let\'s Cook Words!</string>
+    <string name="commit">生成文章</string>
 
 </resources>

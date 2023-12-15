@@ -1,8 +1,13 @@
 package com.example.android_demo.ui.chat;
 
+
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,21 +18,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.android_demo.MainViewModel;
-import com.example.android_demo.R;
 import com.example.android_demo.databinding.FragmentChatBinding;
-import com.example.android_demo.databinding.FragmentCommunityBinding;
-import com.example.android_demo.ui.community.CommunityViewModel;
-import com.example.android_demo.ui.setting.SettingViewModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -37,12 +40,21 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class ChatFragment extends Fragment {
 
     private FragmentChatBinding binding;
     private MainViewModel mainViewModel;
+
+    private Spinner spinner;
+
+    private ArrayAdapter<String> spinnerAdapter;
+
+    private String[] styles = {"推文", "诗歌", "小红书", "贴吧"};
+
+    private String style = "article";
+
+    private HashMap<String, String> map;
 
     private static final String ADDR = "121.40.84.9:8000";
     // 121.40.84.9
@@ -60,6 +72,12 @@ public class ChatFragment extends Fragment {
         ChatViewModel chatViewModel =
                 new ViewModelProvider(this).get(ChatViewModel.class);
 
+        map = new HashMap<>();
+        map.put("推文", "article");
+        map.put("诗歌", "poem");
+        map.put("小红书", "redbook");
+        map.put("贴吧", "tieba");
+
         //尝试获取共享数据viewmodel
         mainViewModel=new ViewModelProvider(getActivity()).get(MainViewModel.class);
 
@@ -68,37 +86,42 @@ public class ChatFragment extends Fragment {
         final Observer<String> outputObserver = newOutput -> binding.outputTextView.setText(newOutput);
         //mainViewModel.getUsername().observe(getActivity(), outputObserver);
         View root = binding.getRoot();
-        binding.submitButton.setOnClickListener(new View.OnClickListener() {
+
+        // 设置长按复制
+        binding.outputTextView.setOnLongClickListener(v -> {
+            String text = binding.outputTextView.getText().toString();
+            // Gets a handle to the clipboard service.
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(getContext(), ClipboardManager.class);
+            ClipData clip = ClipData.newPlainText("AiText", text);
+            if (clipboard != null) {
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getContext(), "已复制到剪贴板", Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        });
+
+        spinner = binding.spinner;
+        spinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, styles);
+
+        // 设置下拉框样式
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                String userInput = binding.inputEditText.getText().toString();
-                String style = "article";
-                getArticle(userInput, style);
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                style = map.get((String) adapterView.getItemAtPosition(i));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
-        binding.poemButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userInput = binding.inputEditText.getText().toString();
-                String style = "poem";
-                getArticle(userInput, style);
-            }
-        });
-        binding.redbookButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userInput = binding.inputEditText.getText().toString();
-                String style = "redbook";
-                getArticle(userInput, style);
-            }
-        });
-        binding.tiebaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userInput = binding.inputEditText.getText().toString();
-                String style = "tieba";
-                getArticle(userInput, style);
-            }
+
+        binding.commitButton.setOnClickListener(v -> {
+            String userInput = binding.inputEditText.getText().toString();
+            getArticle(userInput, style);
         });
         return root;
     }
@@ -160,16 +183,16 @@ public class ChatFragment extends Fragment {
                     @Override
                     public void run() {
                         binding.outputTextView.setText(outputArticle);
-                        if (style == "article" && outputArticle != "failed") {
+                        if (style.equals("推文") && !outputArticle.equals("failed")) {
                             binding.outputTextView.setTextSize(15);
                         }
-                        else if (style == "poem" && outputArticle != "failed") {
-                            binding.outputTextView.setTextSize(22);
+                        else if (style.equals("诗歌") && !outputArticle.equals("failed")) {
+                            binding.outputTextView.setTextSize(21);
                         }
-                        else if (style == "redbook" && outputArticle != "failed") {
+                        else if (style.equals("小红书") && !outputArticle.equals("failed")) {
                             binding.outputTextView.setTextSize(15);
                         }
-                        else if (style == "tieba" && outputArticle != "failed") {
+                        else if (style.equals("贴吧") && !outputArticle.equals("failed")) {
                             binding.outputTextView.setTextSize(15);
                         }
                     }

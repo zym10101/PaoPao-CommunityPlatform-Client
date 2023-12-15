@@ -219,12 +219,15 @@ public class SettingFragment extends Fragment {
                     Gson gson = new Gson();
                     ResponseData rdata= gson.fromJson(reData, ResponseData.class);
                     if (rdata.getCode().equals("200")) {
+                        Looper.prepare();
                         Toast.makeText(getActivity(), "验证码发送成功", Toast.LENGTH_SHORT).show();
                     } else {
+                        Looper.prepare();
                         Toast.makeText(getActivity(), "验证码发送失败", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     Log.e(TAG, Log.getStackTraceString(e));
+                    Looper.prepare();
                     Toast.makeText(getActivity(), "网络或进程问题", Toast.LENGTH_SHORT).show();
                 }
             });
