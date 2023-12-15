@@ -44,6 +44,7 @@ public class ChatFragment extends Fragment {
     private MainViewModel mainViewModel;
 
     private static final String ADDR = "121.40.84.9:8000";
+    // 121.40.84.9
 
     public static ChatFragment newInstance() {
         return new ChatFragment();
@@ -147,13 +148,13 @@ public class ChatFragment extends Fragment {
                     public void run() {
                         binding.outputTextView.setText(outputArticle);
                         if (style == "article" && outputArticle != "failed") {
-                            binding.outputTextView.setTextSize(20);
+                            binding.outputTextView.setTextSize(15);
                         }
                         else if (style == "poem" && outputArticle != "failed") {
-                            binding.outputTextView.setTextSize(50);
+                            binding.outputTextView.setTextSize(22);
                         }
                         else if (style == "redbook" && outputArticle != "failed") {
-                            binding.outputTextView.setTextSize(20);
+                            binding.outputTextView.setTextSize(15);
                         }
                     }
                 });
