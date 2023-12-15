@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -91,6 +92,14 @@ public class ChatFragment extends Fragment {
                 getArticle(userInput, style);
             }
         });
+        binding.tiebaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userInput = binding.inputEditText.getText().toString();
+                String style = "tieba";
+                getArticle(userInput, style);
+            }
+        });
         return root;
     }
 
@@ -98,7 +107,11 @@ public class ChatFragment extends Fragment {
     private void getArticle(String json, String style) {
         // okHttp
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .build();
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("keywords", json);
@@ -154,6 +167,9 @@ public class ChatFragment extends Fragment {
                             binding.outputTextView.setTextSize(22);
                         }
                         else if (style == "redbook" && outputArticle != "failed") {
+                            binding.outputTextView.setTextSize(15);
+                        }
+                        else if (style == "tieba" && outputArticle != "failed") {
                             binding.outputTextView.setTextSize(15);
                         }
                     }
