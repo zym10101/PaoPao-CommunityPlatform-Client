@@ -34,5 +34,6 @@
     <string name="poem">poem</string>
     <string name="let_s_cook_words">Let\'s Cook Words!</string>
     <string name="commit">生成文章</string>
+    <string name="delete">删除</string>
 
 </resources>

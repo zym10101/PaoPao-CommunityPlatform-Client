@@ -120,5 +120,16 @@
         app:layout_constraintStart_toEndOf="@id/iv_review"
         app:layout_constraintTop_toTopOf="@id/iv_review" />
 
+    <Button
+        android:id="@+id/bt_post_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/delete"
+        android:backgroundTint="@color/red"
+        app:layout_constraintEnd_toEndOf="@+id/tv_content"
+        app:layout_constraintTop_toTopOf="@+id/username1"
+        android:enabled="false"
+        android:visibility="gone"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
