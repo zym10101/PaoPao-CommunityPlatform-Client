@@ -9,8 +9,6 @@ import static com.example.android_demo.utils.UserUtils.application;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -21,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.android_demo.Constants.constant;
 import com.example.android_demo.R;
@@ -32,7 +29,6 @@ import com.example.android_demo.utils.TimeUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -71,14 +67,16 @@ public class PostDetailActivity extends AppCompatActivity {
         }
 
         CheckBox up = findViewById(R.id.detail_up);
+        CheckBox down = findViewById(R.id.detail_down);
         up.setOnClickListener(v -> {
+            down.setEnabled(!up.isChecked());
             PostData.Post post = (PostData.Post) getIntent().getSerializableExtra("post");
             // 在这里可以执行其他你想要的操作，比如发送网络请求来保存点赞状态等
             saveData(post, up.isChecked() ? LIKE_URL : LIKE_BACK_URL);
         });
 
-        CheckBox down = findViewById(R.id.detail_down);
         down.setOnClickListener(v -> {
+            up.setEnabled(!down.isChecked());
             PostData.Post post = (PostData.Post) getIntent().getSerializableExtra("post");
             // 在这里可以执行其他你想要的操作，比如发送网络请求来保存点赞状态等
             saveData(post, down.isChecked() ? DISLIKE_URL : DISLIKE_BACK_URL);
