@@ -53,7 +53,6 @@ public class MessageFragment extends Fragment {
                 new String[]{"name"},
                 new int[]{R.id.tv_name_message});
         lv_message.setAdapter(simpleAdapter);
-        lv_message.setAdapter(simpleAdapter);
         return root;
     }
 
@@ -86,8 +85,6 @@ public class MessageFragment extends Fragment {
                         while (keys.hasNext()) {
                             String key = keys.next();
                             JSONArray value = data.getJSONArray(key);
-//                            System.out.println(key);
-//                            System.out.println(value);
                             for (int i = 0; i < value.length(); i++) {
                                 HashMap<String, Object> map = new HashMap<>();
                                 map.put(key, value.get(i));
