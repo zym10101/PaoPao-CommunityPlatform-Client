@@ -59,7 +59,7 @@
         android:layout_height="24dp"
         android:layout_centerInParent="true"
         android:layout_marginTop="15dp"
-        android:background="@drawable/select_love"
+        android:background="@drawable/select_love_disable"
         android:button="@null"
         app:layout_constraintStart_toStartOf="@id/tv_content"
         app:layout_constraintTop_toBottomOf="@id/tv_content" />
@@ -82,7 +82,7 @@
         android:layout_centerInParent="true"
         android:layout_marginStart="120dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/select_down"
+        android:background="@drawable/select_down_disable"
         android:button="@null"
         app:layout_constraintStart_toStartOf="@id/tv_content"
         app:layout_constraintTop_toBottomOf="@id/tv_content" />

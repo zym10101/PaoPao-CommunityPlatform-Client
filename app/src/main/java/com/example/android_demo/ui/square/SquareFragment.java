@@ -95,10 +95,17 @@ public class SquareFragment extends Fragment {
             CommentTextView.setText(post.getCommentNum());
 
             CheckBox cbUp = view1.findViewById(R.id.cb_up);
-            cbUp.setEnabled(false);
+
+            cbUp.setOnClickListener(v -> {
+                Toast.makeText(getActivity(), "点赞无效~请查看全文", Toast.LENGTH_SHORT).show();
+            });
 
             CheckBox ivDown = view1.findViewById(R.id.iv_down);
-            ivDown.setEnabled(false);
+
+
+            ivDown.setOnClickListener(v -> {
+                Toast.makeText(getActivity(), "点踩无效~请查看全文", Toast.LENGTH_SHORT).show();
+            });
 
             // 为 post_item 添加点击事件
             view1.setOnClickListener(v -> {
