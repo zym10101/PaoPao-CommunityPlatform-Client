@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,7 @@ public class LikeFragment extends Fragment {
     private ListView lv_like;
     private LikeViewModel likeViewModel;
     private List<Map<String, Object>> list;
+    private TextView tv_none_like;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -44,6 +46,7 @@ public class LikeFragment extends Fragment {
         binding = FragmentLikeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         lv_like = root.findViewById(R.id.lv_like);
+        tv_none_like = root.findViewById(R.id.tv_none_like);
         return root;
     }
 
@@ -98,10 +101,12 @@ public class LikeFragment extends Fragment {
         likeViewModel = new ViewModelProvider(this).get(LikeViewModel.class);
         likeViewModel.getPostsLiveData().observe(getViewLifecycleOwner(), posts -> {
             if(posts != null && !posts.isEmpty()){
+                tv_none_like.setVisibility(View.GONE);
                 updateUI(posts);
             } else {
                 // 处理数据为空的情况
-                Toast.makeText(getActivity(), "获取点赞帖子失败", Toast.LENGTH_SHORT).show();
+                tv_none_like.setVisibility(View.VISIBLE);
+//                Toast.makeText(getActivity(), "获取点赞帖子失败", Toast.LENGTH_SHORT).show();
             }
         });
         likeViewModel.fetchData();

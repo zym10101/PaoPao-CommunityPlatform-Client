@@ -1,7 +1,5 @@
 package com.example.android_demo.bean;
 
-import java.util.Date;
-
 /**
  * @author SummCoder
  * @date 2023/12/10 16:01
@@ -27,4 +25,13 @@ public class CommunityVO {
      * 社区名称
      */
     public String name;
+
+    public CommunityVO(long communityID, Boolean isPublic, String createTime, String name) {
+        this.communityID = communityID;
+        this.isPublic = isPublic;
+        this.createTime = createTime;
+        this.name = name;
+    }
+
+    public CommunityVO(){ }
 }

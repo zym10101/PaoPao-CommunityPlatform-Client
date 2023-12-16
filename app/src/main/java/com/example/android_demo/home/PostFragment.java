@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -48,6 +49,7 @@ public class PostFragment extends Fragment {
     private List<Map<String, Object>> list;
 
     AlertDialog dialog;
+    private TextView tv_none_post;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -55,6 +57,7 @@ public class PostFragment extends Fragment {
         binding = FragmentPostBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         lv_post = root.findViewById(R.id.lv_post);
+        tv_none_post = root.findViewById(R.id.tv_none_post);
         return root;
     }
     private void updateUI(List<PostData.Post> posts) {
@@ -117,7 +120,6 @@ public class PostFragment extends Fragment {
                 return view;
             }
         };
-
         lv_post.setAdapter(simpleAdapter);
     }
 
@@ -131,10 +133,12 @@ public class PostFragment extends Fragment {
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
         postViewModel.getPostsLiveData().observe(getViewLifecycleOwner(), posts -> {
             if(posts != null && !posts.isEmpty()){
+                tv_none_post.setVisibility(View.GONE);
                 updateUI(posts);
             } else {
                 // 处理数据为空的情况
-                Toast.makeText(getActivity(), "获取发布过的帖子失败", Toast.LENGTH_SHORT).show();
+                tv_none_post.setVisibility(View.VISIBLE);
+//                Toast.makeText(getActivity(), "还未发布过帖子呢", Toast.LENGTH_SHORT).show();
             }
         });
         postViewModel.fetchData();
