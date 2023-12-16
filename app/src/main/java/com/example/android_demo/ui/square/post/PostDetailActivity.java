@@ -57,11 +57,12 @@ public class PostDetailActivity extends AppCompatActivity {
             assert post != null;
             showPostDetails(post);
             getComments(post);
-
-            commentAdapter = new CommentAdapter(this, commentList);
-            ListView commentListView = findViewById(R.id.commentListView);
-            commentListView.setAdapter(commentAdapter);
-            setListViewHeightBasedOnChildren(commentListView);
+            if (commentList != null) {
+                commentAdapter = new CommentAdapter(this, commentList);
+                ListView commentListView = findViewById(R.id.commentListView);
+                commentListView.setAdapter(commentAdapter);
+                setListViewHeightBasedOnChildren(commentListView);
+            }
         }
     }
 
