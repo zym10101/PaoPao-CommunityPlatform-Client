@@ -73,6 +73,9 @@ public class PostDetailActivity extends AppCompatActivity {
             PostData.Post post = (PostData.Post) getIntent().getSerializableExtra("post");
             // 在这里可以执行其他你想要的操作，比如发送网络请求来保存点赞状态等
             saveData(post, up.isChecked() ? LIKE_URL : LIKE_BACK_URL);
+            if (up.isChecked()) {
+                Toast.makeText(this, "点赞成功！", Toast.LENGTH_SHORT).show();
+            }
         });
 
         down.setOnClickListener(v -> {
@@ -80,6 +83,9 @@ public class PostDetailActivity extends AppCompatActivity {
             PostData.Post post = (PostData.Post) getIntent().getSerializableExtra("post");
             // 在这里可以执行其他你想要的操作，比如发送网络请求来保存点赞状态等
             saveData(post, down.isChecked() ? DISLIKE_URL : DISLIKE_BACK_URL);
+            if (down.isChecked()) {
+                Toast.makeText(this, "感谢反馈！", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -213,7 +219,7 @@ public class PostDetailActivity extends AppCompatActivity {
         // 检查评论是否为空
         if (!commentText.isEmpty()) {
             // 执行提交评论的逻辑，可以发送评论到服务器
-            System.out.println(commentText);
+            Toast.makeText(this, "你的评论已发布！", Toast.LENGTH_SHORT).show();
             addComments(commentText, (PostData.Post) getIntent().getSerializableExtra("post"));
             // 清空评论框
             commentEditText.setText("");
@@ -225,7 +231,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         } else {
             // 提示用户评论不能为空
-            Toast.makeText(this, "评论不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "评论不能为空！", Toast.LENGTH_SHORT).show();
         }
     }
 
