@@ -129,12 +129,56 @@
             android:layout_marginBottom="8dp"
             android:hint="写下你的评论..." />
 
-        <!-- 提交按钮 -->
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="submitComment"
-            android:text="提交评论" />
+            android:orientation="horizontal">
+
+            <!-- 点赞按钮 -->
+            <CheckBox
+                android:id="@+id/detail_up"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/select_love"
+                android:button="@null" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:text="赞"
+                android:textColor="@color/black"
+                android:textSize="25sp" />
+
+
+            <!-- 点踩按钮 -->
+            <CheckBox
+                android:id="@+id/detail_down"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/select_down"
+                android:button="@null" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="40dp"
+                android:text="踩"
+                android:textColor="@color/black"
+                android:textSize="25sp" />
+
+            <!-- 提交评论按钮 -->
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="submitComment"
+                android:text="提交评论"
+                android:textSize="20sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

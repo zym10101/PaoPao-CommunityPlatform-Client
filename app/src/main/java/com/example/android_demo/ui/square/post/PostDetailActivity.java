@@ -1,5 +1,9 @@
 package com.example.android_demo.ui.square.post;
 
+import static com.example.android_demo.ui.square.SquareFragment.DISLIKE_BACK_URL;
+import static com.example.android_demo.ui.square.SquareFragment.DISLIKE_URL;
+import static com.example.android_demo.ui.square.SquareFragment.LIKE_BACK_URL;
+import static com.example.android_demo.ui.square.SquareFragment.LIKE_URL;
 import static com.example.android_demo.utils.UserUtils.application;
 
 import android.annotation.SuppressLint;
@@ -9,6 +13,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -64,6 +69,20 @@ public class PostDetailActivity extends AppCompatActivity {
                 setListViewHeightBasedOnChildren(commentListView);
             }
         }
+
+        CheckBox up = findViewById(R.id.detail_up);
+        up.setOnClickListener(v -> {
+            PostData.Post post = (PostData.Post) getIntent().getSerializableExtra("post");
+            // 在这里可以执行其他你想要的操作，比如发送网络请求来保存点赞状态等
+            saveData(post, up.isChecked() ? LIKE_URL : LIKE_BACK_URL);
+        });
+
+        CheckBox down = findViewById(R.id.detail_down);
+        down.setOnClickListener(v -> {
+            PostData.Post post = (PostData.Post) getIntent().getSerializableExtra("post");
+            // 在这里可以执行其他你想要的操作，比如发送网络请求来保存点赞状态等
+            saveData(post, down.isChecked() ? DISLIKE_URL : DISLIKE_BACK_URL);
+        });
     }
 
     private void getComments(PostData.Post post) {
@@ -196,17 +215,11 @@ public class PostDetailActivity extends AppCompatActivity {
         // 检查评论是否为空
         if (!commentText.isEmpty()) {
             // 执行提交评论的逻辑，可以发送评论到服务器
-            // 这里只是一个示例，你需要根据你的应用程序逻辑进行实际的实现
-
-            // 在这里调用你的方法发送评论到服务器，例如：
-            // sendCommentToServer(commentText);
             System.out.println(commentText);
             addComments(commentText, (PostData.Post) getIntent().getSerializableExtra("post"));
             // 清空评论框
             commentEditText.setText("");
-
-            // 刷新评论列表，你可以重新调用获取评论的方法或者更新 commentList
-            // 重新设置适配器，例如：
+            // 刷新评论列表
             runOnUiThread(() -> {
                 commentAdapter.notifyDataSetChanged();
                 restartActivity();
@@ -222,6 +235,46 @@ public class PostDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         finish();
         startActivity(intent);
+    }
+
+    private void saveData(PostData.Post post, String url) {
+        Thread thread = new Thread(() -> {
+            try {
+                // 创建 HTTP 客户端
+                OkHttpClient client = new OkHttpClient()
+                        .newBuilder()
+                        .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                        .readTimeout(60000, TimeUnit.MILLISECONDS)
+                        .build();
+
+                // 创建 POST 请求的表单数据
+                RequestBody requestBody = new FormBody.Builder()
+                        .add("postId", String.valueOf(post.getPostId()))
+                        .build();
+
+                // 创建 HTTP 请求
+                Request request = new Request.Builder()
+                        .url(url)
+                        .post(requestBody)
+                        .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
+                        .build();
+
+                // 执行发送的指令，获得返回结果
+                Response response = client.newCall(request).execute();
+
+                // 输出响应的内容
+                System.out.println(response.body().string());
+            } catch (Exception e) {
+                // 处理异常，例如记录日志
+                e.printStackTrace();
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
