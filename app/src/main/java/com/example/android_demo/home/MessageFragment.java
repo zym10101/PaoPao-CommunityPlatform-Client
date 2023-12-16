@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +41,7 @@ public class MessageFragment extends Fragment {
     private ListView lv_message;
 
     List<HashMap<String,Object>> list = new ArrayList<>();
+    private SimpleAdapter simpleAdapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -47,8 +49,7 @@ public class MessageFragment extends Fragment {
         binding = FragmentMessageBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         lv_message = root.findViewById(R.id.lv_message);
-        load();
-        SimpleAdapter simpleAdapter = new SimpleAdapter(getActivity(),list, R.layout.community_item_layout,
+        simpleAdapter = new SimpleAdapter(getActivity(),list, R.layout.community_item_layout,
                 new String[]{"name"},
                 new int[]{R.id.tv_name_message});
         lv_message.setAdapter(simpleAdapter);
@@ -78,18 +79,25 @@ public class MessageFragment extends Fragment {
                     if (response.isSuccessful()) {
                         String responseData = response.body().string();
                         JSONObject jsonResponse = new JSONObject(responseData);
-                        if (jsonResponse.getBoolean("success")) {
-                            JSONArray data = jsonResponse.getJSONArray("data");
-                            for (int i = 0; i < data.length(); i++) {
-                                HashMap<String,Object> map1 = new HashMap<>();
-                                map1.put("name", data.getLong(i));
-                                list.add(map1);
+                        System.out.println(jsonResponse);
+                        JSONObject data = jsonResponse.getJSONObject("data");
+                        List<HashMap<String, Object>> list = new ArrayList<>();
+                        Iterator<String> keys = data.keys();
+                        while (keys.hasNext()) {
+                            String key = keys.next();
+                            JSONArray value = data.getJSONArray(key);
+//                            System.out.println(key);
+//                            System.out.println(value);
+                            for (int i = 0; i < value.length(); i++) {
+                                HashMap<String, Object> map = new HashMap<>();
+                                map.put(key, value.get(i));
+                                list.add(map);
                             }
-                        } else {
-                            // 处理请求失败的情况
                         }
+                        System.out.println(list);
                     } else {
                         // 处理请求失败的情况
+                        System.out.println("error");
                     }
                 } catch (Exception e) {
                     Log.e(TAG, Log.getStackTraceString(e));
@@ -106,6 +114,11 @@ public class MessageFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        load();
+    }
 
     @Override
     public void onDestroyView() {

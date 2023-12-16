@@ -104,15 +104,20 @@ public class SquareFragment extends Fragment {
             // 点赞按钮
             CheckBox cbUp = view1.findViewById(R.id.cb_up);
 
+            // 点踩按钮
+            CheckBox ivDown = view1.findViewById(R.id.iv_down);
+
             AtomicInteger currentLikes = new AtomicInteger(Integer.parseInt(post.getLikeNum()));
 
             cbUp.setOnClickListener(v -> {
                 if (cbUp.isChecked()) {
                     // 如果之前未点赞，进行点赞
                     currentLikes.incrementAndGet();
+                    ivDown.setEnabled(false);
                 } else {
                     // 如果之前已经点赞，取消点赞
                     currentLikes.decrementAndGet();
+                    ivDown.setEnabled(true);
                 }
 
                 // 更新点赞数
@@ -122,8 +127,6 @@ public class SquareFragment extends Fragment {
                 saveData(post, cbUp.isChecked() ? LIKE_URL : LIKE_BACK_URL);
             });
 
-            // 点踩按钮
-            CheckBox ivDown = view1.findViewById(R.id.iv_down);
 
             AtomicInteger currentDisLikes = new AtomicInteger(Integer.parseInt(post.getDislikeNum()));
 
@@ -132,9 +135,11 @@ public class SquareFragment extends Fragment {
                 if (ivDown.isChecked()) {
                     // 如果之前未点踩，进行点踩
                     currentDisLikes.incrementAndGet();
+                    cbUp.setEnabled(false);
                 } else {
                     // 如果之前已经点踩，取消点踩
                     currentDisLikes.decrementAndGet();
+                    cbUp.setEnabled(true);
                 }
 
                 // 更新点踩数
