@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -57,7 +58,7 @@ public class MessageFragment extends Fragment {
     private MessageViewModel messageViewModel;
 
     public static MyApplication application;
-
+    private TextView tv_none_message;
 
 
     @Override
@@ -66,6 +67,7 @@ public class MessageFragment extends Fragment {
         binding = FragmentMessageBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         lv_message = root.findViewById(R.id.lv_message);
+        tv_none_message = root.findViewById(R.id.tv_none_message);
         return root;
     }
 
@@ -88,6 +90,12 @@ public class MessageFragment extends Fragment {
     }
 
     private void updateUI(List<MessageBean.Application> posts) {
+        if(posts == null || posts.isEmpty()){
+            tv_none_message.setVisibility(View.VISIBLE);
+            return;
+        }else {
+            tv_none_message.setVisibility(View.GONE);
+        }
         list = new ArrayList<>();
         for (MessageBean.Application post : posts) {
             Map<String, Object> map = new HashMap<>();

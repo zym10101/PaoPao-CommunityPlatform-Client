@@ -61,6 +61,12 @@ public class PostFragment extends Fragment {
         return root;
     }
     private void updateUI(List<PostData.Post> posts) {
+        if(posts == null || posts.isEmpty()){
+            tv_none_post.setVisibility(View.VISIBLE);
+            return;
+        }else {
+            tv_none_post.setVisibility(View.GONE);
+        }
         list = new ArrayList<>();
         for (PostData.Post post : posts) {
             Map<String, Object> map = new HashMap<>();
@@ -131,16 +137,7 @@ public class PostFragment extends Fragment {
 
     void reload(){
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
-        postViewModel.getPostsLiveData().observe(getViewLifecycleOwner(), posts -> {
-            if(posts != null && !posts.isEmpty()){
-                tv_none_post.setVisibility(View.GONE);
-                updateUI(posts);
-            } else {
-                // 处理数据为空的情况
-                tv_none_post.setVisibility(View.VISIBLE);
-//                Toast.makeText(getActivity(), "还未发布过帖子呢", Toast.LENGTH_SHORT).show();
-            }
-        });
+        postViewModel.getPostsLiveData().observe(getViewLifecycleOwner(), this::updateUI);
         postViewModel.fetchData();
     }
 

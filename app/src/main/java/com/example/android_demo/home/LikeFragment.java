@@ -52,6 +52,12 @@ public class LikeFragment extends Fragment {
 
 
     private void updateUI(List<PostData.Post> posts) {
+        if(posts == null || posts.isEmpty()){
+            tv_none_like.setVisibility(View.VISIBLE);
+            return;
+        }else {
+            tv_none_like.setVisibility(View.GONE);
+        }
         list = new ArrayList<>();
         for (PostData.Post post : posts) {
             Map<String, Object> map = new HashMap<>();
@@ -99,16 +105,7 @@ public class LikeFragment extends Fragment {
 
     void reload(){
         likeViewModel = new ViewModelProvider(this).get(LikeViewModel.class);
-        likeViewModel.getPostsLiveData().observe(getViewLifecycleOwner(), posts -> {
-            if(posts != null && !posts.isEmpty()){
-                tv_none_like.setVisibility(View.GONE);
-                updateUI(posts);
-            } else {
-                // 处理数据为空的情况
-                tv_none_like.setVisibility(View.VISIBLE);
-//                Toast.makeText(getActivity(), "获取点赞帖子失败", Toast.LENGTH_SHORT).show();
-            }
-        });
+        likeViewModel.getPostsLiveData().observe(getViewLifecycleOwner(), this::updateUI);
         likeViewModel.fetchData();
     }
 
