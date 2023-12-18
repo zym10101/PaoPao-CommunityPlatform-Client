@@ -54,9 +54,11 @@ public class LikeFragment extends Fragment {
     private void updateUI(List<PostData.Post> posts) {
         if(posts == null || posts.isEmpty()){
             tv_none_like.setVisibility(View.VISIBLE);
+            lv_like.setVisibility(View.GONE);
             return;
         }else {
             tv_none_like.setVisibility(View.GONE);
+            lv_like.setVisibility(View.VISIBLE);
         }
         list = new ArrayList<>();
         for (PostData.Post post : posts) {

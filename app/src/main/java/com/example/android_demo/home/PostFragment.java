@@ -63,9 +63,11 @@ public class PostFragment extends Fragment {
     private void updateUI(List<PostData.Post> posts) {
         if(posts == null || posts.isEmpty()){
             tv_none_post.setVisibility(View.VISIBLE);
+            lv_post.setVisibility(View.GONE);
             return;
         }else {
             tv_none_post.setVisibility(View.GONE);
+            lv_post.setVisibility(View.VISIBLE);
         }
         list = new ArrayList<>();
         for (PostData.Post post : posts) {
