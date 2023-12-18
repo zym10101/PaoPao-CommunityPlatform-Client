@@ -2,6 +2,7 @@ package com.example.android_demo.home;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -102,7 +103,8 @@ public class MessageFragment extends Fragment {
         for (MessageBean.Application post : posts) {
             Map<String, Object> map = new HashMap<>();
             map.put("communityName", "申请加入社区：" + post.getCommunityVO().name);
-            map.put("username", "用户id：" + post.getUserId());
+            @SuppressLint("DefaultLocale") String formattedUserId = String.format("%06d", Integer.parseInt(post.getUserId()));
+            map.put("username", "UID. " + formattedUserId);
             list.add(map);
         }
         String[] from = {"communityName", "username"};

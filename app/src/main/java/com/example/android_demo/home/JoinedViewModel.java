@@ -55,7 +55,7 @@ public class JoinedViewModel extends ViewModel {
                         .build();
                 // 创建HTTP请求
                 Request request = new Request.Builder()
-                        .url("http://10.0.2.2:8200/community/getCreatedCommunityById?userId=1")
+                        .url("http://10.0.2.2:8200/community/getCreatedCommunity?userID=" + Objects.requireNonNull(application.infoMap.get("loginId")))
                         .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
                         .build();
                 // 执行发送的指令，获得返回结果
@@ -90,7 +90,7 @@ public class JoinedViewModel extends ViewModel {
                         .build();
                 // 创建HTTP请求
                 Request request = new Request.Builder()
-                        .url("http://10.0.2.2:8200/community/getManagedCommunityById?userId=1")
+                        .url("http://10.0.2.2:8200/community/getManagedCommunity?userID=" + Objects.requireNonNull(application.infoMap.get("loginId")))
                         .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
                         .build();
                 // 执行发送的指令，获得返回结果
@@ -125,7 +125,7 @@ public class JoinedViewModel extends ViewModel {
                         .build();
                 // 创建HTTP请求
                 Request request = new Request.Builder()
-                        .url("http://10.0.2.2:8200/community/getJoinedCommunityById?userId=1")
+                        .url("http://10.0.2.2:8200/community/getJoinedCommunity?userID=" + Objects.requireNonNull(application.infoMap.get("loginId")))
                         .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
                         .build();
                 // 执行发送的指令，获得返回结果

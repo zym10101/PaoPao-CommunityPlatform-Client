@@ -127,7 +127,7 @@ public class CommunityFragment extends Fragment {
                         Toast.makeText(getActivity(), "社区创建成功", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }else{
-                        Toast.makeText(getActivity(), "社区创建失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "该社区已存在，社区创建失败", Toast.LENGTH_SHORT).show();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
