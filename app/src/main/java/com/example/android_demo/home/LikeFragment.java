@@ -103,6 +103,12 @@ public class LikeFragment extends Fragment {
         reload();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
     void reload(){
         likeViewModel = new ViewModelProvider(this).get(LikeViewModel.class);
         likeViewModel.getPostsLiveData().observe(getViewLifecycleOwner(), this::updateUI);

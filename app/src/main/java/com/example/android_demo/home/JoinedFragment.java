@@ -9,11 +9,14 @@ import android.widget.ExpandableListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.android_demo.R;
 import com.example.android_demo.adapter.CommunityExpandableAdapter;
 import com.example.android_demo.bean.CommunityExpandBean;
+import com.example.android_demo.bean.CommunityVO;
 import com.example.android_demo.databinding.FragmentJoinedBinding;
+import com.example.android_demo.utils.PostData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,41 +35,58 @@ public class JoinedFragment extends Fragment {
 
     private CommunityExpandableAdapter communityExpandableAdapter;
 
+    private JoinedViewModel joinedViewModel;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentJoinedBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         lv_joined = root.findViewById(R.id.lv_joined);
-        initData();
+        dataEntityList.add(new CommunityExpandBean("我创建的社区", new ArrayList<>()));
+        dataEntityList.add(new CommunityExpandBean("我管理的社区", new ArrayList<>()));
+        dataEntityList.add(new CommunityExpandBean("我加入的社区", new ArrayList<>()));
         initAdapter();
         return root;
     }
 
-    private void initData() {
-        List<CommunityExpandBean.ChildrenData> childrenData1 = new ArrayList<>();
-        for(int i = 0; i < 8; i++){
-            CommunityExpandBean.ChildrenData children=new CommunityExpandBean.ChildrenData("学生"+(i+1));
-            childrenData1.add(children);
-        }
-        CommunityExpandBean communityExpandBean1 = new CommunityExpandBean("我创建的社区",childrenData1);
-        dataEntityList.add(communityExpandBean1);
+    private void loadData() {
 
-        List<CommunityExpandBean.ChildrenData> childrenData2 = new ArrayList<>();
-        for(int i = 0; i < 8; i++){
-            CommunityExpandBean.ChildrenData children = new CommunityExpandBean.ChildrenData("学生"+(i+1));
-            childrenData2.add(children);
-        }
-        CommunityExpandBean communityExpandBean2 = new CommunityExpandBean("我管理的社区",childrenData2);
-        dataEntityList.add(communityExpandBean2);
+        joinedViewModel = new ViewModelProvider(this).get(JoinedViewModel.class);
 
-        List<CommunityExpandBean.ChildrenData> childrenData3 = new ArrayList<>();
-        for(int i = 0; i < 8; i++){
-            CommunityExpandBean.ChildrenData children=new CommunityExpandBean.ChildrenData("学生"+(i+1));
-            childrenData3.add(children);
-        }
-        CommunityExpandBean communityExpandBean3 = new CommunityExpandBean("我加入的社区",childrenData3);
-        dataEntityList.add(communityExpandBean3);
+        joinedViewModel.getCommunityCreatedLiveData().observe(getViewLifecycleOwner(), communityVOs -> {
+            List<CommunityExpandBean.ChildrenData> childrenData = new ArrayList<>();
+            for (CommunityVO communityVO : communityVOs) {
+                CommunityExpandBean.ChildrenData child = new CommunityExpandBean.ChildrenData(communityVO.name);
+                childrenData.add(child);
+            }
+            CommunityExpandBean communityExpandBean = new CommunityExpandBean("我创建的社区", childrenData);
+            dataEntityList.set(0, communityExpandBean);
+        });
+
+        joinedViewModel.getCommunityManagedLiveData().observe(getViewLifecycleOwner(), communityVOs -> {
+            List<CommunityExpandBean.ChildrenData> childrenData = new ArrayList<>();
+            for (CommunityVO communityVO : communityVOs) {
+                CommunityExpandBean.ChildrenData child = new CommunityExpandBean.ChildrenData(communityVO.name);
+                childrenData.add(child);
+            }
+            CommunityExpandBean communityExpandBean = new CommunityExpandBean("我管理的社区", childrenData);
+            dataEntityList.set(1, communityExpandBean);
+        });
+
+        joinedViewModel.getCommunityJoinedLiveData().observe(getViewLifecycleOwner(), communityVOs -> {
+            List<CommunityExpandBean.ChildrenData> childrenData = new ArrayList<>();
+            for (CommunityVO communityVO : communityVOs) {
+                CommunityExpandBean.ChildrenData child = new CommunityExpandBean.ChildrenData(communityVO.name);
+                childrenData.add(child);
+            }
+            CommunityExpandBean communityExpandBean = new CommunityExpandBean("我加入的社区", childrenData);
+            dataEntityList.set(2, communityExpandBean);
+        });
+
+        joinedViewModel.fetchCreatedData();
+        joinedViewModel.fetchManagedData();
+        joinedViewModel.fetchJoinedData();
     }
 
     private void initAdapter() {
@@ -77,6 +97,14 @@ public class JoinedFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        loadData();
         communityExpandableAdapter.reFreshData(dataEntityList);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
 }
