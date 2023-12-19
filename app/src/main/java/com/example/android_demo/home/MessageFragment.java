@@ -103,12 +103,12 @@ public class MessageFragment extends Fragment {
         for (MessageBean.Application post : posts) {
             Map<String, Object> map = new HashMap<>();
             map.put("communityName", "申请加入社区：" + post.getCommunityVO().name);
-            @SuppressLint("DefaultLocale") String formattedUserId = String.format("%06d", Integer.parseInt(post.getUserId()));
-            map.put("username", "UID. " + formattedUserId);
+            map.put("username", "用户：" + post.getUser().userName);
+            map.put("avatar", post.getUser().photo);
             list.add(map);
         }
-        String[] from = {"communityName", "username"};
-        int[] to = {R.id.tv_community_message, R.id.tv_name_message};
+        String[] from = {"communityName", "username", "avatar"};
+        int[] to = {R.id.tv_community_message, R.id.tv_name_message, R.id.iv_avatar_message};
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(getActivity(), list, R.layout.message_item, from, to) {
             @Override
@@ -116,15 +116,22 @@ public class MessageFragment extends Fragment {
                 View view = super.getView(position, convertView, parent);
                 Button bt_agree = view.findViewById(R.id.bt_agree);
                 Button bt_disagree = view.findViewById(R.id.bt_disagree);
+                ImageView iv_avatar_message = view.findViewById(R.id.iv_avatar_message);
+                String avatarUrl = (String) list.get(position).get("avatar");
+                // 使用Glide加载头像图片
+                Glide.with(getActivity())
+                        .load(avatarUrl)
+                        .into(iv_avatar_message);
+
                 bt_agree.setOnClickListener(v -> {
                     MessageBean.Application application = posts.get(position);
-                    agree(application.getUserId(), String.valueOf(application.getCommunityVO().communityID));
+                    agree(application.getUser().userId, String.valueOf(application.getCommunityVO().communityID));
                 });
 
                 bt_disagree.setOnClickListener(v ->{
                     // 获取被点击的item的数据
                     MessageBean.Application application = posts.get(position);
-                    refuse(application.getUserId(), String.valueOf(application.getCommunityVO().communityID));
+                    refuse(application.getUser().userId, String.valueOf(application.getCommunityVO().communityID));
                 });
                 return view;
             }

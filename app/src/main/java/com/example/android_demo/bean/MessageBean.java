@@ -27,11 +27,9 @@ public class MessageBean {
 
     public static class Application implements Serializable {
 
-        private String userId;
-        private String userName;
-
-        private String photo;
         private CommunityVO communityVO;
+
+        private User user;
         public CommunityVO getCommunityVO(){
             return communityVO;
         }
@@ -40,28 +38,12 @@ public class MessageBean {
             this.communityVO = communityVO;
         }
 
-        public String getUserId(){
-            return userId;
+        public User getUser() {
+            return user;
         }
 
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
-
-        public String getUserName() {
-            return userName;
-        }
-
-        public void setUserName(String userName) {
-            this.userName = userName;
-        }
-
-        public String getPhoto() {
-            return photo;
-        }
-
-        public void setPhoto(String photo){
-            this.photo = photo;
+        public void setUser(User user) {
+            this.user = user;
         }
 
     }

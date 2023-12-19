@@ -8,10 +8,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.android_demo.Constants.constant;
 import com.example.android_demo.MyApplication;
 import com.example.android_demo.bean.CommunityVO;
 import com.example.android_demo.bean.Message;
 import com.example.android_demo.bean.MessageBean;
+import com.example.android_demo.bean.User;
 import com.example.android_demo.utils.PostData;
 
 import org.json.JSONArray;
@@ -30,6 +32,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 /**
  * @author SummCoder
  * @date 2023/12/16 21:54
@@ -37,6 +43,8 @@ import okhttp3.Response;
 public class MessageViewModel extends ViewModel {
     private MutableLiveData<List<MessageBean.Application>> applicationsLiveData = new MutableLiveData<>();
     private CommunityVO communityVO;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     public LiveData<List<MessageBean.Application>> getApplicationsLiveData() {
         return applicationsLiveData;
@@ -54,7 +62,7 @@ public class MessageViewModel extends ViewModel {
                 // 创建HTTP请求
                 MyApplication application = MyApplication.getInstance();
                 Request request = new Request.Builder()
-                        .url("http://" + "10.0.2.2:8200/application/getApplicationByAdminId?adminID=" + Objects.requireNonNull(application.infoMap.get("loginId")))
+                        .url("http://" + constant.IP_ADDRESS + "/user/getApplicationByAdminId?adminID=" + Objects.requireNonNull(application.infoMap.get("loginId")))
                         .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
                         .build();
                 // 执行发送的指令，获得返回结果
@@ -86,7 +94,9 @@ public class MessageViewModel extends ViewModel {
                             for (int i = 0; i < value.length(); i++) {
                                 MessageBean.Application map = new MessageBean.Application();
                                 map.setCommunityVO(communityVO);
-                                map.setUserId(String.valueOf(value.get(i)));
+                                JSONObject userObject = value.getJSONObject(i);
+                                User user = objectMapper.readValue(userObject.toString(), User.class);
+                                map.setUser(user);
                                 list.add(map);
                             }
                         }
