@@ -28,7 +28,7 @@ public class PostData {
 
     public static class Post implements Serializable {
         private String postId;
-        private String communityId;
+        private String communityName;
         private boolean isPublic;
         private List<String> tagList;
         private String title;
@@ -45,8 +45,12 @@ public class PostData {
             return postId;
         }
 
-        public String getCommunityId() {
-            return communityId;
+        public String getCommunityName() {
+            return communityName;
+        }
+
+        public void setCommunityName(String communityName) {
+            this.communityName = communityName;
         }
 
         public boolean isPublic() {
@@ -97,9 +101,6 @@ public class PostData {
             this.postId = postId;
         }
 
-        public void setCommunityId(String communityId) {
-            this.communityId = communityId;
-        }
 
         public void setPublic(boolean aPublic) {
             isPublic = aPublic;

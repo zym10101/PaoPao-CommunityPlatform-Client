@@ -37,14 +37,26 @@
                 android:layout_marginBottom="8dp"
                 android:background="@android:color/darker_gray" />
 
-            <!-- 标签 -->
+            <!-- 社区 -->
             <TextView
-                android:id="@+id/postDetailTagList"
+                android:id="@+id/postDetailCommunityName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/postDetailTitle"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="16dp"
+                android:text="社区"
+                android:textColor="@android:color/holo_green_light"
+                android:textSize="18sp" />
+
+            <!-- 标签 -->
+            <TextView
+                android:id="@+id/postDetailTagList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/postDetailCommunityName"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="8dp"
                 android:text="标签"
                 android:textColor="@android:color/holo_blue_light"
                 android:textSize="18sp" />

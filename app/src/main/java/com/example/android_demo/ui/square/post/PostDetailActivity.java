@@ -201,6 +201,7 @@ public class PostDetailActivity extends AppCompatActivity {
         // 在布局中找到用于显示帖子详细信息的TextView
         TextView postDetailTitleTextView = findViewById(R.id.postDetailTitle);
         TextView postDetailUsernameAndTimeTextView = findViewById(R.id.postDetailUsername);
+        TextView postDetailCommunityNameTextView = findViewById(R.id.postDetailCommunityName);
         TextView postDetailTagListTextView = findViewById(R.id.postDetailTagList);
         TextView postDetailContentTextView = findViewById(R.id.postDetailContent);
 
@@ -208,6 +209,7 @@ public class PostDetailActivity extends AppCompatActivity {
         postDetailTitleTextView.setText(post.getTitle());
         postDetailUsernameAndTimeTextView.setText("作者：" + post.getUserName() + "    发布时间：" + TimeUtils.convert(post.getCreateTime()));
         postDetailTagListTextView.setText("标签：" + post.getTagList());
+        postDetailCommunityNameTextView.setText("社区：" + post.getCommunityName());
         postDetailContentTextView.setText(post.getContent());
     }
 
