@@ -33,8 +33,11 @@ public class CommunityExpandBean {
 
     public static class ChildrenData{
         private String subContent;//子内容
-        public ChildrenData(String subContent) {
+
+        private Long communityId;
+        public ChildrenData(String subContent, Long communityId) {
             this.subContent = subContent;
+            this.communityId = communityId;
         }
 
         public String getSubContent() {
@@ -43,6 +46,14 @@ public class CommunityExpandBean {
 
         public void setSubContent(String subContent) {
             this.subContent = subContent;
+        }
+
+        public Long getCommunityId() {
+            return communityId;
+        }
+
+        public void setCommunityId(Long communityId) {
+            this.communityId = communityId;
         }
     }
 }

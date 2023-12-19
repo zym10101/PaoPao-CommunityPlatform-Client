@@ -57,7 +57,7 @@ public class JoinedFragment extends Fragment {
         joinedViewModel.getCommunityCreatedLiveData().observe(getViewLifecycleOwner(), communityVOs -> {
             List<CommunityExpandBean.ChildrenData> childrenData = new ArrayList<>();
             for (CommunityVO communityVO : communityVOs) {
-                CommunityExpandBean.ChildrenData child = new CommunityExpandBean.ChildrenData(communityVO.name);
+                CommunityExpandBean.ChildrenData child = new CommunityExpandBean.ChildrenData(communityVO.name, communityVO.communityID);
                 childrenData.add(child);
             }
             CommunityExpandBean communityExpandBean = new CommunityExpandBean("我创建的社区", childrenData);
@@ -67,7 +67,7 @@ public class JoinedFragment extends Fragment {
         joinedViewModel.getCommunityManagedLiveData().observe(getViewLifecycleOwner(), communityVOs -> {
             List<CommunityExpandBean.ChildrenData> childrenData = new ArrayList<>();
             for (CommunityVO communityVO : communityVOs) {
-                CommunityExpandBean.ChildrenData child = new CommunityExpandBean.ChildrenData(communityVO.name);
+                CommunityExpandBean.ChildrenData child = new CommunityExpandBean.ChildrenData(communityVO.name, communityVO.communityID);
                 childrenData.add(child);
             }
             CommunityExpandBean communityExpandBean = new CommunityExpandBean("我管理的社区", childrenData);
@@ -77,7 +77,7 @@ public class JoinedFragment extends Fragment {
         joinedViewModel.getCommunityJoinedLiveData().observe(getViewLifecycleOwner(), communityVOs -> {
             List<CommunityExpandBean.ChildrenData> childrenData = new ArrayList<>();
             for (CommunityVO communityVO : communityVOs) {
-                CommunityExpandBean.ChildrenData child = new CommunityExpandBean.ChildrenData(communityVO.name);
+                CommunityExpandBean.ChildrenData child = new CommunityExpandBean.ChildrenData(communityVO.name, communityVO.communityID);
                 childrenData.add(child);
             }
             CommunityExpandBean communityExpandBean = new CommunityExpandBean("我加入的社区", childrenData);

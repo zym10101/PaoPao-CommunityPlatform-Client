@@ -1,6 +1,8 @@
 package com.example.android_demo.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +11,10 @@ import android.widget.TextView;
 
 import com.example.android_demo.R;
 import com.example.android_demo.bean.CommunityExpandBean;
+import com.example.android_demo.community.CommunityInnerActivity;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author SummCoder
@@ -133,6 +137,31 @@ public class CommunityExpandableAdapter extends BaseExpandableListAdapter {
         }
 
         childrenHolder.tvChild.setText(communityExpandBeanList.get(groupPosition).getChildrenDataList().get(childPosition).getSubContent());
+
+        // 为子项设置点击事件
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 获取当前点击的子项数据
+                CommunityExpandBean.ChildrenData childrenData = communityExpandBeanList.get(groupPosition).getChildrenDataList().get(childPosition);
+                CommunityExpandBean groupData = communityExpandBeanList.get(groupPosition);
+                // 根据子项的ID执行相应的跳转操作
+                Long childId = childrenData.getCommunityId(); // 社区id
+                String communityName = childrenData.getSubContent(); // 社区名
+                // 执行跳转操作，根据childId进行相应的页面跳转
+                Intent intent=new Intent(context, CommunityInnerActivity.class);
+                Bundle bundle = new Bundle();
+                //把数据保存到Bundle里
+                bundle.putString("id", String.valueOf(childId));
+                bundle.putString("cover", String.valueOf(R.drawable.cover0));
+                bundle.putString("name", communityName);
+                String follow = groupData.getTitle();
+                bundle.putString("follow", "200万关注");
+                //把bundle放入intent里
+                intent.putExtra("Message",bundle);
+                context.startActivity(intent);
+            }
+        });
 
         return convertView;
     }
