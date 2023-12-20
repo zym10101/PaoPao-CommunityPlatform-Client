@@ -85,7 +85,7 @@ public class InFragment extends Fragment {
                         .connectTimeout(60000, TimeUnit.MILLISECONDS)
                         .readTimeout(60000, TimeUnit.MILLISECONDS)
                         .build();
-                String url = "http://" + constant.IP_ADDRESS + "/uc/getCommunityIdList";
+                String url = constant.IP_ADDRESS + "/uc/getCommunityIdList";
                 MyApplication application = MyApplication.getInstance();
                 Request request = new Request.Builder()
                         .url(url)

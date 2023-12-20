@@ -179,7 +179,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                 // 创建HTTP请求
 
                 Request request = new Request.Builder()
-                        .url("http://" + constant.IP_ADDRESS + "/user/getAvatar")
+                        .url(constant.IP_ADDRESS + "/user/getAvatar")
                         .addHeader("satoken", Objects.requireNonNull(MyApplication.getInstance().infoMap.get("satoken")))
                         .build();
                 // 执行发送的指令，获得返回结果
@@ -279,7 +279,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                     // 创建HTTP请求
 
                     Request request = new Request.Builder()
-                            .url("http://" + constant.IP_ADDRESS + "/sms/send?phone=" + phoneNumber)
+                            .url(constant.IP_ADDRESS + "/sms/send?phone=" + phoneNumber)
                             .build();
                     // 执行发送的指令，获得返回结果
                     Response response = client.newCall(request).execute();
@@ -325,7 +325,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                             .build();
                     // 创建HTTP请求
                     Request request = new Request.Builder()
-                            .url("http://" + constant.IP_ADDRESS + "/user/update")
+                            .url(constant.IP_ADDRESS + "/user/update")
                             .post(RequestBody.create(MediaType.parse("application/json"), json))
                             .build();
                     // 执行发送的指令

@@ -31,10 +31,10 @@ public class SquareFragment extends Fragment {
     private GridLayout gl_posts;
     private SquareViewModel squareViewModel;
 
-    public static final String LIKE_URL = "http://" + constant.IP_ADDRESS + "/user/like";
-    public static final String LIKE_BACK_URL = "http://" + constant.IP_ADDRESS + "/user/like_back";
-    public static final String DISLIKE_URL = "http://" + constant.IP_ADDRESS + "/user/dislike";
-    public static final String DISLIKE_BACK_URL = "http://" + constant.IP_ADDRESS + "/user/dislike_back";
+    public static final String LIKE_URL = constant.IP_ADDRESS + "/user/like";
+    public static final String LIKE_BACK_URL = constant.IP_ADDRESS + "/user/like_back";
+    public static final String DISLIKE_URL = constant.IP_ADDRESS + "/user/dislike";
+    public static final String DISLIKE_BACK_URL = constant.IP_ADDRESS + "/user/dislike_back";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

@@ -47,7 +47,7 @@ public class UserUtils {
                 // 创建HTTP请求
 
                 Request request = new Request.Builder()
-                        .url("http://" + constant.IP_ADDRESS + "/user/login?userName=" + username + "&password=" + password)
+                        .url(constant.IP_ADDRESS + "/user/login?userName=" + username + "&password=" + password)
                         .build();
                 // 执行发送的指令，获得返回结果
                 Response response = client.newCall(request).execute();
@@ -99,7 +99,7 @@ public class UserUtils {
                         .build();
                 // 创建HTTP请求
                 Request request = new Request.Builder()
-                        .url("http://" + constant.IP_ADDRESS + "/user/logout")
+                        .url(constant.IP_ADDRESS + "/user/logout")
                         .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
                         .build();
                 // 执行发送的指令，获得返回结果

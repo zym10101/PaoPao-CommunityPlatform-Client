@@ -130,7 +130,7 @@ public class CommunityInnerActivity extends AppCompatActivity {
                 // 创建HTTP请求
 
                 Request request = new Request.Builder()
-                        .url("http://" + constant.IP_ADDRESS + "/post/getAllPosts?communityId="+community_id)
+                        .url(constant.IP_ADDRESS + "/post/getAllPosts?communityId="+community_id)
                         .build();
                 // 执行发送的指令，获得返回结果
                 Response response = client.newCall(request).execute();

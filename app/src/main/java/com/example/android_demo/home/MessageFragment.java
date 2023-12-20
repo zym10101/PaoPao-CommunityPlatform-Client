@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.example.android_demo.Constants.constant;
 import com.example.android_demo.MyApplication;
 import com.example.android_demo.R;
 import com.example.android_demo.bean.MessageBean;
@@ -142,7 +143,7 @@ public class MessageFragment extends Fragment {
     private void agree(String userID, String communityID) {
         application = MyApplication.getInstance();
         // 调用后端接口执行同意操作
-        String url = "http://10.0.2.2:8200/application/accept?userID=" + userID + "&communityID=" + communityID + "&handlerID=" + Objects.requireNonNull(application.infoMap.get("loginId"));
+        String url = constant.IP_ADDRESS + "/application/accept?userID=" + userID + "&communityID=" + communityID + "&handlerID=" + Objects.requireNonNull(application.infoMap.get("loginId"));
         Thread thread = new Thread(() -> {
             try {
                 // 创建 HTTP 客户端
@@ -185,7 +186,7 @@ public class MessageFragment extends Fragment {
     private void refuse(String userID, String communityID) {
         application = MyApplication.getInstance();
         // 调用后端接口执行同意操作
-        String url = "http://10.0.2.2:8200/application/refuse?userID=" + userID + "&communityID=" + communityID + "&handlerID=" + Objects.requireNonNull(application.infoMap.get("loginId"));
+        String url = constant.IP_ADDRESS + "/application/refuse?userID=" + userID + "&communityID=" + communityID + "&handlerID=" + Objects.requireNonNull(application.infoMap.get("loginId"));
         Thread thread = new Thread(() -> {
             try {
                 // 创建 HTTP 客户端
