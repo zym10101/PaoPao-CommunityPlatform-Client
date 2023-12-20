@@ -122,7 +122,6 @@ public class SettingFragment extends Fragment {
         //给avatar加上观察器，当avatar值发生改变的时候，调用观察函数
         mainViewModel.getAvatar().observe(getActivity(), avatarObserver);
 
-        //TODO 上传头像功能
         postAva.setOnClickListener(view -> {
             // 弹出一个对话框，选择拍照或者从相册选择
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -211,7 +210,7 @@ public class SettingFragment extends Fragment {
                     // 创建HTTP请求
 
                     Request request = new Request.Builder()
-                            .url("http://" + constant.IP_ADDRESS + "/sms/send?phone=" + phoneNumber)
+                            .url(constant.IP_ADDRESS + "/sms/send?phone=" + phoneNumber)
                             .build();
                     // 执行发送的指令，获得返回结果
                     Response response = client.newCall(request).execute();
@@ -257,7 +256,7 @@ public class SettingFragment extends Fragment {
                             .build();
                     // 创建HTTP请求
                     Request request = new Request.Builder()
-                            .url("http://" + constant.IP_ADDRESS + "/user/update")
+                            .url(constant.IP_ADDRESS + "/user/update")
                             .post(RequestBody.create(MediaType.parse("application/json"), json))
                             .build();
                     // 执行发送的指令
@@ -319,7 +318,6 @@ public class SettingFragment extends Fragment {
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
@@ -327,6 +325,11 @@ public class SettingFragment extends Fragment {
 
     // 将照片文件上传
     private void uploadPhoto(String uri) {
+        System.out.println(111);
+        System.out.println(uri);
+        if (uri == null || uri.isEmpty()) {
+            return;
+        }
         File file = new File(uri);
         Thread thread = new Thread(() -> {
             // 创建HTTP客户端
@@ -345,7 +348,7 @@ public class SettingFragment extends Fragment {
                     .build();
             // 创建HTTP请求
             Request request = new Request.Builder()
-                    .url("http://" + constant.IP_ADDRESS + "/user/edit")
+                    .url(constant.IP_ADDRESS + "/user/edit")
                     .post(multipartBody)
                     .build();
             try {

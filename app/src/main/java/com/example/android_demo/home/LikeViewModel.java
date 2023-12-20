@@ -41,7 +41,7 @@ public class LikeViewModel extends ViewModel {
                         .build();
                 // 创建HTTP请求
                 Request request = new Request.Builder()
-                        .url("http://" + constant.IP_ADDRESS + "/user/likes")
+                        .url(constant.IP_ADDRESS + "/user/likes")
                         .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
                         .build();
                 // 执行发送的指令，获得返回结果
