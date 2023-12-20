@@ -1,5 +1,6 @@
 package com.example.android_demo.ui.setting;
 
+import static android.app.Activity.RESULT_OK;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.content.Intent;
@@ -73,7 +74,7 @@ public class SettingFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result ->{
-            if (result != null) {
+            if (result != null && result.getResultCode() == RESULT_OK) {
                 // 从相机获取图片处理
                 if (result.getData() == null || result.getData().getData() == null) {
                     // 相机拍照的结果，直接上传
@@ -81,7 +82,6 @@ public class SettingFragment extends Fragment {
                 } else {
                     // 相册选择的结果，直接上传
                     String uri = FileUtils.getRealPathFromUri(getActivity(), result.getData().getData());
-                    System.out.println(uri);
                     uploadPhoto(uri);
                 }
             }
@@ -325,8 +325,6 @@ public class SettingFragment extends Fragment {
 
     // 将照片文件上传
     private void uploadPhoto(String uri) {
-        System.out.println(111);
-        System.out.println(uri);
         if (uri == null || uri.isEmpty()) {
             return;
         }
