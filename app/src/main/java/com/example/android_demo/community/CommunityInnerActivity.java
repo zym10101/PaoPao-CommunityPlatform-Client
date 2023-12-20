@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,15 +28,23 @@ import com.example.android_demo.utils.ResponseData;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
-
 
 public class CommunityInnerActivity extends AppCompatActivity {
     CommunityBean communityBean;
@@ -49,6 +58,7 @@ public class CommunityInnerActivity extends AppCompatActivity {
     long id;
     int cover;
     String name,follow;
+    String IP="192.168.241.1:8081";
     private static int[] coverArray = {R.drawable.cover0, R.drawable.cover1, R.drawable.cover2};
     private static String[] titleArray = {
             "C++秘籍",
@@ -97,7 +107,6 @@ public class CommunityInnerActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // 在这里定义选中状态改变时的操作
                 String desc = String.format("%s", isChecked ? "已关注" : "关注");
-
                 if(isChecked){
                     cb_community_follow.setText(desc);
                 }else {
@@ -106,13 +115,28 @@ public class CommunityInnerActivity extends AppCompatActivity {
             }
         });
 
-        getPosts(String.valueOf(id));
-
         recyclerview=findViewById(R.id.recyclerview_in_community);
-        for(int i = 0; i < 12; i++){
-            PostBean postBean = new PostBean(i, id,titleArray[i%6],contentArray[i%6],coverArray[i%3]);
-            PostBeanList.add(postBean);
-        }
+
+        //todo 想办法在外面用数据
+        getPosts(new VolleyCallback() {
+            @Override
+            public void onSuccess(String result) throws JSONException {
+                JSONArray dataJson = new JSONArray(result);
+                Log.d(TAG, "onSuccess" + dataJson);
+                for(int i = 0; i <dataJson.length(); i++){
+                    String title0 = (String) dataJson.getJSONObject(i).get("title");
+                    String content0=(String) dataJson.getJSONObject(i).get("content");
+                    PostBean postBean = new PostBean(i, communityBean.id,title0,content0,coverArray[i%3]);
+                    PostBeanList.add(postBean);
+                }
+            }
+        });
+
+//        for(int i = 0; i < 12; i++){
+//            PostBean postBean = new PostBean(i, communityBean.id,titleArray[i%6],contentArray[i%6],coverArray[i%3]);
+//            PostBeanList.add(postBean);
+//        }
+
         myAdapter = new MyAdapter();
         recyclerview.setAdapter(myAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -133,68 +157,79 @@ public class CommunityInnerActivity extends AppCompatActivity {
         intent.putExtra("Message",bundle);
         startActivity(intent);
     }
-    public void getPosts(String community_id){
-        Thread thread = new Thread(() -> {
-            // 获取头像
-            try {
-                // 创建HTTP客户端
-                OkHttpClient client = new OkHttpClient()
-                        .newBuilder()
-                        .connectTimeout(60000, TimeUnit.MILLISECONDS)
-                        .readTimeout(60000, TimeUnit.MILLISECONDS)
-                        .build();
-                // 创建HTTP请求
 
-                Request request = new Request.Builder()
-                        .url("http://" + constant.IP_ADDRESS + "/post/getAllPosts?communityId="+community_id)
-                        .build();
-                // 执行发送的指令，获得返回结果
-                Response response = client.newCall(request).execute();
-                String reData=response.body().string();
-                System.out.println("redata为："+reData);
-                Gson gson = new Gson();
-                ResponseData rdata= gson.fromJson(reData, ResponseData.class);
-                if (rdata.getCode().equals("200")) res = rdata.getData().toString();
-                System.out.println("获取到的返回值为"+res);
+    public void getPosts(final VolleyCallback callback){
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .build();
+        String url = "http://" + IP + "/post/getAllPosts?communityId="+communityBean.id;
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
 
-            } catch (Exception e) {
-                Log.e(TAG, Log.getStackTraceString(e));
+        // 异步发送请求
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                Log.e("getallposts", "failed");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String responseData = response.body().string();
+                try {
+                    JSONObject json = new JSONObject(responseData);
+                    String data = json.getString("data");
+                    JSONArray dataJson = new JSONArray(data);
+                    //todo
+                    callback.onSuccess(data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
+                interface VolleyCallback {
+                    void onSuccess(String result) throws JSONException;
+                }
 
-    class MyAdapter extends RecyclerView.Adapter<MyViewHolder>{
-        @NonNull
-        @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.post_item, parent, false);
-            return new MyViewHolder(view);
-        }
-        @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-            PostBean postBean = PostBeanList.get(position);
-            holder.iv_cover.setImageResource(postBean.photo);
-            holder.tv_post_title.setText(postBean.title);
-            holder.tv_post_content.setText(postBean.content);
-        }
+                class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
+                    @NonNull
+                    @Override
+                    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                        View view = LayoutInflater.from(parent.getContext())
+                                .inflate(R.layout.post_item, parent, false);
+                        return new MyViewHolder(view);
+                    }
 
-        @Override
-        public int getItemCount() {
-            return PostBeanList.size();
-        }
-    }
+                    @Override
+                    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+                        PostBean postBean = PostBeanList.get(position);
+                        holder.iv_cover.setImageResource(postBean.photo);
+                        holder.tv_post_title.setText(postBean.title);
+                        holder.tv_post_content.setText(postBean.content);
+                    }
 
-    static class MyViewHolder extends RecyclerView.ViewHolder{
-        ImageView iv_cover;
-        TextView tv_post_title;
-        TextView tv_post_content;
-        public MyViewHolder(@NonNull View itemView) {
-            super(itemView);
-            iv_cover = itemView.findViewById(R.id.avatar);
-            tv_post_title = itemView.findViewById(R.id.username1);
-            tv_post_content = itemView.findViewById(R.id.tv_content);
-        }
-    }
+                    @Override
+                    public int getItemCount() {
+                        return PostBeanList.size();
+                    }
+                }
 
+                public static class MyViewHolder extends RecyclerView.ViewHolder {
+                    ImageView iv_cover;
+                    TextView tv_post_title;
+                    TextView tv_post_content;
+
+                    public MyViewHolder(@NonNull View itemView) {
+                        super(itemView);
+                        iv_cover = itemView.findViewById(R.id.avatar);
+                        tv_post_title = itemView.findViewById(R.id.username1);
+                        tv_post_content = itemView.findViewById(R.id.tv_content);
+                    }
+                }
 }

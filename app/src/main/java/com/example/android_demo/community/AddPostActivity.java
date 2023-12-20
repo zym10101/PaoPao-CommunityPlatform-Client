@@ -4,10 +4,12 @@ import static com.example.android_demo.Constants.constant.IP_ADDRESS;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -74,14 +76,12 @@ public class AddPostActivity extends AppCompatActivity {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
         JSONObject jsonObject = new JSONObject();
-        try {
+        try {      //todo 还差点信息没加
             jsonObject.put("userId", 1);
             jsonObject.put("communityId", communityId);
             jsonObject.put("title", title);
             jsonObject.put("content", content);
             jsonObject.put("isPublic", "true");
-            //todo 还差点信息没加
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -110,9 +110,15 @@ public class AddPostActivity extends AppCompatActivity {
                 Log.i("Addpost", responseData);
                 try {
                     JSONObject json = new JSONObject(responseData);
+                    String code=json.getString("code");
                     String data = json.getString("data");
                     JSONObject dataJson = new JSONObject(data);
-                    Log.e("Addpost", "failed");
+                    if(code.equals("1")){
+                        Looper.prepare();
+                        Toast.makeText(AddPostActivity.this, "发帖成功", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
