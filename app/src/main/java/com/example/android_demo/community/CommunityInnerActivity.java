@@ -24,6 +24,7 @@ import com.example.android_demo.R;
 import com.example.android_demo.bean.CommunityBean;
 import com.example.android_demo.bean.PostBean;
 import com.example.android_demo.utils.ResponseData;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -45,7 +46,9 @@ public class CommunityInnerActivity extends AppCompatActivity {
     CheckBox cb_community_follow;
     MyAdapter myAdapter;
     private String res;
-
+    long id;
+    int cover;
+    String name,follow;
     private static int[] coverArray = {R.drawable.cover0, R.drawable.cover1, R.drawable.cover2};
     private static String[] titleArray = {
             "C++秘籍",
@@ -71,10 +74,10 @@ public class CommunityInnerActivity extends AppCompatActivity {
         Bundle bundle = intent.getBundleExtra("Message");
         assert bundle != null;
 
-        long id = Long.parseLong(Objects.requireNonNull(bundle.getString("id")));
-        int cover= Integer.parseInt(Objects.requireNonNull(bundle.getString("cover")));
-        String name=bundle.getString("name");
-        String follow=bundle.getString("follow");
+        id = Long.parseLong(Objects.requireNonNull(bundle.getString("id")));
+        cover= Integer.parseInt(Objects.requireNonNull(bundle.getString("cover")));
+        name=bundle.getString("name");
+        follow=bundle.getString("follow");
 
         communityBean=new CommunityBean(id,cover,name,follow);
         System.out.println("communityBean id: "+communityBean+"community src: "+communityBean.cover);
@@ -115,8 +118,21 @@ public class CommunityInnerActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerview.setLayoutManager(layoutManager);
 
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> {
+            toAddPost();
+        });
     }
 
+    public void toAddPost(){
+        Intent intent=new Intent(this, AddPostActivity.class);
+        Bundle bundle = new Bundle();
+        //把数据保存到Bundle里
+        bundle.putString("community_id",String.valueOf(communityBean.id));
+        //把bundle放入intent里
+        intent.putExtra("Message",bundle);
+        startActivity(intent);
+    }
     public void getPosts(String community_id){
         Thread thread = new Thread(() -> {
             // 获取头像

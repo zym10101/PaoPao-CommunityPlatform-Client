@@ -49,7 +49,7 @@
         </activity>
         <activity android:name=".user.RegisterActivity" />
         <activity android:name=".user.LoginActivity" />
-
+        <activity android:name=".community.AddPostActivity"/>
         <activity android:name=".ui.square.post.PostDetailActivity" />
 
 

@@ -56,7 +56,7 @@ public class UserUtils {
                     System.out.println("redata"+reData);
                     Gson gson = new Gson();
                     ResponseData<Map<String, String>> rdata= gson.fromJson(reData, ResponseData.class);
-                    System.out.println(rdata.getData());
+                    System.out.println("rdata getData是："+rdata.getData());
                     if(rdata.getCode().equals("999")){
                         isLoggedIn = false;
                         message = rdata.getMessage();
