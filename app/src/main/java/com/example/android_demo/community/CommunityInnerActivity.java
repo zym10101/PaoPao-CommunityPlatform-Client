@@ -122,19 +122,20 @@ public class CommunityInnerActivity extends AppCompatActivity {
             public void onSuccess(String result) throws JSONException {
                 JSONArray dataJson = new JSONArray(result);
                 Log.d(TAG, "onSuccess" + dataJson);
-                for(int i = 0; i <dataJson.length(); i++){
+                for(int i = dataJson.length()-1; i >=0; i--){
                     String title0 = (String) dataJson.getJSONObject(i).get("title");
                     String content0=(String) dataJson.getJSONObject(i).get("content");
                     PostBean postBean = new PostBean(i, communityBean.id,title0,content0,coverArray[i%3]);
                     PostBeanList.add(postBean);
                 }
+                for(int i = dataJson.length(); i < dataJson.length()+12; i++){
+                    PostBean postBean = new PostBean(i, communityBean.id,titleArray[i%6],contentArray[i%6],coverArray[i%3]);
+                    PostBeanList.add(postBean);
+                }
             }
         });
 
-//        for(int i = 0; i < 12; i++){
-//            PostBean postBean = new PostBean(i, communityBean.id,titleArray[i%6],contentArray[i%6],coverArray[i%3]);
-//            PostBeanList.add(postBean);
-//        }
+
 
         myAdapter = new MyAdapter();
         recyclerview.setAdapter(myAdapter);
