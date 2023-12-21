@@ -44,6 +44,7 @@ public class AddPostActivity extends AppCompatActivity {
     Button cancel,commit;
     public static MyApplication application;
 
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
