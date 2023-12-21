@@ -58,7 +58,6 @@ public class CommunityInnerActivity extends AppCompatActivity {
     long id;
     int cover;
     String name,follow;
-    String IP="192.168.241.1:8081";
     private static int[] coverArray = {R.drawable.cover0, R.drawable.cover1, R.drawable.cover2};
     private static String[] titleArray = {
             "C++秘籍",
@@ -164,7 +163,7 @@ public class CommunityInnerActivity extends AppCompatActivity {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
-        String url = "http://" + IP + "/post/getAllPosts?communityId="+communityBean.id;
+        String url = "http://" + constant.IP_ADDRESS+ "/post/getAllPosts?communityId="+communityBean.id;
         Request request = new Request.Builder()
                 .url(url)
                 .get()

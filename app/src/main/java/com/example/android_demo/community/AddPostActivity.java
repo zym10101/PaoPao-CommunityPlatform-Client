@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.android_demo.Constants.constant;
 import com.example.android_demo.MainViewModel;
 import com.example.android_demo.MyApplication;
 import com.example.android_demo.R;
@@ -42,7 +43,6 @@ public class AddPostActivity extends AppCompatActivity {
     String title,content,userId,communityId;
     Button cancel,commit;
     public static MyApplication application;
-    String IP="192.168.241.1:8081";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +89,7 @@ public class AddPostActivity extends AppCompatActivity {
         RequestBody requestBody = RequestBody.create(mediaType, jsonObject.toString());
         Log.i("Addpost", jsonObject.toString());
 
-        String url = "http://" + IP + "/post/addPost";
+        String url = "http://" + constant.IP_ADDRESS + "/post/addPost";
         Request request = new Request.Builder()
                 .url(url)
                 .post(requestBody)
