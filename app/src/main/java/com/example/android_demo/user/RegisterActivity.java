@@ -130,7 +130,7 @@ public class RegisterActivity extends AppCompatActivity {
                         .build();
                 // 创建HTTP请求
                 Request request = new Request.Builder()
-                        .url("http://" + constant.IP_ADDRESS + "/user/register")
+                        .url(constant.IP_ADDRESS + "/user/register")
                         .post(RequestBody.create(MediaType.parse("application/json"), json))
                         .build();
                 // 执行发送的指令
@@ -172,7 +172,7 @@ public class RegisterActivity extends AppCompatActivity {
                 // 创建HTTP请求
 
                 Request request = new Request.Builder()
-                        .url("http://" + constant.IP_ADDRESS + "/sms/send?phone=" + phoneNum)
+                        .url(constant.IP_ADDRESS + "/sms/send?phone=" + phoneNum)
                         .build();
                 // 执行发送的指令，获得返回结果
                 Response response = client.newCall(request).execute();

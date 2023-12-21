@@ -40,7 +40,7 @@ import okhttp3.Response;
 
 public class AddPostActivity extends AppCompatActivity {
     EditText titleET,contentET;
-    String title,content,userId,communityId;
+    String title,content,communityId;
     Button cancel,commit;
     public static MyApplication application;
 
@@ -76,7 +76,7 @@ public class AddPostActivity extends AppCompatActivity {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
         JSONObject jsonObject = new JSONObject();
-        try {      //todo 还差点信息没加
+        try {
             jsonObject.put("userId", 1);
             jsonObject.put("communityId", communityId);
             jsonObject.put("title", title);
@@ -100,8 +100,6 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                // failed
-                Log.e("Addpost", "failed");
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -112,11 +110,13 @@ public class AddPostActivity extends AppCompatActivity {
                     JSONObject json = new JSONObject(responseData);
                     String code=json.getString("code");
                     String data = json.getString("data");
-                    JSONObject dataJson = new JSONObject(data);
                     if(code.equals("1")){
                         Looper.prepare();
                         Toast.makeText(AddPostActivity.this, "发帖成功", Toast.LENGTH_SHORT).show();
                         finish();
+                    }else{
+                        Looper.prepare();
+                        Toast.makeText(AddPostActivity.this, "发帖失败", Toast.LENGTH_SHORT).show();
                     }
 
                 } catch (JSONException e) {

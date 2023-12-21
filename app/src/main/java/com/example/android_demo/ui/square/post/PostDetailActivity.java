@@ -103,7 +103,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         .build();
 
                 Request request = new Request.Builder()
-                        .url("http://" + constant.IP_ADDRESS + "/user/getComments")
+                        .url(constant.IP_ADDRESS + "/user/getComments")
                         .post(requestBody)
                         .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
                         .build();
@@ -147,7 +147,7 @@ public class PostDetailActivity extends AppCompatActivity {
                 RequestBody requestBody = RequestBody.create(JSON, json);
 
                 Request request = new Request.Builder()
-                        .url("http://" + constant.IP_ADDRESS + "/user/comment")
+                        .url(constant.IP_ADDRESS + "/user/comment")
                         .post(requestBody)
                         .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
                         .build();

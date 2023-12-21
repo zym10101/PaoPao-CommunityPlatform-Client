@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.example.android_demo.Constants.constant;
 import com.example.android_demo.R;
 import com.example.android_demo.databinding.FragmentPostBinding;
 import com.example.android_demo.ui.square.post.PostDetailActivity;
@@ -152,7 +153,7 @@ public class PostFragment extends Fragment {
 
     private void deletePost(String postId) {
         // 调用后端接口执行删除操作
-        String url = "http://10.0.2.2:8081/post/deletePost";
+        String url = constant.IP_ADDRESS + "/post/deletePost";
         Thread thread = new Thread(() -> {
             try {
                 // 创建 HTTP 客户端

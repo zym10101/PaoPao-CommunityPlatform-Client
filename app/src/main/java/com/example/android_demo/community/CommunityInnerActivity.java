@@ -54,7 +54,6 @@ public class CommunityInnerActivity extends AppCompatActivity {
     private RecyclerView recyclerview;
     CheckBox cb_community_follow;
     MyAdapter myAdapter;
-    private String res;
     long id;
     int cover;
     String name,follow;
@@ -116,26 +115,20 @@ public class CommunityInnerActivity extends AppCompatActivity {
 
         recyclerview=findViewById(R.id.recyclerview_in_community);
 
-        //todo 想办法在外面用数据
-        getPosts(new VolleyCallback() {
-            @Override
-            public void onSuccess(String result) throws JSONException {
-                JSONArray dataJson = new JSONArray(result);
-                Log.d(TAG, "onSuccess" + dataJson);
-                for(int i = dataJson.length()-1; i >=0; i--){
-                    String title0 = (String) dataJson.getJSONObject(i).get("title");
-                    String content0=(String) dataJson.getJSONObject(i).get("content");
-                    PostBean postBean = new PostBean(i, communityBean.id,title0,content0,coverArray[i%3]);
-                    PostBeanList.add(postBean);
-                }
-                for(int i = dataJson.length(); i < dataJson.length()+12; i++){
-                    PostBean postBean = new PostBean(i, communityBean.id,titleArray[i%6],contentArray[i%6],coverArray[i%3]);
-                    PostBeanList.add(postBean);
-                }
+        getPosts(result -> {
+            JSONArray dataJson = new JSONArray(result);
+            Log.d(TAG, "onSuccess" + dataJson);
+            for(int i = dataJson.length()-1; i >=0; i--){
+                String title0 = (String) dataJson.getJSONObject(i).get("title");
+                String content0=(String) dataJson.getJSONObject(i).get("content");
+                PostBean postBean = new PostBean(i, communityBean.id,title0,content0,coverArray[i%3]);
+                PostBeanList.add(postBean);
+            }
+            for(int i = dataJson.length(); i < dataJson.length()+12; i++){
+                PostBean postBean = new PostBean(i, communityBean.id,titleArray[i%6],contentArray[i%6],coverArray[i%3]);
+                PostBeanList.add(postBean);
             }
         });
-
-
 
         myAdapter = new MyAdapter();
         recyclerview.setAdapter(myAdapter);
