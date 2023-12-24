@@ -51,6 +51,7 @@
         <activity android:name=".user.LoginActivity" />
         <activity android:name=".community.AddPostActivity"/>
         <activity android:name=".ui.square.post.PostDetailActivity" />
+        <activity android:name=".ui.chat.ChatActivity"/>
 
 
         <activity android:name=".community.CommunityInnerActivity"/>

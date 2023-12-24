@@ -9,17 +9,24 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.android_demo.Constants.constant;
+import com.example.android_demo.MainActivity;
 import com.example.android_demo.MainViewModel;
 import com.example.android_demo.MyApplication;
 import com.example.android_demo.R;
 import com.example.android_demo.bean.CommunityBean;
 import com.example.android_demo.bean.PostBean;
+import com.example.android_demo.databinding.FragmentChatBinding;
+import com.example.android_demo.ui.chat.ChatActivity;
+import com.example.android_demo.ui.chat.ChatFragment;
 import com.example.android_demo.utils.UserUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -40,10 +47,10 @@ import okhttp3.Response;
 
 public class AddPostActivity extends AppCompatActivity {
     EditText titleET,contentET;
+    TextView to_ai;
     String title,content,communityId;
     Button cancel,commit;
     public static MyApplication application;
-
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,11 +64,17 @@ public class AddPostActivity extends AppCompatActivity {
         contentET=findViewById(R.id.contentEditText);
         cancel=findViewById(R.id.post_cancel_Button);
         commit=findViewById(R.id.post_commit_Button);
+        to_ai=findViewById(R.id.to_AI);
 
         application = MyApplication.getInstance();
 
         cancel.setOnClickListener(v->{
             finish();
+        });
+
+        to_ai.setOnClickListener(v->{
+            Intent intent1 = new Intent(this, ChatActivity.class);
+            startActivity(intent1);
         });
 
         commit.setOnClickListener(v->{

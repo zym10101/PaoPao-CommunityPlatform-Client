@@ -18,6 +18,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.android_demo.databinding.ActivityMainBinding;
+import com.example.android_demo.ui.chat.ChatFragment;
 import com.example.android_demo.user.LoginActivity;
 import com.example.android_demo.utils.UserUtils;
 import com.google.android.material.navigation.NavigationView;
@@ -46,6 +47,15 @@ public class MainActivity extends AppCompatActivity {
                 intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
                 startActivity(intent);
             }
+        }
+
+        int id = getIntent().getIntExtra("id", 0);
+        if (id == 1) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_chat,new ChatFragment())
+                    .addToBackStack(null)
+                    .commit();
         }
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());

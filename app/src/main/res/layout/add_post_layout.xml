@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent">
 
     <TextView
@@ -12,6 +13,7 @@
         android:layout_height="0dp"
         android:text="快来分享你的生活吧！"
         android:textSize="20sp"
+
         android:textColor="@color/black"
         android:layout_marginTop="30dp"
         app:layout_constraintWidth_percent="0.85"
@@ -24,7 +26,10 @@
         android:id="@+id/titleEditText"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         android:hint="文章标题"
+        android:padding="15dp"
+        android:background="@drawable/txt_radiuborder"
         app:layout_constraintWidth_percent="0.85"
         app:layout_constraintHeight_percent="0.1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,30 +41,45 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="30dp"
+        android:background="@drawable/txt_radiuborder"
         android:hint="内容"
+        android:padding="15dp"
         android:textIsSelectable="true"
-        android:longClickable="true"
         app:layout_constraintWidth_percent="0.85"
         app:layout_constraintHeight_percent="0.5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleEditText" />
+
+    <TextView
+        android:id="@+id/to_AI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/contentEditText"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="没有灵感？何不问问AI"
+        android:layout_margin="20dp"
+        android:layout_marginEnd="30dp"
+        android:textColor="#008B45"
+        android:textSize="14sp" />
     <Button
         android:id="@+id/post_cancel_Button"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
         android:text="取消"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contentEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/to_AI" />
 
     <Button
         android:id="@+id/post_commit_Button"
+        android:layout_marginTop="20dp"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_marginEnd="40dp"
         android:text="发布"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contentEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/to_AI" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
