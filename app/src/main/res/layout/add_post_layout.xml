@@ -4,14 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/AitextView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="快来分享你的生活吧！"
+        android:text="@string/comeToShare"
         android:textSize="20sp"
 
         android:textColor="@color/black"
@@ -27,7 +26,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
-        android:hint="文章标题"
+        android:hint="@string/articleTitle"
         android:padding="15dp"
         android:background="@drawable/txt_radiuborder"
         app:layout_constraintWidth_percent="0.85"
@@ -42,7 +41,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/txt_radiuborder"
-        android:hint="内容"
+        android:hint="@string/articleContent"
         android:padding="15dp"
         android:textIsSelectable="true"
         app:layout_constraintWidth_percent="0.85"
@@ -57,7 +56,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/contentEditText"
         app:layout_constraintRight_toRightOf="parent"
-        android:text="没有灵感？何不问问AI"
+        android:text="@string/askToAI"
         android:layout_margin="20dp"
         android:layout_marginEnd="30dp"
         android:textColor="#008B45"
@@ -68,7 +67,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="40dp"
         android:layout_marginTop="20dp"
-        android:text="取消"
+        android:text="@string/cancel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/to_AI" />
 
@@ -78,7 +77,7 @@
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_marginEnd="40dp"
-        android:text="发布"
+        android:text="@string/fabu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/to_AI" />
 

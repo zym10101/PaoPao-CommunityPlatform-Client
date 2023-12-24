@@ -1,42 +1,24 @@
 package com.example.android_demo.community;
 
-import static com.example.android_demo.Constants.constant.IP_ADDRESS;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.example.android_demo.Constants.constant;
-import com.example.android_demo.MainActivity;
-import com.example.android_demo.MainViewModel;
 import com.example.android_demo.MyApplication;
 import com.example.android_demo.R;
-import com.example.android_demo.bean.CommunityBean;
-import com.example.android_demo.bean.PostBean;
-import com.example.android_demo.databinding.FragmentChatBinding;
 import com.example.android_demo.ui.chat.ChatActivity;
-import com.example.android_demo.ui.chat.ChatFragment;
-import com.example.android_demo.utils.UserUtils;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -68,9 +50,7 @@ public class AddPostActivity extends AppCompatActivity {
 
         application = MyApplication.getInstance();
 
-        cancel.setOnClickListener(v->{
-            finish();
-        });
+        cancel.setOnClickListener(v-> finish());
 
         to_ai.setOnClickListener(v->{
             Intent intent1 = new Intent(this, ChatActivity.class);
@@ -112,18 +92,18 @@ public class AddPostActivity extends AppCompatActivity {
         // 异步发送请求
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 e.printStackTrace();
             }
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 // success
+                assert response.body() != null;
                 final String responseData = response.body().string();
                 Log.i("Addpost", responseData);
                 try {
                     JSONObject json = new JSONObject(responseData);
                     String code=json.getString("code");
-                    String data = json.getString("data");
                     if(code.equals("1")){
                         Looper.prepare();
                         Toast.makeText(AddPostActivity.this, "发帖成功", Toast.LENGTH_SHORT).show();

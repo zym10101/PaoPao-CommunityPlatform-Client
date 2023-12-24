@@ -36,5 +36,11 @@
     <string name="commit">生成文章</string>
     <string name="delete">删除</string>
     <string name="emptyPost">噫，什么都没找到/(ㄒoㄒ)/~~</string>
+    <string name="comeToShare">快来分享你的生活吧！</string>
+    <string name="articleTitle">文章标题</string>
+    <string name="articleContent">内容</string>
+    <string name="askToAI">没有灵感？何不问问AI</string>
+    <string name="cancel">取消</string>
+    <string name="fabu">发布</string>
 
 </resources>
