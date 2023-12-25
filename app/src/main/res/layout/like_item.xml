@@ -42,8 +42,8 @@
     <!--内容-->
     <TextView
         android:id="@+id/tv_like_desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginEnd="20dp"
         android:text="到底什么是区块链？我一直不太明白，都说是是用于解决交易的信任和安全问题。怎么实现，我觉得任重道远。"
         android:textColor="@color/black"
