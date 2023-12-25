@@ -83,7 +83,7 @@ public class AddPostActivity extends AppCompatActivity {
         RequestBody requestBody = RequestBody.create(mediaType, jsonObject.toString());
         Log.i("Addpost", jsonObject.toString());
 
-        String url = "http://" + constant.IP_ADDRESS + "/post/addPost";
+        String url = constant.IP_ADDRESS + "/post/addPost";
         Request request = new Request.Builder()
                 .url(url)
                 .post(requestBody)
