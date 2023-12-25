@@ -157,7 +157,8 @@ public class CommunityInnerActivity extends AppCompatActivity {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
-        String url = "http://" + constant.IP_ADDRESS+ "/post/getAllPosts?communityId="+communityBean.id;
+        String url =  constant.IP_ADDRESS+ "/post/getAllPosts?communityId="+communityBean.id;
+        Log.e("getAllPosts",url);
         Request request = new Request.Builder()
                 .url(url)
                 .get()
@@ -178,7 +179,6 @@ public class CommunityInnerActivity extends AppCompatActivity {
                     JSONObject json = new JSONObject(responseData);
                     String data = json.getString("data");
                     JSONArray dataJson = new JSONArray(data);
-                    //todo
                     callback.onSuccess(data);
                 } catch (JSONException e) {
                     e.printStackTrace();
