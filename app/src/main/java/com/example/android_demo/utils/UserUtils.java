@@ -20,7 +20,7 @@ import okhttp3.Response;
 
 public class UserUtils {
     private static boolean isLoggedIn = false;
-
+    public static String userId;
     private static String message;
 
     public static String token;
@@ -65,6 +65,7 @@ public class UserUtils {
                         application = MyApplication.getInstance();
                         application.infoMap.put("satoken", token);
                         application.infoMap.put("loginId", rdata.getData().get("loginId"));
+                        userId=rdata.getData().get("loginId");
                         message = rdata.getMessage();
                         isLoggedIn = true;
                     }
