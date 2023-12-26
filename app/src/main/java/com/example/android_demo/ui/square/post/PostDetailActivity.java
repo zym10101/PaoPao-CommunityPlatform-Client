@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,12 +45,13 @@ public class PostDetailActivity extends AppCompatActivity {
     private List<CommentData.Comment> commentList = new ArrayList<>();
 
     private CommentAdapter commentAdapter;
+    ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_detail);
-
+        image=findViewById(R.id.image);
         // 获取从上一个活动传递的帖子ID
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("post")) {

@@ -49,6 +49,7 @@ public class HotFragment extends Fragment {
     List<CommunityBean> communityBeanList = new ArrayList<>();
     List<Long> liked=new ArrayList<>();
     MyAdapter myAdapter;
+    String userId;
     public static MyApplication application;
     private static int[] coverArray = {R.drawable.cover0, R.drawable.cover1, R.drawable.cover2};
     private static String[] nameArray = {
@@ -82,6 +83,9 @@ public class HotFragment extends Fragment {
 
         View root = binding.getRoot();
 
+        application=MyApplication.getInstance();
+        userId=application.infoMap.get("loginId");
+
         getLiked();
         recyclerview_hot = root.findViewById(R.id.recyclerview_hot);
         for(int i = 1; i < nameArray.length+1; i++){
@@ -111,7 +115,7 @@ public class HotFragment extends Fragment {
                         .build();
                 // 创建HTTP请求
                 Request request = new Request.Builder()
-                        .url(constant.IP_ADDRESS + "/community/getJoinedCommunity?userID=1")
+                        .url(constant.IP_ADDRESS + "/community/getJoinedCommunity?userID="+userId)
                         .build();
                 // 执行发送的指令，获得返回结果
                 Response response = client.newCall(request).execute();
@@ -203,7 +207,6 @@ public class HotFragment extends Fragment {
         }
     }
 
-
     static class MyViewHolder extends RecyclerView.ViewHolder{
         ImageView iv_cover;
         TextView tv_community_name;
@@ -229,10 +232,8 @@ public class HotFragment extends Fragment {
                 // 创建HTTP请求
 
                 Request request = new Request.Builder()
-                        .url(constant.IP_ADDRESS + "/community/addMember?communityID="+communityId+"&memberID=1&role=2")
+                        .url(constant.IP_ADDRESS + "/community/addMember?communityID="+communityId+"&memberID="+userId+"&role=2")
                         .build();
-                // 执行发送的指令，获得返回结果
-                Log.d("likeurl",constant.IP_ADDRESS + "/community/addMember?communityID="+communityId+"&memberID=1&role=2");
                 client.newCall(request).execute();
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
@@ -257,10 +258,8 @@ public class HotFragment extends Fragment {
                 // 创建HTTP请求
 
                 Request request = new Request.Builder()
-                        .url(constant.IP_ADDRESS + "/community/deleteMember?communityID="+communityId+"&memberID=1")
+                        .url(constant.IP_ADDRESS + "/community/deleteMember?communityID="+communityId+"&memberID="+userId)
                         .build();
-                // 执行发送的指令，获得返回结果
-                Log.d("unlikeurl",constant.IP_ADDRESS + "/community/deleteMember?communityID="+communityId+"&memberID=1");
                 client.newCall(request).execute();
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));

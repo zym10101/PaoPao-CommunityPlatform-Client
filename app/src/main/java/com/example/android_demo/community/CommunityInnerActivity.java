@@ -54,9 +54,10 @@ public class CommunityInnerActivity extends AppCompatActivity {
     private RecyclerView recyclerview;
     CheckBox cb_community_follow;
     MyAdapter myAdapter;
+    public static MyApplication application;
     long id;
     int cover;
-    String name,follow,isliked;
+    String name,follow,isliked,userId;
     private static int[] coverArray = {R.drawable.cover0, R.drawable.cover1, R.drawable.cover2};
     private static String[] titleArray = {
             "C++秘籍",
@@ -99,6 +100,9 @@ public class CommunityInnerActivity extends AppCompatActivity {
 
         iv_cover=findViewById(R.id.tv_community_image);
         iv_cover.setImageResource(cover);
+
+        application=MyApplication.getInstance();
+        userId=application.infoMap.get("loginId");
 
         cb_community_follow=findViewById(R.id.cb_community_follow);
         if (isliked.equals("1")){
@@ -167,12 +171,9 @@ public class CommunityInnerActivity extends AppCompatActivity {
                         .readTimeout(60000, TimeUnit.MILLISECONDS)
                         .build();
                 // 创建HTTP请求
-
                 Request request = new Request.Builder()
-                        .url(constant.IP_ADDRESS + "/community/addMember?communityID="+communityId+"&memberID=1&role=2")
+                        .url(constant.IP_ADDRESS + "/community/addMember?communityID="+communityId+"&memberID="+userId+"&role=2")
                         .build();
-                // 执行发送的指令，获得返回结果
-                Log.d("likeurl",constant.IP_ADDRESS + "/community/addMember?communityID="+communityId+"&memberID=1&role=2");
                 client.newCall(request).execute();
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
@@ -197,10 +198,8 @@ public class CommunityInnerActivity extends AppCompatActivity {
                 // 创建HTTP请求
 
                 Request request = new Request.Builder()
-                        .url(constant.IP_ADDRESS + "/community/deleteMember?communityID="+communityId+"&memberID=1")
+                        .url(constant.IP_ADDRESS + "/community/deleteMember?communityID="+communityId+"&memberID="+userId)
                         .build();
-                // 执行发送的指令，获得返回结果
-                Log.d("unlikeurl",constant.IP_ADDRESS + "/community/deleteMember?communityID="+communityId+"&memberID=1");
                 client.newCall(request).execute();
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
