@@ -96,15 +96,15 @@ public class PostFragment extends Fragment {
                 CheckBox cb_down = view.findViewById(R.id.iv_down);
                 cb_down.setEnabled(false);
                 String avatarUrl = (String) list.get(position).get("avatar");
-                Button bt_post_delete = view.findViewById(R.id.bt_post_delete);
-                bt_post_delete.setEnabled(true);
-                bt_post_delete.setVisibility(View.VISIBLE);
+                ImageView iv_post_delete = view.findViewById(R.id.iv_post_delete);
+                iv_post_delete.setEnabled(true);
+                iv_post_delete.setVisibility(View.VISIBLE);
                 // 使用Glide加载头像图片
                 Glide.with(getActivity())
                         .load(avatarUrl)
                         .into(avatarImageView);
                 // 为删除按钮设置点击事件
-                bt_post_delete.setOnClickListener(v ->{
+                iv_post_delete.setOnClickListener(v ->{
                     // 获取被点击的item的数据
                     PostData.Post post = posts.get(position);
                     // 调用后端接口执行删除操作

@@ -1,40 +1,39 @@
 package com.example.android_demo.community;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+import static com.example.android_demo.utils.UserUtils.application;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android_demo.Constants.constant;
-import com.example.android_demo.MyApplication;
 import com.example.android_demo.R;
-import com.example.android_demo.bean.CommunityBean;
-import com.example.android_demo.databinding.FragmentHotBinding;
-import com.example.android_demo.utils.UserUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.android_demo.bean.CommunityExpandData;
+import com.example.android_demo.bean.CommunityVO;
+import com.example.android_demo.utils.PostData;
+import com.example.android_demo.utils.ResponseData;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -46,68 +45,35 @@ import okhttp3.Response;
  * @date 2023/12/7 20:38
  */
 public class InFragment extends Fragment {
-    private FragmentHotBinding binding;
-    List<CommunityBean> communityBeanList = new ArrayList<>();
-    List<Long> liked=new ArrayList<>();
-    MyAdapter myAdapter;
+    private List<Map<String, Object>> communityList;
     private static int[] coverArray = {R.drawable.cover0, R.drawable.cover1, R.drawable.cover2};
-    private static String[] nameArray = {
-            "薅羊毛小队",
-            "薅羊毛小分队",
-            "华为鸿蒙",
-            "汽车",
-            "壁纸",
-            "好物安利",
-            "今日热点",
-            "美食家",
-            "沙雕乐园",
-            "手机摄影",
-            "开箱评测",
-
-    };
-    private static String[] followArray = {
-            "33.7万关注",
-            "4.2万关注",
-            "5.8万关注",
-            "11.3万关注",
-            "8.7万关注",
-            "7.2万关注"
-    };
-    private RecyclerView recyclerview_hot;
+    private int cover;
+    private ListView lv_in;
+    private TextView tv_notice;
+    private List<CommunityVO> communityVOS;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentHotBinding.inflate(inflater, container, false);
-
-        View root = binding.getRoot();
-
-        getLiked();
-
-        recyclerview_hot = root.findViewById(R.id.recyclerview_hot);
-
-        for(int i = 1; i < nameArray.length+1; i++){
-            if(liked.contains((long) i)){
-                CommunityBean communityBean = new CommunityBean(i, coverArray[i%3], nameArray[i-1], followArray[i%6]);
-                communityBeanList.add(communityBean);
-            }
-        }
-        myAdapter = new MyAdapter();
-        recyclerview_hot.setAdapter(myAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerview_hot.setLayoutManager(layoutManager);
-
-
-        return root;
+        View view = inflater.inflate(R.layout.fragment_in, null);
+        lv_in = view.findViewById(R.id.lv_in);
+        tv_notice = view.findViewById(R.id.tv_notice);
+        return view;
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    public void onResume() {
+        super.onResume();
+        initData();
     }
-    public void getLiked(){
-        Thread thread = new Thread(() -> {
+
+    private void initData() {
+        fetchData();
+    }
+
+    // 获取用户关注的社区，即加入的社区（管理员+普通用户）
+    private void fetchData(){
+        new Thread(() -> {
             try {
                 // 创建HTTP客户端
                 OkHttpClient client = new OkHttpClient()
@@ -116,168 +82,138 @@ public class InFragment extends Fragment {
                         .readTimeout(60000, TimeUnit.MILLISECONDS)
                         .build();
                 // 创建HTTP请求
-
                 Request request = new Request.Builder()
-                        .url(constant.IP_ADDRESS + "/community/getJoinedCommunity?userID=1")
+                        .url(constant.IP_ADDRESS + "/community/getInCommunities?userId=" + Objects.requireNonNull(application.infoMap.get("loginId")))
+                        .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
                         .build();
                 // 执行发送的指令，获得返回结果
                 Response response = client.newCall(request).execute();
-                if (response.code() == 200) {
-                    assert response.body() != null;
-                    final String responseData = response.body().string();
-                    try {
-                        JSONObject json = new JSONObject(responseData);
-                        String data=json.getString("data");
-                        JSONArray jsonArray=new JSONArray(data);
-                        for(int i=0;i<jsonArray.length();i++){
-                            JSONObject j=new JSONObject(jsonArray.getString(i));
-                            liked.add(Long.valueOf(j.getString("communityID")));
+                String reData = response.body().string();
+                System.out.println("res" + reData);
+                Gson gson = new Gson();
+                CommunityExpandData rdata = gson.fromJson(reData, CommunityExpandData.class);
+                if (rdata.getCode().equals("200")) {
+                    System.out.println("获取用户关注的社区成功");
+                    communityVOS = rdata.getData();
+                    updateUI(communityVOS);
+                } else {
+                    System.out.println("获取用户关注的社区失败");
+                }
+            } catch (Exception e) {
+                // 处理异常，例如记录日志
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void updateUI(List<CommunityVO> communityVOs) {
+        if(communityVOs.size() == 0){
+            tv_notice.setVisibility(View.VISIBLE);
+        }else {
+            tv_notice.setVisibility(View.GONE);
+        }
+        communityList = new ArrayList<>();
+        for (CommunityVO communityVO : communityVOs) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("communityID", communityVO.communityID);
+            map.put("name", communityVO.name);
+            Random random = new Random();
+            int randomNumber = random.nextInt(3);
+            map.put("cover", coverArray[randomNumber]);
+            communityList.add(map);
+        }
+
+        String[] from = {"cover", "name"};
+        int[] to = {R.id.iv_cover, R.id.tv_community_name};
+
+        SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(), communityList, R.layout.community_item, from, to) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                CheckBox cb_community_follow = view.findViewById(R.id.cb_community_follow);
+                cb_community_follow.setVisibility(View.GONE);
+                cb_community_follow.setEnabled(false);
+                Button bt_cancel_community_follow = view.findViewById(R.id.bt_cancel_community_follow);
+                bt_cancel_community_follow.setVisibility(View.VISIBLE);
+                bt_cancel_community_follow.setEnabled(true);
+                bt_cancel_community_follow.setOnClickListener(v -> {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    builder.setMessage("确定要退出该社区吗？")
+                            .setPositiveButton("确定", (dialog, which) -> {
+                                leaveCommunity(Long.parseLong(Objects.requireNonNull(communityList.get(position).get("communityID")).toString()));
+                                communityList.remove(position); // 从数据源中移除对应位置的评论
+                                notifyDataSetChanged(); // 通知适配器数据已更改
+                            })
+                            .setNegativeButton("取消", (dialog, which) -> {
+                                // 用户点击取消，不执行任何操作
+                            })
+                            .show();
+                });
+                // 为每个item设置点击事件
+                view.setOnClickListener(v -> {
+                    // 获取被点击的item的数据
+                    CommunityVO communityVO = communityVOs.get(position);
+                    cover = (int) communityList.get(position).get("cover");
+                    // 执行跳转操作
+                    navigateToCommunityVODetail(communityVO);
+                });
+                return view;
+            }
+        };
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                lv_in.setAdapter(simpleAdapter);
+            }
+        });
+    }
+
+    private void navigateToCommunityVODetail(CommunityVO communityVO) {
+        Intent intent = new Intent(getContext(), CommunityInnerActivity.class);
+        Bundle bundle = new Bundle();
+        //把数据保存到Bundle里
+        bundle.putString("id", String.valueOf(communityVO.communityID));
+        bundle.putString("cover", String.valueOf(cover));
+        bundle.putString("name", communityVO.name);
+        bundle.putString("follow", "200万关注");
+        //把bundle放入intent里
+        intent.putExtra("Message",bundle);
+        startActivity(intent);
+    }
+
+    // 取消对于社区的关注
+    private void leaveCommunity(long communityID){
+        new Thread(() -> {
+            try {
+                // 创建HTTP客户端
+                OkHttpClient client = new OkHttpClient()
+                        .newBuilder()
+                        .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                        .readTimeout(60000, TimeUnit.MILLISECONDS)
+                        .build();
+                // 创建HTTP请求
+                Request request = new Request.Builder()
+                        .url(constant.IP_ADDRESS + "/community/deleteMember?communityID=" + communityID + "&memberID=" + Objects.requireNonNull(application.infoMap.get("loginId")))
+                        .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
+                        .build();
+                // 执行发送的指令，获得返回结果
+                Response response = client.newCall(request).execute();
+                String reData = response.body().string();
+                Gson gson = new Gson();
+                ResponseData rdata = gson.fromJson(reData, ResponseData.class);
+                if (Objects.equals(rdata.getCode(), "200")){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(), "退出社区成功", Toast.LENGTH_SHORT).show();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    });
                 }
             } catch (Exception e) {
-                Log.e(TAG, Log.getStackTraceString(e));
+                // 处理异常，例如记录日志
+                e.printStackTrace();
             }
-        });
-        thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-    class MyAdapter extends RecyclerView.Adapter<MyViewHolder>{
-
-        @NonNull
-        @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = View.inflate(getActivity(), R.layout.community_item, null);
-            return new MyViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-            CommunityBean communityBean = communityBeanList.get(position);
-            holder.iv_cover.setImageResource(communityBean.cover);
-            holder.tv_community_name.setText(communityBean.name);
-            holder.tv_community_follow.setText(communityBean.follow);
-
-            if(liked.contains(communityBean.id)){
-                holder.cb_community_follow.setText("已关注");
-                holder.cb_community_follow.setChecked(true);
-            }
-
-            // 为每个cb_community_follow添加OnCheckedChangeListener
-            holder.cb_community_follow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    // 在这里定义选中状态改变时的操作
-                    String desc = String.format("%s", isChecked ? "已关注" : "关注");
-                    if(isChecked){
-                        like(String.valueOf(communityBean.id));
-                        holder.cb_community_follow.setText(desc);
-                    }else {
-                        unlike(String.valueOf(communityBean.id));
-                        holder.cb_community_follow.setText(desc);
-                    }
-                }
-            });
-            //点击跳转到社区内部界面
-            holder.iv_cover.setOnClickListener(view -> getInCommunity(communityBean));
-            holder.tv_community_name.setOnClickListener(view -> getInCommunity(communityBean));
-            holder.tv_community_follow.setOnClickListener(view -> getInCommunity(communityBean));
-        }
-
-        @Override
-        public int getItemCount() {
-            return communityBeanList.size();
-        }
-
-        public void getInCommunity(CommunityBean communityBean){
-            Intent intent=new Intent(getActivity(), CommunityInnerActivity.class);
-            Bundle bundle = new Bundle();
-            //把数据保存到Bundle里
-            bundle.putString("id",String.valueOf(communityBean.id));
-            bundle.putString("cover",String.valueOf(communityBean.cover));
-            bundle.putString("name",String.valueOf(communityBean.name));
-            bundle.putString("follow",String.valueOf(communityBean.follow));
-            //把bundle放入intent里
-            intent.putExtra("Message",bundle);
-            startActivity(intent);
-        }
-    }
-
-
-    static class MyViewHolder extends RecyclerView.ViewHolder{
-        ImageView iv_cover;
-        TextView tv_community_name;
-        TextView tv_community_follow;
-        CheckBox cb_community_follow;
-        public MyViewHolder(@NonNull View itemView) {
-            super(itemView);
-            iv_cover = itemView.findViewById(R.id.iv_cover);
-            tv_community_name = itemView.findViewById(R.id.tv_community_name);
-            tv_community_follow = itemView.findViewById(R.id.tv_community_follow);
-            cb_community_follow = itemView.findViewById(R.id.cb_community_follow);
-        }
-    }
-    public void like(String communityId){
-        Thread thread = new Thread(() -> {
-            try {
-                // 创建HTTP客户端
-                OkHttpClient client = new OkHttpClient()
-                        .newBuilder()
-                        .connectTimeout(60000, TimeUnit.MILLISECONDS)
-                        .readTimeout(60000, TimeUnit.MILLISECONDS)
-                        .build();
-                // 创建HTTP请求
-
-                Request request = new Request.Builder()
-                        .url(constant.IP_ADDRESS + "/community/addMember?communityID="+communityId+"&memberID=1&role=2")
-                        .build();
-                // 执行发送的指令，获得返回结果
-                Log.d("likeurl",constant.IP_ADDRESS + "/community/addMember?communityID="+communityId+"&memberID=1&role=2");
-                client.newCall(request).execute();
-            } catch (Exception e) {
-                Log.e(TAG, Log.getStackTraceString(e));
-            }
-        });
-        thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-    public void unlike(String communityId){
-        Thread thread = new Thread(() -> {
-            try {
-                // 创建HTTP客户端
-                OkHttpClient client = new OkHttpClient()
-                        .newBuilder()
-                        .connectTimeout(60000, TimeUnit.MILLISECONDS)
-                        .readTimeout(60000, TimeUnit.MILLISECONDS)
-                        .build();
-                // 创建HTTP请求
-
-                Request request = new Request.Builder()
-                        .url(constant.IP_ADDRESS + "/community/deleteMember?communityID="+communityId+"&memberID=1")
-                        .build();
-                // 执行发送的指令，获得返回结果
-                Log.d("unlikeurl",constant.IP_ADDRESS + "/community/deleteMember?communityID="+communityId+"&memberID=1");
-               client.newCall(request).execute();
-            } catch (Exception e) {
-                Log.e(TAG, Log.getStackTraceString(e));
-            }
-        });
-        thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        }).start();
     }
 
 }

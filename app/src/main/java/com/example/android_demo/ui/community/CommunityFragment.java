@@ -107,7 +107,7 @@ public class CommunityFragment extends Fragment {
                         RequestBody requestBody = RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
 
                         Request request = new Request.Builder()
-                                .url(constant.IP_ADDRESS + "/community/createCommunity?userID=" + application.infoMap.get("loginId"))
+                                .url(constant.IP_ADDRESS + "/community/createCommunity?userID=" + Long.parseLong(Objects.requireNonNull(application.infoMap.get("loginId"))))
                                 .post(requestBody)
                                 .build();
                         // 执行发送的指令，获得返回结果

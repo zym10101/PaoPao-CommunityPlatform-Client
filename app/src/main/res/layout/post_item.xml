@@ -120,14 +120,14 @@
         app:layout_constraintStart_toEndOf="@id/iv_review"
         app:layout_constraintTop_toTopOf="@id/iv_review" />
 
-    <Button
-        android:id="@+id/bt_post_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/delete"
-        android:backgroundTint="@color/red"
+    <ImageView
+        android:id="@+id/iv_post_delete"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@drawable/ic_delete"
         app:layout_constraintEnd_toEndOf="@+id/tv_content"
         app:layout_constraintTop_toTopOf="@+id/username1"
+        android:layout_marginEnd="5dp"
         android:enabled="false"
         android:visibility="gone"/>
 

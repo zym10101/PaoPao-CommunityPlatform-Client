@@ -155,7 +155,6 @@ public class CommunityExpandableAdapter extends BaseExpandableListAdapter {
                 bundle.putString("id", String.valueOf(childId));
                 bundle.putString("cover", String.valueOf(R.drawable.cover0));
                 bundle.putString("name", communityName);
-                String follow = groupData.getTitle();
                 bundle.putString("follow", "200万关注");
                 //把bundle放入intent里
                 intent.putExtra("Message",bundle);
