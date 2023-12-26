@@ -33,6 +33,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -48,6 +49,7 @@ public class HotFragment extends Fragment {
     List<CommunityBean> communityBeanList = new ArrayList<>();
     List<Long> liked=new ArrayList<>();
     MyAdapter myAdapter;
+    public static MyApplication application;
     private static int[] coverArray = {R.drawable.cover0, R.drawable.cover1, R.drawable.cover2};
     private static String[] nameArray = {
             "薅羊毛小队",
@@ -108,7 +110,6 @@ public class HotFragment extends Fragment {
                         .readTimeout(60000, TimeUnit.MILLISECONDS)
                         .build();
                 // 创建HTTP请求
-
                 Request request = new Request.Builder()
                         .url(constant.IP_ADDRESS + "/community/getJoinedCommunity?userID=1")
                         .build();
@@ -195,6 +196,7 @@ public class HotFragment extends Fragment {
             bundle.putString("cover",String.valueOf(communityBean.cover));
             bundle.putString("name",String.valueOf(communityBean.name));
             bundle.putString("follow",String.valueOf(communityBean.follow));
+            bundle.putString("isliked",liked.contains(communityBean.id)? "1":"0");
             //把bundle放入intent里
             intent.putExtra("Message",bundle);
             startActivity(intent);

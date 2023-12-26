@@ -56,7 +56,7 @@ public class CommunityInnerActivity extends AppCompatActivity {
     MyAdapter myAdapter;
     long id;
     int cover;
-    String name,follow;
+    String name,follow,isliked;
     private static int[] coverArray = {R.drawable.cover0, R.drawable.cover1, R.drawable.cover2};
     private static String[] titleArray = {
             "C++秘籍",
@@ -86,6 +86,7 @@ public class CommunityInnerActivity extends AppCompatActivity {
         cover= Integer.parseInt(Objects.requireNonNull(bundle.getString("cover")));
         name=bundle.getString("name");
         follow=bundle.getString("follow");
+        isliked=bundle.getString("isliked");
 
         communityBean=new CommunityBean(id,cover,name,follow);
         System.out.println("communityBean id: "+communityBean+"community src: "+communityBean.cover);
@@ -100,14 +101,20 @@ public class CommunityInnerActivity extends AppCompatActivity {
         iv_cover.setImageResource(cover);
 
         cb_community_follow=findViewById(R.id.cb_community_follow);
+        if (isliked.equals("1")){
+            cb_community_follow.setText("已关注");
+            cb_community_follow.setChecked(true);
+        }
         cb_community_follow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // 在这里定义选中状态改变时的操作
                 String desc = String.format("%s", isChecked ? "已关注" : "关注");
                 if(isChecked){
+                    like(String.valueOf(communityBean.id));
                     cb_community_follow.setText(desc);
                 }else {
+                    unlike(String.valueOf(communityBean.id));
                     cb_community_follow.setText(desc);
                 }
             }
@@ -150,7 +157,62 @@ public class CommunityInnerActivity extends AppCompatActivity {
         intent.putExtra("Message",bundle);
         startActivity(intent);
     }
+    public void like(String communityId){
+        Thread thread = new Thread(() -> {
+            try {
+                // 创建HTTP客户端
+                OkHttpClient client = new OkHttpClient()
+                        .newBuilder()
+                        .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                        .readTimeout(60000, TimeUnit.MILLISECONDS)
+                        .build();
+                // 创建HTTP请求
 
+                Request request = new Request.Builder()
+                        .url(constant.IP_ADDRESS + "/community/addMember?communityID="+communityId+"&memberID=1&role=2")
+                        .build();
+                // 执行发送的指令，获得返回结果
+                Log.d("likeurl",constant.IP_ADDRESS + "/community/addMember?communityID="+communityId+"&memberID=1&role=2");
+                client.newCall(request).execute();
+            } catch (Exception e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    public void unlike(String communityId){
+        Thread thread = new Thread(() -> {
+            try {
+                // 创建HTTP客户端
+                OkHttpClient client = new OkHttpClient()
+                        .newBuilder()
+                        .connectTimeout(60000, TimeUnit.MILLISECONDS)
+                        .readTimeout(60000, TimeUnit.MILLISECONDS)
+                        .build();
+                // 创建HTTP请求
+
+                Request request = new Request.Builder()
+                        .url(constant.IP_ADDRESS + "/community/deleteMember?communityID="+communityId+"&memberID=1")
+                        .build();
+                // 执行发送的指令，获得返回结果
+                Log.d("unlikeurl",constant.IP_ADDRESS + "/community/deleteMember?communityID="+communityId+"&memberID=1");
+                client.newCall(request).execute();
+            } catch (Exception e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
     public void getPosts(final VolleyCallback callback){
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
