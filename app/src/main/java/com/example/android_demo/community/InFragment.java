@@ -4,14 +4,12 @@ import static com.example.android_demo.utils.UserUtils.application;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -24,7 +22,6 @@ import com.example.android_demo.Constants.constant;
 import com.example.android_demo.R;
 import com.example.android_demo.bean.CommunityExpandData;
 import com.example.android_demo.bean.CommunityVO;
-import com.example.android_demo.utils.PostData;
 import com.example.android_demo.utils.ResponseData;
 import com.google.gson.Gson;
 
@@ -46,8 +43,8 @@ import okhttp3.Response;
  */
 public class InFragment extends Fragment {
     private List<Map<String, Object>> communityList;
-    private static int[] coverArray = {R.drawable.cover0, R.drawable.cover1, R.drawable.cover2};
-    private int cover;
+    private static int[] coverArray = {R.drawable.cover0, R.drawable.cover1, R.drawable.cover2, R.drawable.cover3,
+            R.drawable.cover4, R.drawable.cover5, R.drawable.cover6, R.drawable.cover7, R.drawable.cover8, R.drawable.cover9};    private int cover;
     private ListView lv_in;
     private TextView tv_notice;
     private List<CommunityVO> communityVOS;
@@ -107,65 +104,66 @@ public class InFragment extends Fragment {
     }
 
     private void updateUI(List<CommunityVO> communityVOs) {
-        if(communityVOs.size() == 0){
-            tv_notice.setVisibility(View.VISIBLE);
-        }else {
-            tv_notice.setVisibility(View.GONE);
-        }
-        communityList = new ArrayList<>();
-        for (CommunityVO communityVO : communityVOs) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("communityID", communityVO.communityID);
-            map.put("name", communityVO.name);
-            Random random = new Random();
-            int randomNumber = random.nextInt(3);
-            map.put("cover", coverArray[randomNumber]);
-            communityList.add(map);
-        }
-
-        String[] from = {"cover", "name"};
-        int[] to = {R.id.iv_cover, R.id.tv_community_name};
-
-        SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(), communityList, R.layout.community_item, from, to) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                CheckBox cb_community_follow = view.findViewById(R.id.cb_community_follow);
-                cb_community_follow.setVisibility(View.GONE);
-                cb_community_follow.setEnabled(false);
-                Button bt_cancel_community_follow = view.findViewById(R.id.bt_cancel_community_follow);
-                bt_cancel_community_follow.setVisibility(View.VISIBLE);
-                bt_cancel_community_follow.setEnabled(true);
-                bt_cancel_community_follow.setOnClickListener(v -> {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                    builder.setMessage("确定要退出该社区吗？")
-                            .setPositiveButton("确定", (dialog, which) -> {
-                                leaveCommunity(Long.parseLong(Objects.requireNonNull(communityList.get(position).get("communityID")).toString()));
-                                communityList.remove(position); // 从数据源中移除对应位置的评论
-                                notifyDataSetChanged(); // 通知适配器数据已更改
-                            })
-                            .setNegativeButton("取消", (dialog, which) -> {
-                                // 用户点击取消，不执行任何操作
-                            })
-                            .show();
-                });
-                // 为每个item设置点击事件
-                view.setOnClickListener(v -> {
-                    // 获取被点击的item的数据
-                    CommunityVO communityVO = communityVOs.get(position);
-                    cover = (int) communityList.get(position).get("cover");
-                    // 执行跳转操作
-                    navigateToCommunityVODetail(communityVO);
-                });
-                return view;
-            }
-        };
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if(communityVOs.size() == 0){
+                    tv_notice.setVisibility(View.VISIBLE);
+                }else {
+                    tv_notice.setVisibility(View.GONE);
+                }
+                communityList = new ArrayList<>();
+                int i = 0;
+                for (CommunityVO communityVO : communityVOs) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("communityID", communityVO.communityID);
+                    map.put("name", communityVO.name);
+                    map.put("cover", coverArray[i]);
+                    i++;
+                    communityList.add(map);
+                }
+
+                String[] from = {"cover", "name"};
+                int[] to = {R.id.iv_cover, R.id.tv_community_name};
+
+                SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(), communityList, R.layout.community_item, from, to) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        View view = super.getView(position, convertView, parent);
+                        CheckBox cb_community_follow = view.findViewById(R.id.cb_community_follow);
+                        cb_community_follow.setVisibility(View.GONE);
+                        cb_community_follow.setEnabled(false);
+                        Button bt_cancel_community_follow = view.findViewById(R.id.bt_cancel_community_follow);
+                        bt_cancel_community_follow.setVisibility(View.VISIBLE);
+                        bt_cancel_community_follow.setEnabled(true);
+                        bt_cancel_community_follow.setOnClickListener(v -> {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                            builder.setMessage("确定要退出该社区吗？")
+                                    .setPositiveButton("确定", (dialog, which) -> {
+                                        leaveCommunity(Long.parseLong(Objects.requireNonNull(communityList.get(position).get("communityID")).toString()));
+                                        communityList.remove(position); // 从数据源中移除对应位置的评论
+                                        notifyDataSetChanged(); // 通知适配器数据已更改
+                                    })
+                                    .setNegativeButton("取消", (dialog, which) -> {
+                                        // 用户点击取消，不执行任何操作
+                                    })
+                                    .show();
+                        });
+                        // 为每个item设置点击事件
+                        view.setOnClickListener(v -> {
+                            // 获取被点击的item的数据
+                            CommunityVO communityVO = communityVOs.get(position);
+                            cover = (int) communityList.get(position).get("cover");
+                            // 执行跳转操作
+                            navigateToCommunityVODetail(communityVO);
+                        });
+                        return view;
+                    }
+                };
                 lv_in.setAdapter(simpleAdapter);
             }
         });
+
     }
 
     private void navigateToCommunityVODetail(CommunityVO communityVO) {
@@ -175,7 +173,7 @@ public class InFragment extends Fragment {
         bundle.putString("id", String.valueOf(communityVO.communityID));
         bundle.putString("cover", String.valueOf(cover));
         bundle.putString("name", communityVO.name);
-        bundle.putString("follow", "200万关注");
+        bundle.putBoolean("isPublic", communityVO.isPublic);
         //把bundle放入intent里
         intent.putExtra("Message",bundle);
         startActivity(intent);

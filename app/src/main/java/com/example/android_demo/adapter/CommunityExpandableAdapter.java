@@ -155,7 +155,8 @@ public class CommunityExpandableAdapter extends BaseExpandableListAdapter {
                 bundle.putString("id", String.valueOf(childId));
                 bundle.putString("cover", String.valueOf(R.drawable.cover0));
                 bundle.putString("name", communityName);
-                bundle.putString("follow", "200万关注");
+                // 用户创建或者已加入的社区，对用户默认社区内部内容是可见的
+                bundle.putBoolean("isPublic", true);
                 //把bundle放入intent里
                 intent.putExtra("Message",bundle);
                 context.startActivity(intent);

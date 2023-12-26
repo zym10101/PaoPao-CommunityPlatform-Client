@@ -7,15 +7,29 @@
     android:focusable="true"
     android:paddingBottom="10dp">
     <!--头像-->
-    <ImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/avatar"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginTop="24dp"
-        android:foreground="@drawable/circle"
         android:src="@drawable/avatar0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:riv_corner_radius_bottom_left="60dp"
+        app:riv_corner_radius_bottom_right="60dp"
+        app:riv_corner_radius_top_left="60dp"
+        app:riv_corner_radius_top_right="60dp" />
+
+
+<!--    <ImageView-->
+<!--        android:id="@+id/avatar"-->
+<!--        android:layout_width="45dp"-->
+<!--        android:layout_height="45dp"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:foreground="@drawable/circle"-->
+<!--        android:src="@drawable/avatar0"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
     <!--用户名-->
     <TextView
         android:id="@+id/username1"

@@ -44,8 +44,8 @@ import okhttp3.Response;
  */
 public class RecommendFragment extends Fragment {
     private List<Map<String, Object>> communityList;
-    private static int[] coverArray = {R.drawable.cover0, R.drawable.cover1, R.drawable.cover2};
-    private int cover;
+    private static int[] coverArray = {R.drawable.cover0, R.drawable.cover1, R.drawable.cover2, R.drawable.cover3,
+            R.drawable.cover4, R.drawable.cover5, R.drawable.cover6, R.drawable.cover7, R.drawable.cover8, R.drawable.cover9};    private int cover;
     private ListView lv_recommended;
     private List<CommunityVO> communityVOS;
 
@@ -104,13 +104,13 @@ public class RecommendFragment extends Fragment {
 
     private void updateUI(List<CommunityVO> communityVOs) {
         communityList = new ArrayList<>();
+        int i = 0;
         for (CommunityVO communityVO : communityVOs) {
             Map<String, Object> map = new HashMap<>();
             map.put("communityID", communityVO.communityID);
             map.put("name", communityVO.name);
-            Random random = new Random();
-            int randomNumber = random.nextInt(3);
-            map.put("cover", coverArray[randomNumber]);
+            map.put("cover", coverArray[i]);
+            i++;
             communityList.add(map);
         }
 
@@ -166,7 +166,7 @@ public class RecommendFragment extends Fragment {
         bundle.putString("id", String.valueOf(communityVO.communityID));
         bundle.putString("cover", String.valueOf(cover));
         bundle.putString("name", communityVO.name);
-        bundle.putString("follow", "200万关注");
+        bundle.putBoolean("isPublic", communityVO.isPublic);
         //把bundle放入intent里
         intent.putExtra("Message",bundle);
         startActivity(intent);
