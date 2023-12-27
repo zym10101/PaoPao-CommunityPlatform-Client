@@ -22,6 +22,7 @@ import com.example.android_demo.databinding.FragmentSquareBinding;
 import com.example.android_demo.ui.square.post.PostDetailActivity;
 import com.example.android_demo.utils.PostData;
 import com.example.android_demo.utils.TimeUtils;
+import com.example.android_demo.utils.UserUtils;
 
 import java.util.List;
 
@@ -52,7 +53,9 @@ public class SquareFragment extends Fragment {
                     updateUI(posts);
                 } else {
                     // 处理数据为空的情况
-                    Toast.makeText(getActivity(), "获取帖子失败", Toast.LENGTH_SHORT).show();
+                    if(UserUtils.isLoggedIn()) {
+                        Toast.makeText(getActivity(), "获取帖子中", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
@@ -135,7 +138,9 @@ public class SquareFragment extends Fragment {
                 updateUI(posts);
             } else {
                 // 处理数据为空的情况
-                Toast.makeText(getActivity(), "获取帖子失败", Toast.LENGTH_SHORT).show();
+                if(UserUtils.isLoggedIn()){
+                    Toast.makeText(getActivity(), "获取帖子中", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

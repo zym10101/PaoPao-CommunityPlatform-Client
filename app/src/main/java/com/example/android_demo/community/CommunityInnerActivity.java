@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -56,8 +57,9 @@ public class CommunityInnerActivity extends AppCompatActivity {
 
     private static int[] coverArray = {R.drawable.cover0, R.drawable.cover1, R.drawable.cover2};
     private Button bt_join;
-    private ImageView iv_manageMember;
+    private LinearLayout linear_managerMember;
     private ImageView iv_communityInnerBack;
+    private TextView tv_communityInnerTitle;
 
     public void onCreate(Bundle savedInstanceState) {
 
@@ -86,13 +88,13 @@ public class CommunityInnerActivity extends AppCompatActivity {
         iv_communityInnerBack.setOnClickListener(v -> {
             finish();
         });
-        iv_manageMember = findViewById(R.id.iv_manageMember);
+        linear_managerMember = findViewById(R.id.linear_managerMember);
         // 只有社区成员才能发帖
         if(isJoined){
             iv_write.setOnClickListener(view -> {
                 toAddPost();
             });
-            iv_manageMember.setOnClickListener(view -> {
+            linear_managerMember.setOnClickListener(view -> {
                 Intent intent1 = new Intent(CommunityInnerActivity.this, MemberActivity.class);
                 intent1.putExtra("communityId", id);
                 startActivity(intent1);
@@ -107,6 +109,8 @@ public class CommunityInnerActivity extends AppCompatActivity {
                 bt_join.setBackgroundColor(Color.GRAY);
             });
         }
+        tv_communityInnerTitle = findViewById(R.id.tv_communityInnerTitle);
+        tv_communityInnerTitle.setText(name);
     }
 
     @Override
