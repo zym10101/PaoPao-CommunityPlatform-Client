@@ -220,6 +220,7 @@ public class AddPostActivity extends AppCompatActivity {
                 } else {
                     Looper.prepare();
                     Toast.makeText(this, "图片上传失败！请检查网络状况", Toast.LENGTH_SHORT).show();
+
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
