@@ -20,7 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 
+import com.bumptech.glide.Glide;
 import com.example.android_demo.Constants.constant;
 import com.example.android_demo.R;
 import com.example.android_demo.adapter.CommentAdapter;
@@ -52,6 +54,8 @@ public class PostDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_detail);
         image=findViewById(R.id.image);
+
+
         // 获取从上一个活动传递的帖子ID
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("post")) {
@@ -70,6 +74,15 @@ public class PostDetailActivity extends AppCompatActivity {
 
         CheckBox up = findViewById(R.id.detail_up);
         CheckBox down = findViewById(R.id.detail_down);
+        image=findViewById(R.id.image);
+
+        final Observer<String> avatarObserver = newAvatar -> {
+            Glide.with(this)
+                    .load(newAvatar)
+                    .into(image);
+        };
+
+
         up.setOnClickListener(v -> {
             down.setEnabled(!up.isChecked());
             PostData.Post post = (PostData.Post) getIntent().getSerializableExtra("post");

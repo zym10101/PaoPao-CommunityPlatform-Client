@@ -24,6 +24,8 @@ import com.example.android_demo.MyApplication;
 import com.example.android_demo.R;
 import com.example.android_demo.bean.CommunityBean;
 import com.example.android_demo.bean.PostBean;
+import com.example.android_demo.ui.square.post.PostDetailActivity;
+import com.example.android_demo.utils.PostData;
 import com.example.android_demo.utils.ResponseData;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
@@ -151,7 +153,12 @@ public class CommunityInnerActivity extends AppCompatActivity {
             toAddPost();
         });
     }
-
+    private void navigateToPostDetail(PostData.Post post) {
+        // 创建一个Intent或使用其他导航方法，将post传递给新的活动或片段
+        Intent intent = new Intent(this, PostDetailActivity.class);
+        intent.putExtra("post", post);
+        startActivity(intent);
+    }
     public void toAddPost(){
         Intent intent=new Intent(this, AddPostActivity.class);
         Bundle bundle = new Bundle();
@@ -247,11 +254,11 @@ public class CommunityInnerActivity extends AppCompatActivity {
             }
         });
     }
-                interface VolleyCallback {
-                    void onSuccess(String result) throws JSONException;
-                }
+    interface VolleyCallback {
+        void onSuccess(String result) throws JSONException;
+    }
 
-                class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
+    class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                     @NonNull
                     @Override
                     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -267,13 +274,11 @@ public class CommunityInnerActivity extends AppCompatActivity {
                         holder.tv_post_title.setText(postBean.title);
                         holder.tv_post_content.setText(postBean.content);
                     }
-
                     @Override
                     public int getItemCount() {
                         return PostBeanList.size();
                     }
                 }
-
                 public static class MyViewHolder extends RecyclerView.ViewHolder {
                     ImageView iv_cover;
                     TextView tv_post_title;
