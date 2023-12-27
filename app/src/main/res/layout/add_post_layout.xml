@@ -51,7 +51,7 @@
         app:layout_constraintTop_toBottomOf="@+id/titleEditText" />
     <ImageView
         android:id="@+id/postImage"
-        android:src="@drawable/jia2"
+        android:src="@drawable/jia"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginBottom="10dp"
