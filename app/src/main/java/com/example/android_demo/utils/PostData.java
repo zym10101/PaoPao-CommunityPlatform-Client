@@ -41,6 +41,8 @@ public class PostData {
         private String createTime;
         private String lastUpdateTime;
 
+        private String postPicture;
+
         public String getPostId() {
             return postId;
         }
@@ -144,6 +146,14 @@ public class PostData {
 
         public void setLastUpdateTime(String lastUpdateTime) {
             this.lastUpdateTime = lastUpdateTime;
+        }
+
+        public String getPostPicture() {
+            return postPicture;
+        }
+
+        public void setPostPicture(String postPicture) {
+            this.postPicture = postPicture;
         }
     }
 }

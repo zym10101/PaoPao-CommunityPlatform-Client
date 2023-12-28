@@ -62,7 +62,7 @@ public class PostDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_detail);
-        image=findViewById(R.id.image);
+        image = findViewById(R.id.image);
 
         // 获取从上一个活动传递的帖子ID
         Intent intent = getIntent();
@@ -70,7 +70,7 @@ public class PostDetailActivity extends AppCompatActivity {
             PostData.Post post = (PostData.Post) intent.getSerializableExtra("post");
             // 在这里加载和显示帖子详细信息
             assert post != null;
-            imageUrl = post.getPhoto();
+            imageUrl = post.getPostPicture();
             System.out.println(" image  " + imageUrl);
             showPostDetails(post);
             getComments(post);
@@ -237,8 +237,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     }
 
-    private void requestImg(final URL imgUrl)
-    {
+    private void requestImg(final URL imgUrl) {
         new Thread(() -> {
             Bitmap bitmap = null;
             try {
@@ -250,9 +249,10 @@ public class PostDetailActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void showImg(final Bitmap bitmap){
+    private void showImg(final Bitmap bitmap) {
         runOnUiThread(() -> image.setImageBitmap(bitmap));
     }
+
     public void submitComment(View view) {
         // 获取评论框的文本
         EditText commentEditText = findViewById(R.id.commentEditText);
