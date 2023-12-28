@@ -99,7 +99,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                     password = bundle.getString("password");
                     login(username, password);
                     dialog.dismiss();
-
                     Intent intent1 = new Intent();
                     Bundle bundle1 = new Bundle();
                     bundle1.putString("username", username);

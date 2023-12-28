@@ -107,6 +107,7 @@ public class RecommendFragment extends Fragment {
             Map<String, Object> map = new HashMap<>();
             map.put("communityID", communityVO.communityID);
             map.put("name", communityVO.name);
+
             map.put("cover", coverArray[i%10]);
             i++;
             communityList.add(map);
