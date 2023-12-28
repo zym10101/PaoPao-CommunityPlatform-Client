@@ -62,7 +62,8 @@ public class SettingFragment extends Fragment {
     private MainViewModel mainViewModel;
     TextView textView;
     ImageView postAva;
-    Button xiugai,logout;
+    TextView xiugai;
+    Button logout;
     private String userName, password,phoneNumber, verify;
 
     private ActivityResultLauncher<Intent> launcher;
@@ -95,9 +96,10 @@ public class SettingFragment extends Fragment {
 
         //获取textView的时候也通过binding获取
         textView = binding.textSetting;
-        xiugai = binding.xiugai;
+//        xiugai = binding.xiugai;
         logout=binding.logout;
         postAva=binding.ivAvatar;
+        xiugai = binding.tvEditPassword;
 
         //获取viewModel,用来存储数据
         SettingViewModel settingViewModel = new ViewModelProvider(this).get(SettingViewModel.class);
