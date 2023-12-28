@@ -71,6 +71,7 @@ public class PostDetailActivity extends AppCompatActivity {
             // 在这里加载和显示帖子详细信息
             assert post != null;
             imageUrl = post.getPhoto();
+            System.out.println(" image  " + imageUrl);
             showPostDetails(post);
             getComments(post);
             commentAdapter = new CommentAdapter(this, commentList);

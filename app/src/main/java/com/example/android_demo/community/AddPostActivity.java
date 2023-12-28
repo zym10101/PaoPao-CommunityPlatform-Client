@@ -48,6 +48,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -61,7 +62,6 @@ import okhttp3.Response;
 public class AddPostActivity extends AppCompatActivity {
     EditText titleET,contentET,tagET;
     TextView to_ai;
-    private MainViewModel mainViewModel;
     String title,content,communityId,userId,tagList;
     Button cancel,commit;
     ImageView postAva;
@@ -71,8 +71,10 @@ public class AddPostActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> launcher;
     private String currentPhotoPath;
 
+    private static Boolean isSuccessful;
+
     // 用于获取子线程返回的url
-    private String url;
+    private String url = "";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +83,6 @@ public class AddPostActivity extends AppCompatActivity {
         assert bundle != null;
         communityId=bundle.getString("community_id");
 
-        mainViewModel=new ViewModelProvider(this).get(MainViewModel.class);
 
         addViewModel=new ViewModelProvider(this).get(AddViewModel.class);
 
@@ -98,7 +99,7 @@ public class AddPostActivity extends AppCompatActivity {
         };
 
         //给avatar加上观察器，当avatar值发生改变的时候，调用观察函数
-        mainViewModel.getAvatar().observe(this, avatarObserver);
+        addViewModel.getAvatar().observe(this, avatarObserver);
 
         postAva=findViewById(R.id.postImage);
 
@@ -122,7 +123,10 @@ public class AddPostActivity extends AppCompatActivity {
         application = MyApplication.getInstance();
         userId=application.infoMap.get("loginId");
 
-        cancel.setOnClickListener(v-> finish());
+        cancel.setOnClickListener(v-> {
+            addViewModel.getAvatar().setValue("http://kiyotakawang.oss-cn-hangzhou.aliyuncs.com/img/image-20231228101219539.png");
+            finish();
+        });
 
         postAva.setOnClickListener(view -> {
             // 弹出一个对话框，选择拍照或者从相册选择
@@ -258,17 +262,20 @@ public class AddPostActivity extends AppCompatActivity {
         RequestBody requestBody = RequestBody.create(mediaType, jsonObject.toString());
         Log.i("Addpost", jsonObject.toString());
 
-        String url = constant.IP_ADDRESS + "/post/addPost";
+        String url_ = constant.IP_ADDRESS + "/user/publish";
         Request request = new Request.Builder()
-                .url(url)
+                .url(url_)
                 .post(requestBody)
+                .addHeader("satoken", Objects.requireNonNull(application.infoMap.get("satoken")))
                 .build();
 
         // 异步发送请求
+        final CountDownLatch latch = new CountDownLatch(1);
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 e.printStackTrace();
+                latch.countDown();
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
@@ -279,18 +286,30 @@ public class AddPostActivity extends AppCompatActivity {
                 try {
                     JSONObject json = new JSONObject(responseData);
                     String code=json.getString("code");
-                    if(code.equals("1")){
+                    if(code.equals("200")){
                         Looper.prepare();
                         Toast.makeText(AddPostActivity.this, "发帖成功", Toast.LENGTH_SHORT).show();
-                        finish();
+                        isSuccessful = true;
                     }else{
                         Looper.prepare();
                         Toast.makeText(AddPostActivity.this, "发帖失败", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    latch.countDown();
                 }
             }
         });
+        try {
+            latch.await(); // 主线程等待子线程执行完毕
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (isSuccessful) {
+            addViewModel.getAvatar().setValue("http://kiyotakawang.oss-cn-hangzhou.aliyuncs.com/img/image-20231228101219539.png");
+            isSuccessful = false;
+            finish();
+        }
     }
 }
