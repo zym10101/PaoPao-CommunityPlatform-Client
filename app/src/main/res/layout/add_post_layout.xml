@@ -51,8 +51,10 @@
         app:layout_constraintTop_toBottomOf="@+id/titleEditText"
         app:layout_constraintWidth_percent="0.85" />
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintHeight_percent="0.2"
         app:layout_constraintTop_toBottomOf="@+id/contentEditText"
         app:layout_constraintStart_toStartOf="@+id/contentEditText"
         android:layout_marginTop="10dp"
@@ -64,20 +66,21 @@
 
     <ImageView
         android:id="@+id/postImage"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_marginStart="188dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintHeight_percent="0.2"
         android:layout_marginTop="8dp"
         android:src="@drawable/tianjiatupian"
-        app:layout_constraintStart_toStartOf="@+id/contentEditText"
-
+        app:layout_constraintEnd_toEndOf="@+id/contentEditText"
         app:layout_constraintTop_toBottomOf="@+id/contentEditText" />
 
     <EditText
         android:id="@+id/tagEditText"
-        android:layout_width="200dp"
+        android:layout_width="0dp"
         android:hint="请输入tag"
         android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.4"
         app:layout_constraintTop_toBottomOf="@+id/postImage"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="40dp"
@@ -86,33 +89,34 @@
 
     <TextView
         android:id="@+id/to_AI"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.35"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/postImage"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tagEditText"
+        app:layout_constraintEnd_toEndOf="@+id/postImage"
         android:text="@string/askToAI"
-        android:layout_margin="30dp"
-        android:layout_marginEnd="30dp"
         android:textColor="#008B45"
+        android:layout_marginBottom="10dp"
         android:textSize="14sp" />
     <Button
         android:id="@+id/post_cancel_Button"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.3"
+        app:layout_constraintHeight_percent="0.07"
+        android:layout_marginTop="10dp"
         android:text="@string/cancel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/to_AI" />
+        app:layout_constraintStart_toStartOf="@+id/contentEditText"
+        app:layout_constraintTop_toBottomOf="@+id/tagEditText" />
 
     <Button
         android:id="@+id/post_commit_Button"
-        android:layout_marginTop="20dp"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="40dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.3"
+        app:layout_constraintHeight_percent="0.07"
         android:text="@string/fabu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/to_AI" />
+        app:layout_constraintEnd_toEndOf="@+id/contentEditText"
+        app:layout_constraintTop_toTopOf="@+id/post_cancel_Button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
