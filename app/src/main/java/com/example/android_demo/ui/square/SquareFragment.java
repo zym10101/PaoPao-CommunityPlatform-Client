@@ -52,10 +52,7 @@ public class SquareFragment extends Fragment {
                 if (posts != null && !posts.isEmpty()) {
                     updateUI(posts);
                 } else {
-                    // 处理数据为空的情况
-                    if(UserUtils.isLoggedIn()) {
-                        Toast.makeText(getActivity(), "获取帖子中", Toast.LENGTH_SHORT).show();
-                    }
+                    gl_posts.removeAllViews();
                 }
             });
 
@@ -137,10 +134,7 @@ public class SquareFragment extends Fragment {
             if (posts != null && !posts.isEmpty()) {
                 updateUI(posts);
             } else {
-                // 处理数据为空的情况
-                if(UserUtils.isLoggedIn()){
-                    Toast.makeText(getActivity(), "获取帖子中", Toast.LENGTH_SHORT).show();
-                }
+                gl_posts.removeAllViews();
             }
         });
     }
