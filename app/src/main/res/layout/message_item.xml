@@ -10,10 +10,11 @@
         android:layout_marginTop="15dp"
         android:layout_marginStart="10dp"
         android:src="@drawable/avatar0"
-        app:riv_corner_radius_bottom_left="60dp"
-        app:riv_corner_radius_bottom_right="60dp"
-        app:riv_corner_radius_top_left="60dp"
-        app:riv_corner_radius_top_right="60dp" />
+        app:riv_corner_radius_bottom_left="35dp"
+        app:riv_corner_radius_bottom_right="35dp"
+        app:riv_corner_radius_top_left="35dp"
+        app:riv_corner_radius_top_right="35dp"
+        android:scaleType="centerCrop"/>
 
     <LinearLayout
         android:layout_width="150dp"

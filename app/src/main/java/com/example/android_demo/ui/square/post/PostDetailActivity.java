@@ -24,6 +24,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.android_demo.Constants.constant;
@@ -56,6 +58,8 @@ public class PostDetailActivity extends AppCompatActivity {
     private CommentAdapter commentAdapter;
     ImageView image;
     String imageUrl;
+    private ImageView iv_postDetailAvatar;
+    private TextView tv_postDetailUsername;
 
     //
     @Override
@@ -63,6 +67,10 @@ public class PostDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_detail);
         image = findViewById(R.id.image);
+
+        iv_postDetailAvatar = findViewById(R.id.iv_postDetailAvatar);
+        tv_postDetailUsername = findViewById(R.id.tv_postDetailUsername);
+
 
         // 获取从上一个活动传递的帖子ID
         Intent intent = getIntent();
@@ -73,12 +81,22 @@ public class PostDetailActivity extends AppCompatActivity {
             imageUrl = post.getPostPicture();
             System.out.println(" image  " + imageUrl);
             showPostDetails(post);
+            Glide.with(PostDetailActivity.this)
+                    .load(post.getPhoto())
+                    .into(iv_postDetailAvatar);
+            tv_postDetailUsername.setText(post.getUserName());
             getComments(post);
             commentAdapter = new CommentAdapter(this, commentList);
             if (commentList != null) {
-                ListView commentListView = findViewById(R.id.commentListView);
-                commentListView.setAdapter(commentAdapter);
-                setListViewHeightBasedOnChildren(commentListView);
+                RecyclerView rv_comment = findViewById(R.id.rv_comment);
+                rv_comment.setAdapter(commentAdapter);
+                rv_comment.setLayoutManager(new LinearLayoutManager(this){
+                    @Override
+                    public boolean canScrollVertically() {
+                        return false;//禁止滑动
+                    }
+                });
+                rv_comment.setFocusable(false); // 关闭默认聚焦
             }
             try {
                 URL url = new URL(imageUrl);
@@ -110,6 +128,13 @@ public class PostDetailActivity extends AppCompatActivity {
                 Toast.makeText(this, "感谢反馈！", Toast.LENGTH_SHORT).show();
             }
         });
+
+
+        ImageView iv_postDetailBack = findViewById(R.id.iv_postDetailBack);
+        iv_postDetailBack.setOnClickListener(view -> {
+            finish();
+        });
+
     }
 
     private void getComments(PostData.Post post) {

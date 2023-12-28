@@ -54,10 +54,11 @@
                     android:layout_marginEnd="12dp"
                     android:layout_marginBottom="12dp"
                     android:src="@drawable/avatar0"
-                    app:riv_corner_radius_bottom_left="60dp"
-                    app:riv_corner_radius_bottom_right="60dp"
-                    app:riv_corner_radius_top_left="60dp"
-                    app:riv_corner_radius_top_right="60dp" />
+                    app:riv_corner_radius_bottom_left="40dp"
+                    app:riv_corner_radius_bottom_right="40dp"
+                    app:riv_corner_radius_top_left="40dp"
+                    app:riv_corner_radius_top_right="40dp"
+                    android:scaleType="centerCrop"/>
 
                 <TextView
                     android:id="@+id/tv_community_name"
