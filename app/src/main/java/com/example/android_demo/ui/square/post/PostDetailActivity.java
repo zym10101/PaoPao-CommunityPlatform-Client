@@ -7,7 +7,9 @@ import static com.example.android_demo.ui.square.SquareFragment.LIKE_URL;
 import static com.example.android_demo.utils.UserUtils.application;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -90,7 +92,7 @@ public class PostDetailActivity extends AppCompatActivity {
             if (commentList != null) {
                 RecyclerView rv_comment = findViewById(R.id.rv_comment);
                 rv_comment.setAdapter(commentAdapter);
-                rv_comment.setLayoutManager(new LinearLayoutManager(this){
+                rv_comment.setLayoutManager(new LinearLayoutManager(this) {
                     @Override
                     public boolean canScrollVertically() {
                         return false;//禁止滑动
@@ -109,11 +111,21 @@ public class PostDetailActivity extends AppCompatActivity {
         CheckBox up = findViewById(R.id.detail_up);
         CheckBox down = findViewById(R.id.detail_down);
 
+        // 获取SharedPreferences对象
+        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
         up.setOnClickListener(v -> {
             down.setEnabled(!up.isChecked());
             PostData.Post post = (PostData.Post) getIntent().getSerializableExtra("post");
+
+            // 存储点赞状态
+            editor.putBoolean("post_" + post.getPostId() + "_like", up.isChecked());
+            editor.apply();
+
             // 在这里可以执行其他你想要的操作，比如发送网络请求来保存点赞状态等
             saveData(post, up.isChecked() ? LIKE_URL : LIKE_BACK_URL);
+
             if (up.isChecked()) {
                 Toast.makeText(this, "点赞成功！", Toast.LENGTH_SHORT).show();
             }
@@ -122,13 +134,27 @@ public class PostDetailActivity extends AppCompatActivity {
         down.setOnClickListener(v -> {
             up.setEnabled(!down.isChecked());
             PostData.Post post = (PostData.Post) getIntent().getSerializableExtra("post");
-            // 在这里可以执行其他你想要的操作，比如发送网络请求来保存点赞状态等
+
+            // 存储点踩状态
+            editor.putBoolean("post_" + post.getPostId() + "_dislike", down.isChecked());
+            editor.apply();
+
+            // 在这里可以执行其他你想要的操作，比如发送网络请求来保存点踩状态等
             saveData(post, down.isChecked() ? DISLIKE_URL : DISLIKE_BACK_URL);
+
             if (down.isChecked()) {
                 Toast.makeText(this, "感谢反馈！", Toast.LENGTH_SHORT).show();
             }
         });
 
+        PostData.Post post = (PostData.Post) getIntent().getSerializableExtra("post");
+        boolean liked = preferences.getBoolean("post_" + post.getPostId() + "_like", false);
+        boolean disliked = preferences.getBoolean("post_" + post.getPostId() + "_dislike", false);
+
+        up.setChecked(liked);
+        down.setChecked(disliked);
+        down.setEnabled(!liked);
+        up.setEnabled(!disliked);
 
         ImageView iv_postDetailBack = findViewById(R.id.iv_postDetailBack);
         iv_postDetailBack.setOnClickListener(view -> {
