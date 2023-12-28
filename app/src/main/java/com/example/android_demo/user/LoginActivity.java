@@ -103,6 +103,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                     Bundle bundle1 = new Bundle();
                     bundle1.putString("username", username);
                     bundle1.putString("password", password);
+                    bundle1.putString("avatar", avatar);
+
                     intent1.putExtras(bundle1);
                     setResult(Activity.RESULT_OK, intent1);
 
