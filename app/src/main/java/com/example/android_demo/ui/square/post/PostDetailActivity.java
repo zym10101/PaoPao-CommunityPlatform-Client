@@ -8,6 +8,8 @@ import static com.example.android_demo.utils.UserUtils.application;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +23,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.android_demo.Constants.constant;
+import com.example.android_demo.MainViewModel;
 import com.example.android_demo.R;
 import com.example.android_demo.adapter.CommentAdapter;
 import com.example.android_demo.utils.CommentData;
@@ -31,6 +35,9 @@ import com.example.android_demo.utils.PostData;
 import com.example.android_demo.utils.TimeUtils;
 import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -48,13 +55,14 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private CommentAdapter commentAdapter;
     ImageView image;
+    String imageUrl;
 
+    //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_detail);
         image=findViewById(R.id.image);
-
 
         // 获取从上一个活动传递的帖子ID
         Intent intent = getIntent();
@@ -62,6 +70,7 @@ public class PostDetailActivity extends AppCompatActivity {
             PostData.Post post = (PostData.Post) intent.getSerializableExtra("post");
             // 在这里加载和显示帖子详细信息
             assert post != null;
+            imageUrl = post.getPhoto();
             showPostDetails(post);
             getComments(post);
             commentAdapter = new CommentAdapter(this, commentList);
@@ -70,18 +79,16 @@ public class PostDetailActivity extends AppCompatActivity {
                 commentListView.setAdapter(commentAdapter);
                 setListViewHeightBasedOnChildren(commentListView);
             }
+            try {
+                URL url = new URL(imageUrl);
+                requestImg(url);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
         }
 
         CheckBox up = findViewById(R.id.detail_up);
         CheckBox down = findViewById(R.id.detail_down);
-        image=findViewById(R.id.image);
-
-        final Observer<String> avatarObserver = newAvatar -> {
-            Glide.with(this)
-                    .load(newAvatar)
-                    .into(image);
-        };
-
 
         up.setOnClickListener(v -> {
             down.setEnabled(!up.isChecked());
@@ -226,8 +233,25 @@ public class PostDetailActivity extends AppCompatActivity {
         postDetailTagListTextView.setText("标签：" + post.getTagList());
         postDetailCommunityNameTextView.setText("社区：" + post.getCommunityName());
         postDetailContentTextView.setText(post.getContent());
+
     }
 
+    private void requestImg(final URL imgUrl)
+    {
+        new Thread(() -> {
+            Bitmap bitmap = null;
+            try {
+                bitmap = BitmapFactory.decodeStream(imgUrl.openStream());
+                showImg(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void showImg(final Bitmap bitmap){
+        runOnUiThread(() -> image.setImageBitmap(bitmap));
+    }
     public void submitComment(View view) {
         // 获取评论框的文本
         EditText commentEditText = findViewById(R.id.commentEditText);

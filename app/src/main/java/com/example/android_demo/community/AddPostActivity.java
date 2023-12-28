@@ -22,8 +22,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.android_demo.Constants.constant;
 import com.example.android_demo.MainViewModel;
 import com.example.android_demo.MyApplication;
@@ -65,6 +67,7 @@ public class AddPostActivity extends AppCompatActivity {
     ImageView postAva;
 
     public static MyApplication application;
+    private AddViewModel addViewModel;
     private ActivityResultLauncher<Intent> launcher;
     private String currentPhotoPath;
 
@@ -80,20 +83,24 @@ public class AddPostActivity extends AppCompatActivity {
 
         mainViewModel=new ViewModelProvider(this).get(MainViewModel.class);
 
+        addViewModel=new ViewModelProvider(this).get(AddViewModel.class);
+
         setContentView(R.layout.add_post_layout);
         titleET=findViewById(R.id.titleEditText);
         contentET=findViewById(R.id.contentEditText);
         tagET=findViewById(R.id.tagEditText);
+
+        final Observer<String> avatarObserver = newAvatar -> {
+            // 使用 Glide 加载图像并设置给 postAva
+            Glide.with(this)
+                    .load(newAvatar)
+                    .into(postAva);
+        };
+
+        //给avatar加上观察器，当avatar值发生改变的时候，调用观察函数
+        mainViewModel.getAvatar().observe(this, avatarObserver);
+
         postAva=findViewById(R.id.postImage);
-
-        cancel=findViewById(R.id.post_cancel_Button);
-        commit=findViewById(R.id.post_commit_Button);
-        to_ai=findViewById(R.id.to_AI);
-
-        application = MyApplication.getInstance();
-        userId=application.infoMap.get("loginId");
-
-        cancel.setOnClickListener(v-> finish());
 
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result ->{
             if (result != null && result.getResultCode() == RESULT_OK) {
@@ -108,6 +115,14 @@ public class AddPostActivity extends AppCompatActivity {
                 }
             }
         });
+        cancel=findViewById(R.id.post_cancel_Button);
+        commit=findViewById(R.id.post_commit_Button);
+        to_ai=findViewById(R.id.to_AI);
+
+        application = MyApplication.getInstance();
+        userId=application.infoMap.get("loginId");
+
+        cancel.setOnClickListener(v-> finish());
 
         postAva.setOnClickListener(view -> {
             // 弹出一个对话框，选择拍照或者从相册选择
@@ -120,8 +135,8 @@ public class AddPostActivity extends AppCompatActivity {
             });
             builder.setNeutralButton("拍照", (dialogInterface, i) -> {
                 // 调用相机拍照
-                Intent intent0 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (intent0.resolveActivity(this.getPackageManager()) != null) {
+                Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (intent1.resolveActivity(this.getPackageManager()) != null) {
                     File photoFile = null;
                     try {
                         photoFile = createImageFile();
@@ -132,8 +147,8 @@ public class AddPostActivity extends AppCompatActivity {
                     // Continue only if the File was successfully created
                     if (photoFile != null) {
                         Uri uri = FileProvider.getUriForFile(this.getApplicationContext(), this.getPackageName() + ".fileProvider", photoFile);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                        launcher.launch(intent);
+                        intent1.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                        launcher.launch(intent1);
                     }
                 }
             });
@@ -166,6 +181,7 @@ public class AddPostActivity extends AppCompatActivity {
         );
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
+        Log.d("photoPath",currentPhotoPath);
         return image;
     }
 
@@ -187,7 +203,7 @@ public class AddPostActivity extends AppCompatActivity {
 
             MultipartBody multipartBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("newPhoto", file.getName(), requestBody)//文件名
+                    .addFormDataPart("file", file.getName(), requestBody)//文件名
                     .build();
             // 创建HTTP请求
             Request request = new Request.Builder()
@@ -198,19 +214,13 @@ public class AddPostActivity extends AppCompatActivity {
                 Response response = client.newCall(request).execute();
                 if (response.code() == 200) {
                     String reData=response.body().string();
-                    Gson gson = new Gson();
-                    ResponseData<String> rdata= gson.fromJson(reData, ResponseData.class);
-                    if (rdata.getCode().equals("200")) {
-                        Looper.prepare();
-                        Toast.makeText(this, "图片上传成功", Toast.LENGTH_SHORT).show();
-                        url = rdata.getData();
-                    } else {
-                        Looper.prepare();
-                        Toast.makeText(this, "图片上传失败", Toast.LENGTH_SHORT).show();
-                    }
+                    Looper.prepare();
+                    Toast.makeText(this, "图片上传成功", Toast.LENGTH_SHORT).show();
+                    url=reData;
                 } else {
                     Looper.prepare();
                     Toast.makeText(this, "图片上传失败！请检查网络状况", Toast.LENGTH_SHORT).show();
+
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -222,7 +232,7 @@ public class AddPostActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        mainViewModel.getAvatar().setValue(url);
+        addViewModel.getAvatar().setValue(url);
     }
     private void sendPost(String title, String content, JSONArray jsonArray) {
         OkHttpClient client = new OkHttpClient.Builder()
@@ -277,7 +287,6 @@ public class AddPostActivity extends AppCompatActivity {
                         Looper.prepare();
                         Toast.makeText(AddPostActivity.this, "发帖失败", Toast.LENGTH_SHORT).show();
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
